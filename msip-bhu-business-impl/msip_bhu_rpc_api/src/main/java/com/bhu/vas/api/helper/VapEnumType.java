@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.helper.DeviceRadio;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
@@ -99,51 +100,6 @@ public class VapEnumType {
 	
 	public static final String IMAGE_CLOUD = "";
 
-	public class DeviceRadio {
-		private String name;
-		private String mode;
-		private String power_range;
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String getMode() {
-			return mode;
-		}
-		public void setMode(String mode) {
-			this.mode = mode;
-		}
-		public String getPower_range() {
-			return power_range;
-		}
-		public void setPower_range(String power_range) {
-			this.power_range = power_range;
-		}
-	}
-
-	public class DeviceCapability{
-		private String icon;
-		private List<DeviceRadio> radio;
-				
-		public DeviceCapability(String icon){
-			this.icon = icon;
-		}
-		public String getIcon() {
-			return icon;
-		}
-		public void setIcon(String icon) {
-			this.icon = icon;
-		}
-		public List<DeviceRadio> getRadio() {
-			return radio;
-		}
-		public void setRadio(List<DeviceRadio> radio) {
-			this.radio = radio;
-		}
-	}
-	
 	/**
 	 * 采用正式的设备的hdtype中的数字作为子类型的index
 	 * @author Edmond
@@ -160,68 +116,68 @@ public class VapEnumType {
 		CWifiRoot(DUT_CWifi, StringHelper.MINUS_STRING_GAP,"商业WiFi"),
 
 		uRouterTU_106("TU_H106",	"AP106","BN207,BN027","Z01",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "urouter\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "urouter\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterPlusTU_112("TU_H112","AP112","BN209","Z03",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "urouterplus\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "urouterplus\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531+9887芯片",
 				"{\"icon\":\"" + IMAGE_CLOUD + "urouterac\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		uRouterAcPlusTU_403("TU_H403",	"AP403","BN403","Z05",DUT_uRouter,"uRouter AC Plus","uRouter","2.4GHz 5GHz 家用AP","128M内存、TF卡版本、9531+9887芯片",
 				"{\"icon\":\"" + IMAGE_CLOUD + "urouteracplus\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 
 		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"Juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"Juwan pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关", //暂时改为单频
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 		uRouterTU_810("TU_H810","AP810","*","M10",DUT_uRouter,"Maixu pro","uRouter 810","深圳迈旭9344双频AP（支持3g拨号）","深圳迈旭9344双频AP（支持3g拨号）",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-20\"}]}"),
 		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"Haier mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 		uRouterTU_830("TU_H830","AP830","*","M30",DUT_uRouter,"Fuqiao mini","uRouter 830","MTK7620单频AP","MTK7620单频AP",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 
 		
 		
 		MassAP_2_103("TS_H103",		"AP103", null, null, DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		MassAP_2_110("TS_H110",		"AP110", null, null, DUT_soc,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		MassAP_Pro_201("TS_H201",	"AP201", null, null, DUT_soc,"MassAP Pro H201","MassAP Pro","双频室外AP","16M flash、128M 内存、9350+9592芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		MassAP_Pro_303("TS_H303",	"AP303", null, null, DUT_soc,"MassAP Pro H303","MassAP Pro","双频室外APv2","16M Flash、128M内存、9344+9380芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		MassAP_AC_Pro_305("TS_H305","AP305", null, null, DUT_soc,"MassAP AC Pro H305","MassAP AC Pro","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		
 		MicroStation_2_104("TS_H104","AP104", null, null, DUT_soc,"MicroStation 2 H104","MicroStation 2","2.4GHz室外单频AP","8M Flash、64M内存、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		MicroStation_2_109("TS_H109","AP109", null, null, DUT_soc,"MicroStation 2 H109","MicroStation 2","2.4GHz室外单频AP","16M Flash、64M内存、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		MicroStation_2U_108("TS_H108","AP108", null, null, DUT_soc,"MicroStation 2U H108","MicroStation 2U","2.4GHz 室外单频AP(带USB口）","8M Flash、64M内存、9344芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		
 		MicroStation_5_304("TS_H304","AP304", null, null, DUT_soc,"MicroStation 5 H304","MicroStation 5","5GHz室外单频AP","8M Flash、64M内存、9344芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		MicroStation_5_306("TS_H306","AP306", null, null, DUT_soc,"MicroStation 5 H306","MicroStation 5","5GHz室外单频AP","16M Flash、64M内存、9344芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		uRouterTS_106("TS_H106",	 "AP106", null, null, DUT_soc,"uRouter","uRouter","商用","---",
-				"{\"icon\":\"" + IMAGE_CLOUD + "urouter\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "urouter\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterPlusTS_112("TS_H112","AP112", null, null, DUT_soc,"uRouter Plus","uRouter","商用","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		
 		BXO2000n2SLite_104("TC_H104","AP104", null, null, DUT_CWifi,"BXO2000n(2S-Lite) H104","BXO2000n(2S-Lite)","","",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		BXO2000n2SLiteU_108("TC_H108","AP108", null, null, DUT_CWifi,"BXO2000n(2S-Lite-U) H108","BXO2000n(2S-Lite-U)","","",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		BXO2000n2SLite_109("TC_H109","AP109", null, null, DUT_CWifi,"BXO2000n(2S-Lite) H109","BXO2000n(2S-Lite)","","",
-				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "micsta\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		BXI2050n2_201("TC_H201","AP201", null, null, DUT_CWifi,"BXI2050n(2) H201","BXI2050n(2)","","",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		BXI2050n2v2_112("TC_H303","AP303", null, null, DUT_CWifi,"BXI2050n(2) v2 H303","BXI2050n(2) v2","","",
-				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "massap\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		
 		//H104, H108, H109,H201, H110, H303
 		;
@@ -249,7 +205,7 @@ public class VapEnumType {
 		private String capability;
 		private DeviceCapability deviceCapability;
 		
-		public static final DeviceCapability unknownDeviceCapability = JsonHelper.getDTO("{\"icon\":\"" + IMAGE_CLOUD + "undefined\"", DeviceCapability.class);;
+		public static final DeviceCapability unknownDeviceCapability = JsonHelper.getDTO("{\"icon\":\"" + IMAGE_CLOUD + "undefined\"}", DeviceCapability.class);;
 		
 		public String getCapability() {
 			return capability;
@@ -678,7 +634,20 @@ public class VapEnumType {
 		DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
 		System.out.println("index:" + unitType.index);
 		System.out.println("name:" + unitType.name);
+
+//		DeviceCapability cb = VapEnumType.DeviceUnitType.getDeviceCapabilityFromVersion("AP106P06V1.3.2_TU");
+		String content = "{\"icon\":\"" + IMAGE_CLOUD + "urouter\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}";
+		System.out.println("content:" + content);
+		DeviceCapability exp = new DeviceCapability();
+		exp.setIcon("urouter");
+		List<DeviceRadio> radio = new ArrayList<DeviceRadio>();
+		DeviceRadio ra = new DeviceRadio();
+		ra.setMode("g");
+		radio.add(ra);
+		exp.setRadio(radio);
 		
+		DeviceCapability cb = JsonHelper.getDTO(content, DeviceCapability.class);
+		System.out.println("icons:" + cb.getIcon());
 //		String[] parserIndex = VapEnumType.DeviceUnitType.parserIndex("TU_H106");
 //		for(String p:parserIndex){
 //			System.out.println(p);

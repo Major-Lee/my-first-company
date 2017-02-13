@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
-import com.bhu.vas.api.helper.VapEnumType.DeviceCapability;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
