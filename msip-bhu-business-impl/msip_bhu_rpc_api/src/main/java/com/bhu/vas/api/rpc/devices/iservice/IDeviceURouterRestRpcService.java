@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.helper.VapEnumType.DeviceCapability;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
@@ -97,5 +98,6 @@ public interface IDeviceURouterRestRpcService {
 	
 	RpcResponseDTO<Boolean> urouterUserMobilePushDestory(Integer uid);
 
+	RpcResponseDTO<DeviceCapability> getDeviceCapability(Integer uid, String mac);
 
 }

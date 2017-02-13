@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.helper.VapEnumType.DeviceCapability;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
@@ -602,5 +603,27 @@ public class URouterDeviceController extends BaseController{
         		uid, message, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }
+
     
+    /**
+     * 多条件组合搜索接口(APP专用的返回值)
+     * @param uid
+     * @param conditions
+     * @param pageNo
+     * @param pageSize
+     * @param request
+     * @param response
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/capability", method = {RequestMethod.POST})
+    public void fetch_by_condition_message(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac) {
+    	Locale locale = BusinessWebHelper.getLocale(request);
+        RpcResponseDTO<DeviceCapability> ret = deviceURouterRestRpcService.getDeviceCapability(uid, mac);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+    }
+
 }
