@@ -130,4 +130,6 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails();
+
 }

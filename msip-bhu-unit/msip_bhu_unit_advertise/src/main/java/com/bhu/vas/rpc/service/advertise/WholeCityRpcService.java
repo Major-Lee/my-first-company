@@ -231,4 +231,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info(String.format("userAdvertiseDetail uid[%s] ",uid));
 		return advertiseUnitFacadeService.userAdvertiseDetail(uid);
 	}
+	
+	@Override
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails() {
+		logger.info("queryRandomAdvertiseDetails ...");
+		return advertiseUnitFacadeService.queryRandomAdvertiseDetails();
+	}
 }
