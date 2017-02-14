@@ -746,6 +746,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public void setFreead(int freead) {
 		this.freead = freead;
 	}
+	
+	@JsonIgnore
 	public int getRealFreeAd(){
 		return (this.isfree == 1)?freead:0;
 	}
