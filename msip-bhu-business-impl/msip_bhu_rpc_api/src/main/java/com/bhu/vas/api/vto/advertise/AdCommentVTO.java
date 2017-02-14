@@ -1,5 +1,6 @@
 package com.bhu.vas.api.vto.advertise;
 
+@SuppressWarnings("serial")
 public class AdCommentVTO implements java.io.Serializable{
 	private int uid;
 	private String comment;
