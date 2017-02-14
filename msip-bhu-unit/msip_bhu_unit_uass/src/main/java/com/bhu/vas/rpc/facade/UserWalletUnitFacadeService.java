@@ -1940,86 +1940,87 @@ public class UserWalletUnitFacadeService {
 		
 		Map<String,Object> pages = userWalletFacadeService.pageBillPlan(startTime,endTime, pageNo, pageSize);
 		TailPage<BillVTO> result_pages = null;
-		List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
-		if (!pages.isEmpty()) {
-			List<Integer> uids = new ArrayList<>();
-			for (UserWalletWithdrawApply apply : pages.getItems()) {
-				uids.add(apply.getUid());
-			}
-			List<User> users = this.userService.findByIds(uids, true, true);
-			int index = 0;
-			for (UserWalletWithdrawApply apply : pages.getItems()) {
-				User user = users.get(index);
-				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService()
-						.calculateWithdrawCost(apply.getUid(), apply.getId(),apply.getCash());
-				// 查询操作人和审核人信息
-				User verifyUser = null;
-				if (apply.getVerify_uid() != 0) {
-					verifyUser = new User();
-					verifyUser = this.userService.getById(apply.getVerify_uid());
-				}
-				User operateUser = null;
-				if (apply.getOperate_uid() != 0) {
-					operateUser = new User();
-					operateUser = this.userService.getById(apply.getOperate_uid());
-				}
-				//userWallet
-				UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
-//				double totalCash = uwallet.getTotal_cash_sum();
-				Date updateTime = apply.getUpdated_at();
-				String totalCash = null;
-				String  lastCash = uwallet.getCash()+"";
-				int totalOrderNum = 0;
-				String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(apply.getUid());
-				Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
-				if(totalIncomeMap.get("num")!=null){
-					totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
-				}
-				if(totalIncomeMap.get("cash")!=null){
-					totalCash= totalIncomeMap.get("cash")+"";
-				}
-				System.out.println("totalOrderNum  "+totalOrderNum+"     totalCash"+totalCash);
-				UserWithdrawApplyVTO uWithdrawAplyVTO = null;
-				if (StringUtils.isNotEmpty(utype)) {
-					if(user.getUtype()==Integer.parseInt(utype)){
-						uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
-								user != null ? UserType.getByIndex(user.getUtype()).getFname()
-								: StringUtils.EMPTY,
-								user != null ? user.getMobileno()
-										: StringUtils.EMPTY,
-								user != null ? user.getNick() : StringUtils.EMPTY,
-								verifyUser != null ? verifyUser.getNick()
-										: StringUtils.EMPTY,
-								operateUser != null ? operateUser.getNick()
-										: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
-					}
-				}else{
-					uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
-							user != null ? UserType.getByIndex(user.getUtype()).getFname()
-							: StringUtils.EMPTY,
-							user != null ? user.getMobileno()
-									: StringUtils.EMPTY,
-							user != null ? user.getNick() : StringUtils.EMPTY,
-							verifyUser != null ? verifyUser.getNick()
-									: StringUtils.EMPTY,
-							operateUser != null ? operateUser.getNick()
-									: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
-				}
-				vtos.add(uWithdrawAplyVTO);
-				index++;
-			}
-		}
-		System.out.println("JJJKKK"+JsonHelper.getJSONString(vtos));
-		result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(),pages.getTotalItemsCount(), vtos);
-		logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
-	} catch (BusinessI18nCodeException bex) {
-		return RpcResponseDTOBuilder.builderErrorRpcResponse(
-				bex.getErrorCode(), bex.getPayload());
-	} catch (Exception ex) {
-		ex.printStackTrace(System.out);
-		return RpcResponseDTOBuilder
-				.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-	}
+		return null;
+//		List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
+//		if (!pages.isEmpty()) {
+//			List<Integer> uids = new ArrayList<>();
+//			for (UserWalletWithdrawApply apply : pages.getItems()) {
+//				uids.add(apply.getUid());
+//			}
+//			List<User> users = this.userService.findByIds(uids, true, true);
+//			int index = 0;
+//			for (UserWalletWithdrawApply apply : pages.getItems()) {
+//				User user = users.get(index);
+//				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService()
+//						.calculateWithdrawCost(apply.getUid(), apply.getId(),apply.getCash());
+//				// 查询操作人和审核人信息
+//				User verifyUser = null;
+//				if (apply.getVerify_uid() != 0) {
+//					verifyUser = new User();
+//					verifyUser = this.userService.getById(apply.getVerify_uid());
+//				}
+//				User operateUser = null;
+//				if (apply.getOperate_uid() != 0) {
+//					operateUser = new User();
+//					operateUser = this.userService.getById(apply.getOperate_uid());
+//				}
+//				//userWallet
+//				UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
+////				double totalCash = uwallet.getTotal_cash_sum();
+//				Date updateTime = apply.getUpdated_at();
+//				String totalCash = null;
+//				String  lastCash = uwallet.getCash()+"";
+//				int totalOrderNum = 0;
+//				String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(apply.getUid());
+//				Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
+//				if(totalIncomeMap.get("num")!=null){
+//					totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
+//				}
+//				if(totalIncomeMap.get("cash")!=null){
+//					totalCash= totalIncomeMap.get("cash")+"";
+//				}
+//				System.out.println("totalOrderNum  "+totalOrderNum+"     totalCash"+totalCash);
+//				UserWithdrawApplyVTO uWithdrawAplyVTO = null;
+//				if (StringUtils.isNotEmpty(utype)) {
+//					if(user.getUtype()==Integer.parseInt(utype)){
+//						uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
+//								user != null ? UserType.getByIndex(user.getUtype()).getFname()
+//								: StringUtils.EMPTY,
+//								user != null ? user.getMobileno()
+//										: StringUtils.EMPTY,
+//								user != null ? user.getNick() : StringUtils.EMPTY,
+//								verifyUser != null ? verifyUser.getNick()
+//										: StringUtils.EMPTY,
+//								operateUser != null ? operateUser.getNick()
+//										: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
+//					}
+//				}else{
+//					uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
+//							user != null ? UserType.getByIndex(user.getUtype()).getFname()
+//							: StringUtils.EMPTY,
+//							user != null ? user.getMobileno()
+//									: StringUtils.EMPTY,
+//							user != null ? user.getNick() : StringUtils.EMPTY,
+//							verifyUser != null ? verifyUser.getNick()
+//									: StringUtils.EMPTY,
+//							operateUser != null ? operateUser.getNick()
+//									: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
+//				}
+//				vtos.add(uWithdrawAplyVTO);
+//				index++;
+//			}
+//		}
+//		System.out.println("JJJKKK"+JsonHelper.getJSONString(vtos));
+//		result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(),pages.getTotalItemsCount(), vtos);
+//		logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
+//		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+//	} catch (BusinessI18nCodeException bex) {
+//		return RpcResponseDTOBuilder.builderErrorRpcResponse(
+//				bex.getErrorCode(), bex.getPayload());
+//	} catch (Exception ex) {
+//		ex.printStackTrace(System.out);
+//		return RpcResponseDTOBuilder
+//				.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+//	}
 	}
 }
