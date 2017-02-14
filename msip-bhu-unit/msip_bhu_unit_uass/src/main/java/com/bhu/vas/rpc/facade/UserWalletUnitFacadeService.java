@@ -1937,9 +1937,14 @@ public class UserWalletUnitFacadeService {
 	//拼装提现管理系统-财务对账页面查询页面信息数据
 	public RpcResponseDTO<TailPage<BillVTO>> walletbillPlanPages(String startTime, String endTime, int pageNo,
 			int pageSize) {
-		
+		//获取该时间段内公司收益
 		Map<String,Object> pages = userWalletFacadeService.pageBillPlan(startTime,endTime, pageNo, pageSize);
 		TailPage<BillVTO> result_pages = null;
+		
+		//获取该时间段内用户收益
+		
+		////获取该时间段内平台收益
+		
 		return null;
 //		List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
 //		if (!pages.isEmpty()) {

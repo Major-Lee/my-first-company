@@ -1,4 +1,4 @@
-package com.bhu.vas.business.payment.help;
+package com.bhu.vas.business.distributor.help;
 
 import java.beans.PropertyEditorSupport;
 import java.sql.Timestamp;
