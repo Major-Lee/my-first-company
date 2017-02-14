@@ -119,6 +119,7 @@
 
 	<sql id="modelUpdateValues">
 		id = #{id},
+		token = #{token},
 		third_party_code = #{third_party_code},
 		pay_status = #{pay_status},
 		notify_status = #{notify_status},

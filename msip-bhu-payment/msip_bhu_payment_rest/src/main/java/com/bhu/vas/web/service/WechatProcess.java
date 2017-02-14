@@ -13,6 +13,7 @@ import com.bhu.vas.web.model.ReceiveXmlProcess;
  *
  */
 public class WechatProcess {
+	
 	/**
 	 * 解析处理xml、获取智能回复结果（通过图灵机器人api接口）
 	 * @param xml 接收到的微信数据

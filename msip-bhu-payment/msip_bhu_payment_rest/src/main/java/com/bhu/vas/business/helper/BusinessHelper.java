@@ -783,8 +783,10 @@ public class BusinessHelper extends PropertyEditorSupport {
 		return usermac;
 	}
 	
+	//logo File
 	static File logoImg = null;
-	@SuppressWarnings("restriction")
+	//对字节数组Base64编码
+   static BASE64Encoder encoder = new BASE64Encoder();
 	public static String GetBase64ImageStr(String content,String rqCodeLogoPath, String logoPath) throws WriterException, IOException  {//将图片文件转化为字节数组字符串，并对其进行Base64编码处理
 			 
 			byte[] result = null;
@@ -799,6 +801,7 @@ public class BusinessHelper extends PropertyEditorSupport {
 				if(logoImg == null){
 					logoImg = new File(logoPath);
 				}
+				
 				File img = new File(rqCodeLogoPath);
 				//生成二维码
 				EncodeImgQrcode.writeToFile(content, format, img);
@@ -816,9 +819,6 @@ public class BusinessHelper extends PropertyEditorSupport {
 					e.printStackTrace();
 				}
 			}       
-		 
-		//对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
         return "data:image/png;base64,"+encoder.encode(result);//返回Base64编码过的字节数组字符串
     }
 //	public static String GetBase64ImageStr(String content) throws WriterException, IOException  {//将图片文件转化为字节数组字符串，并对其进行Base64编码处理
@@ -961,16 +961,20 @@ public class BusinessHelper extends PropertyEditorSupport {
 		}
 		
 		public static void main(String[] args) {
-//			String reckonId = "PROAPAL1474879256178pmrn";
-//			String result = "";
-//			if(reckonId.startsWith("INNER")){
-//				result = reckonId.substring(5, 9);
-//			}else if(reckonId.startsWith("TEST")){
-//				result = reckonId.substring(4, 8);
-//			}else if(reckonId.startsWith("PRO")){
-//				result = reckonId.substring(3, 7);
-//			}
+			//String reckonId = "https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-1JA7763163648422B";
 			
-			System.out.println(RandomPicker.randomstart(20000, 1));
+			//System.out.println(RandomPicker.randomstart(20000, 1));
+		}
+
+
+		public static String getTokenStr(String url) {
+			String result = "";
+			if(StringUtils.isEmpty(url)){
+				return result;
+			}
+			if(url.contains("&token=")){
+				result = url.substring(url.indexOf("&token=")+7, url.length());
+			}
+			return result;
 		}
 }

@@ -7,15 +7,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-import com.bhu.vas.api.helper.CommonTimeHelper;
-import com.bhu.vas.api.rpc.charging.model.GpathIncome;
-import com.bhu.vas.api.rpc.charging.model.MacIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeMonthRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.smartwork.msip.localunit.BaseTest;
@@ -24,6 +23,8 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 	@Resource
 	UserWalletLogService userWalletLogService;
 	@Resource
+	UserIncomeService userIncomeService;
+	@Resource
 	UserWalletFacadeService userWalletFacadeService;
 	@Resource
 	UserIncomeRankService userIncomeRankService;
@@ -31,126 +32,78 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 	UserIncomeMonthRankService userIncomeMonthRankService;
 	@Test
 	public void test() {
-		String preDayDate =CommonTimeHelper.GetDateStr(-1);
-        String today = CommonTimeHelper.GetDateStr(0);
-//        System.out.println("preDate:"+preDayDate+"today:"+today);
-//		List<UserIncome> userIncomesList =userWalletFacadeService.getUserIncomeService().findByLimit(today,0,1);
-//    	System.out.println("select userIncom List size:"+userIncomesList.size());
-//        if(userIncomesList.size() <= 0){
-//        	//统计昨日用户收益userIncome
-//        	List<Object> userIncomeList = userWalletFacadeService.getUserWalletLogService().findUserIncomeListByTime(preDayDate,today);
-//        	for (Object object : userIncomeList) {
-//        		UserIncome userIncomeVTO = (UserIncome) object;
-//        		userIncomeVTO.setTime(preDayDate);
-//        		userIncomeVTO.setUpdated_at(new Date());
-//        		List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncomeVTO.getUid(), preDayDate);
-//        		if(income.size()<=0){
-//        			System.out.println("userIncome");
-//        			//userWalletFacadeService.getUserIncomeService().insert(userIncomeVTO);
-//        		}
-//        	}
-//        }
-//		
-//        List<MacIncome> macIncomesList=userWalletFacadeService.getMacIncomeService().findByLimit(today,0,1);
-//        System.out.println("select macIncomes List size:"+macIncomesList.size());
-//        if(macIncomesList.size() <= 0){
-//        	//统计昨日用户收益macIncome
-//        	List<Object> macIncomeList = userWalletFacadeService.getUserWalletLogService().findMacIncomeListByTime(preDayDate,today);
-//        	for (Object object : macIncomeList) {
-//        		MacIncome macIncomeVTO = (MacIncome) object;
-//        		macIncomeVTO.setTime(preDayDate);
-//        		macIncomeVTO.setUpdated_at(new Date());
-//        		List<MacIncome> macIncomes=userWalletFacadeService.getMacIncomeService().findListByMac(macIncomeVTO.getMac(), preDayDate);
-//        		if(macIncomes.size()<=0){
-//        			System.out.println("macIncomes");
-//
-//        			//userWalletFacadeService.getMacIncomeService().insert(macIncomeVTO);
-//        		}
-//        	}
-//        }
-//        
-//        //统计昨日用户收益gpathIncome
-//        List<GpathIncome> gpathIncomesList=userWalletFacadeService.getGpathIncomeService().findByLimit(today,0,1);
-//        System.out.println("select gpathIncomes List size:"+gpathIncomesList.size());
-//        if(gpathIncomesList.size() <= 0){
-//    		List<Object> gpathIncomeList = userWalletFacadeService.getUserWalletLogService().findGpathIncomeListByTime(preDayDate,today);
-//    		for (Object object : gpathIncomeList) {
-//    			GpathIncome gpathIncomeVTO = (GpathIncome) object;
-//    			System.out.println(gpathIncomeVTO.getGpath());
-//    			gpathIncomeVTO.setTime(preDayDate);
-//    			gpathIncomeVTO.setUpdated_at(new Date());
-//    			List<GpathIncome> gpathIncomes=userWalletFacadeService.getGpathIncomeService().findListByGpath(gpathIncomeVTO.getGpath(), preDayDate);
-//    			if(gpathIncomes.size()<=0){
-//    				System.out.println("GpathIncomes");
-////    				userWalletFacadeService.getGpathIncomeService().insert(gpathIncomeVTO);
-//    			}
-//    		}
-//    	}
-//		
-        Date date = new Date();  
+
+		int x=0;
+		Date date = new Date();  
 		Calendar calendar = Calendar.getInstance();  
 		calendar.setTime(date);  
-		calendar.add(Calendar.MONTH, -1);  
+		calendar.add(Calendar.MONTH, x-1);  
 		date = calendar.getTime();  
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
-		String time =sdf.format(date); 
-		UserIncomeMonthRank incomeRankNow= userIncomeMonthRankService.getByUid(1,time+"%");
-		if(incomeRankNow == null){
-			System.out.println("null");
+		String time =sdf.format(date);
+		Date dateNow = new Date();  
+		Calendar calendarNow = Calendar.getInstance();  
+		calendarNow.setTime(dateNow);  
+		calendarNow.add(Calendar.MONTH, x);  
+		dateNow = calendarNow.getTime();  
+		String timeNow =sdf.format(dateNow); 
+		System.out.println(timeNow);
+		//如果上月统计已执行，就跳过
+		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time+"%",0,1);
+		System.out.println("User Income Month Rank size:"+userIncomList.size());
+		if(userIncomList.size()<=0){
+			System.out.println(time +"month rank list task statistics starting...");
+			Date datebefore = new Date();  
+			Calendar calendarBefore = Calendar.getInstance();  
+			calendarBefore.setTime(datebefore);  
+			calendarBefore.add(Calendar.MONTH, x-2);  
+			datebefore = calendarBefore.getTime();  
+			String timeBefore =sdf.format(datebefore); 
+			//userIncomeRankService.deleteAllRank();
+			List<UserIncome> userIncomes=userIncomeService.findMonthList(time+"%");
+			System.out.println("month rank userIncomes size:"+userIncomes.size());
+			if(userIncomes.size()>0){
+				String beforeIncome="0";
+				int beforeRankNum=0;
+				int n=1;
+				int m=1;
+				for(int i=userIncomes.size()-1;i>=0;i--){
+					UserIncomeMonthRank userIncomeMonthRank=new UserIncomeMonthRank();
+					UserIncome userIncome=userIncomes.get(i);
+					if(i==userIncomes.size()-1){
+						beforeRankNum=n;
+						beforeIncome=userIncome.getIncome();
+					}else{
+						if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
+							beforeRankNum=m;
+							beforeIncome=userIncome.getIncome();
+							n=m;
+						}
+					}
+					userIncomeMonthRank.setRank(beforeRankNum);
+					userIncomeMonthRank.setIncome(userIncome.getIncome());
+					UserIncomeMonthRank incomeRank=userIncomeMonthRankService.getByUid(userIncome.getUid(),timeBefore+"%");
+					userIncomeMonthRank.setUid(userIncome.getUid());
+					if(incomeRank!=null){
+						userIncomeMonthRank.setBeforeIncome(incomeRank.getIncome());
+						userIncomeMonthRank.setBeforeRank(incomeRank.getRank());
+						userIncomeMonthRank.setCreated_at(date);
+					}else{
+						userIncomeMonthRank.setCreated_at(date);
+						userIncomeMonthRank.setBeforeIncome(userIncomeMonthRank.getIncome());
+						userIncomeMonthRank.setBeforeRank(9999999);
+					}
+					UserIncomeMonthRank incomeRankNow= userIncomeMonthRankService.getByUid(userIncome.getUid(),time+"%");
+					System.out.println("insert month rank table"+incomeRankNow);
+					if(incomeRankNow == null){
+						//userIncomeMonthRankService.insert(userIncomeMonthRank);
+					}
+					m++;
+				}
+			}
+		}else{
+			System.out.println(time +"month rank list task statistics had finished.");
 		}
-		
-//		String preDayDate =CommonTimeHelper.GetDateStr(-1);
-//        String today = CommonTimeHelper.GetDateStr(0);
-//        System.out.println("preDate:"+preDayDate+"today:"+today);
-//        List<Object> userIncomeMap = userWalletLogService.findUserIncomeListByTime(preDayDate, today);
-//        for (Object object : userIncomeMap) {
-//        	UserIncome userIncomeVTO = (UserIncome) object;
-//        	System.out.println(userIncomeVTO.getUid());
-//    		userIncomeVTO.setTime(preDayDate);
-//    		userIncomeVTO.setUpdated_at(new Date());
-//			List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncomeVTO.getUid(), preDayDate);
-//			if(income.size()<1){
-//				userWalletFacadeService.getUserIncomeService().insert(userIncomeVTO);
-//			}
-//		}
-//        if(userIncomeMap != null){
-//        	for (int i = 0; i < userIncomeMap.size(); i++) {
-//        		UserIncome userIncomeVTO = (UserIncome) userIncomeMap.get(i);
-//        		userIncomeVTO.setTime(preDayDate);
-//        		userIncomeVTO.setUpdated_at(new Date());
-//    			List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncomeVTO.getUid(), preDayDate);
-//    			if(income.size()<1){
-//    				userWalletFacadeService.getUserIncomeService().insert(userIncomeVTO);
-//    			}
-//    		}
-//        }
-        
-//		for (UserIncomeVTO userIncomeVTO : userIncomeMap) {
-//			UserIncome userIncome=new UserIncome();
-//			userIncome.setTime(preDayDate);
-//			userIncome.setUid(userIncomeVTO.getUid());
-//			userIncome.setIncome(userIncomeVTO.getIncome());
-//			userIncome.setTimes(userIncomeVTO.getTimes());
-//			List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncomeVTO.getUid(), preDayDate);
-//			if(income.size()<1){
-//				System.out.println("ss"+income.size());
-//				//userWalletFacadeService.getUserIncomeService().insert(userIncome);
-//			}
-//		}
-		//System.out.println(userIncomeList.size());
-		/*
-		String start_time = "2015-08-01 00:00:00";
-		String end_time = "2016-08-11 23:59:59";
-		Integer uid = 100153;
-		String mac = "";
-		String umac = "44:00:10:80:1f:6c";
-		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac,10);
-		Iterator<Map.Entry<String, Object>> it = sum.entrySet().iterator();
-		while (it.hasNext()) {
-			   Map.Entry<String, Object> entry = it.next();
-			   System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
-		}
-		*/
 	}
 	
 }

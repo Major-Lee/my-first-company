@@ -86,7 +86,7 @@ public class PayLogicService {
 //    	}
     	
     	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
-    	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+//    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
     	if(paymentParameter == null){
     		return result;
     	}
@@ -232,6 +232,9 @@ public class PayLogicService {
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
  			paymentType = PaymentChannelCode.BHU_WAP_ALIPAY.code();
+ 		}else if(type.equals(PaymentChannelCode.BHU_WAP_PAYPAL.i18n())){
+ 			paymentType = PaymentChannelCode.BHU_WAP_PAYPAL.code();
+ 			channelType = "PayPal";
  		}else{
  			channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
@@ -354,83 +357,89 @@ public class PayLogicService {
 						    		String thirdPartCode,
 						    		String thridType,
 						    		String billo){
-    	
-    	Date payTime = new Date();
-		updatePayStatus.setThird_party_code(thirdPartCode);
-		updatePayStatus.setPay_status(1);
-		updatePayStatus.setPaid_at(payTime);
-		if(thridType != null){
-			updatePayStatus.setRemark(billo);
-			updatePayStatus.setChannel_type(thridType);
-		}
-		long update_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
- 		paymentReckoningService.update(updatePayStatus);
- 		long update_end = System.currentTimeMillis() - update_begin; // 这段代码放在程序执行后
- 		logger.info(updatePayStatus.getOrder_id()+"修改支付状态耗时：" + update_end + "毫秒");
- 		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));
- 		
- 		//计算订单支付总耗时时间
- 		Date createdTime = updatePayStatus.getCreated_at();
- 		try{
- 			String evn = payHttpService.getEnv().toUpperCase();
- 			String channelType = updatePayStatus.getChannel_type();
- 			long between = BusinessHelper.getBetweenTimeCouse(createdTime, payTime);
- 			if(between < 60){//得0分
- 				 System.out.println(out_trade_no+"得0分");
- 			}else if (between < 120){//得1分
- 				System.out.println(out_trade_no+"得1分");
- 				innerProcessor(1,updatePayStatus.getId(),evn,channelType);
- 			}else if (between < 180){//得5分
- 				System.out.println(out_trade_no+"得5分");
- 				innerProcessor(5,updatePayStatus.getId(),evn,channelType);
- 			}else if (between < 300){//得10分
- 				System.out.println(out_trade_no+"得10分");
- 				innerProcessor(10,updatePayStatus.getId(),evn,channelType);
- 			}else if(between < 1800){//得50分
- 				System.out.println(out_trade_no+"得20分");
- 				innerProcessor(20,updatePayStatus.getId(),evn,channelType);
- 			}else {//得100分
- 				System.out.println(out_trade_no+"得30分");
- 				innerProcessor(30,updatePayStatus.getId(),evn,channelType);
- 			}
- 		}catch(Exception e){
- 			System.out.println("捕获积分系统异常:"+e.getMessage()+e.getCause());
- 		}
- 		//通知订单
- 		PaymentReckoning payNotice =  paymentReckoningService.getById(out_trade_no);
- 		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
- 		rpcn_dto.setSuccess(true);
- 		rpcn_dto.setOrderid(payNotice.getOrder_id());
- 		rpcn_dto.setPayment_type(payNotice.getPayment_type());
- 		String fmtDate = BusinessHelper.formatDate(payNotice.getPaid_at(), "yyyy-MM-dd HH:mm:ss");
- 		rpcn_dto.setPaymented_ds(fmtDate);
- 		if(thridType != null){
- 			rpcn_dto.setPayment_proxy_type(thridType);
- 		}
- 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
- 		long notify_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
- 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
- 		long notify_end = System.currentTimeMillis() - notify_begin; // 这段代码放在程序执行后
- 		logger.info(updatePayStatus.getOrder_id()+"通知商品中心耗时：" + notify_end + "毫秒");
- 		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
- 		
- 		//修改订单的通知状态
- 		updatePayStatus.setNotify_status(1);
- 		updatePayStatus.setNotify_at(new Date());
- 		long update_notify_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
- 		paymentReckoningService.update(updatePayStatus);
- 		long update_notify_status_end = System.currentTimeMillis() - update_notify_status_begin; // 这段代码放在程序执行后
- 		logger.info(updatePayStatus.getOrder_id()+"修改通知状态耗时：" + update_notify_status_end + "毫秒");
- 		logger.info(String.format("update out_trade_no [%s] notify status finished.",out_trade_no));
- 		
- 		long Cache_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
- 		PaymentReckoningVTO payOrderCache = updatePaymentCache(payNotice.getOrder_id(),out_trade_no);
- 		long Cache_status_end = System.currentTimeMillis() - Cache_status_begin; // 这段代码放在程序执行后
- 		logger.info(updatePayStatus.getOrder_id()+"修改缓存状态耗时：" + Cache_status_end + "毫秒");
-		if(payOrderCache != null){
-			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrder_id()));
-		}
-		logger.info("success");
+    	try{
+
+        	
+        	Date payTime = new Date();
+    		updatePayStatus.setThird_party_code(thirdPartCode);
+    		updatePayStatus.setPay_status(1);
+    		updatePayStatus.setPaid_at(payTime);
+    		if(thridType != null){
+    			updatePayStatus.setRemark(billo);
+    			updatePayStatus.setChannel_type(thridType);
+    		}
+    		long update_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+     		paymentReckoningService.update(updatePayStatus);
+     		long update_end = System.currentTimeMillis() - update_begin; // 这段代码放在程序执行后
+     		logger.info(updatePayStatus.getOrder_id()+"修改支付状态耗时：" + update_end + "毫秒");
+     		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));
+     		
+     		//计算订单支付总耗时时间
+     		Date createdTime = updatePayStatus.getCreated_at();
+     		try{
+     			String evn = payHttpService.getEnv().toUpperCase();
+     			String channelType = updatePayStatus.getChannel_type();
+     			long between = BusinessHelper.getBetweenTimeCouse(createdTime, payTime);
+     			if(between < 60){//得0分
+     				 System.out.println(out_trade_no+"得0分");
+     			}else if (between < 120){//得1分
+     				System.out.println(out_trade_no+"得1分");
+     				innerProcessor(1,updatePayStatus.getId(),evn,channelType);
+     			}else if (between < 180){//得5分
+     				System.out.println(out_trade_no+"得5分");
+     				innerProcessor(5,updatePayStatus.getId(),evn,channelType);
+     			}else if (between < 300){//得10分
+     				System.out.println(out_trade_no+"得10分");
+     				innerProcessor(10,updatePayStatus.getId(),evn,channelType);
+     			}else if(between < 1800){//得50分
+     				System.out.println(out_trade_no+"得20分");
+     				innerProcessor(20,updatePayStatus.getId(),evn,channelType);
+     			}else {//得100分
+     				System.out.println(out_trade_no+"得30分");
+     				innerProcessor(30,updatePayStatus.getId(),evn,channelType);
+     			}
+     		}catch(Exception e){
+     			System.out.println("捕获积分系统异常:"+e.getMessage()+e.getCause());
+     		}
+     		//通知订单
+     		PaymentReckoning payNotice =  paymentReckoningService.getById(out_trade_no);
+     		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
+     		rpcn_dto.setSuccess(true);
+     		rpcn_dto.setOrderid(payNotice.getOrder_id());
+     		rpcn_dto.setPayment_type(payNotice.getPayment_type());
+     		String fmtDate = BusinessHelper.formatDate(payNotice.getPaid_at(), "yyyy-MM-dd HH:mm:ss");
+     		rpcn_dto.setPaymented_ds(fmtDate);
+     		if(thridType != null){
+     			rpcn_dto.setPayment_proxy_type(thridType);
+     		}
+     		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+     		long notify_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+     		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+     		long notify_end = System.currentTimeMillis() - notify_begin; // 这段代码放在程序执行后
+     		logger.info(updatePayStatus.getOrder_id()+"通知商品中心耗时：" + notify_end + "毫秒");
+     		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
+     		
+     		//修改订单的通知状态
+     		updatePayStatus.setNotify_status(1);
+     		updatePayStatus.setNotify_at(new Date());
+     		long update_notify_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+     		paymentReckoningService.update(updatePayStatus);
+     		long update_notify_status_end = System.currentTimeMillis() - update_notify_status_begin; // 这段代码放在程序执行后
+     		logger.info(updatePayStatus.getOrder_id()+"修改通知状态耗时：" + update_notify_status_end + "毫秒");
+     		logger.info(String.format("update out_trade_no [%s] notify status finished.",out_trade_no));
+     		
+     		long Cache_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+     		PaymentReckoningVTO payOrderCache = updatePaymentCache(payNotice.getOrder_id(),out_trade_no);
+     		long Cache_status_end = System.currentTimeMillis() - Cache_status_begin; // 这段代码放在程序执行后
+     		logger.info(updatePayStatus.getOrder_id()+"修改缓存状态耗时：" + Cache_status_end + "毫秒");
+    		if(payOrderCache != null){
+    			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrder_id()));
+    		}
+    		logger.info("success");
+    	}catch(Exception e){
+    		logger.error(String.format("update out_trade_no [%s] notify status finished.", out_trade_no));
+    		SendMailHelper.doSendMail(2,"");
+    	}
     }
     
     private void innerProcessor (int subtotal,String reckonId,String env,String channel_type){
@@ -609,6 +618,17 @@ public class PayLogicService {
  		String notify_message = JsonHelper.getJSONString(rpcn_dto);
         
  		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+	}
+
+    public void updateReckoningByThirdInfos(String recokoningId, String paymentId, String accessToken) {
+		PaymentReckoning paymentReckoning = paymentReckoningService.getById(recokoningId);
+		paymentReckoning.setToken(accessToken);
+		paymentReckoning.setRemark(paymentId);
+		paymentReckoningService.update(paymentReckoning);
+	}
+
+	public PaymentReckoning findPaymentByThirdInfo(String paymentId) {
+		return paymentReckoningService.findByThreeOrderId(paymentId);
 	}
 
 }

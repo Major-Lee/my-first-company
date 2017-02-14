@@ -43,6 +43,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -55,6 +56,7 @@ import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserSharedealDistributorViewService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
@@ -113,6 +115,9 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
+	
+	@Resource
+	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	
 	public GpathIncomeService getGpathIncomeService() {
 		return gpathIncomeService;
@@ -1499,5 +1504,8 @@ public class UserWalletFacadeService{
 		map.put("role", role);
 		return userWalletLogService.getEntityDao().getSqlSessionSlaverTemplate().
 				selectOne(UserWalletLog.class.getName()+".accountIncome", map);
+	}
+	public Map<String,Object> pageBillPlan(String startTime, String endTime, int pageNo, int pageSize) {
+		return null;
 	}
 }
