@@ -23,6 +23,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -226,7 +227,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdCommentsVTO>> userAdvertiseDetail(int uid) {
+	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid) {
 		logger.info(String.format("userAdvertiseDetail uid[%s] ",uid));
 		return advertiseUnitFacadeService.userAdvertiseDetail(uid);
 	}
