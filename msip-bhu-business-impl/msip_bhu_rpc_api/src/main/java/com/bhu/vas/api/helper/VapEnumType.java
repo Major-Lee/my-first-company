@@ -129,13 +129,13 @@ public class VapEnumType {
 				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 
 		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"Juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"Juwan pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关", //暂时改为单频
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterTU_810("TU_H810","AP810","*","M10",DUT_uRouter,"Maixu pro","uRouter 810","深圳迈旭9344双频AP（支持3g拨号）","深圳迈旭9344双频AP（支持3g拨号）",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-20\"}]}"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"Haier mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
 		uRouterTU_830("TU_H830","AP830","*","M30",DUT_uRouter,"Fuqiao mini","uRouter 830","MTK7620单频AP","MTK7620单频AP",
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 
