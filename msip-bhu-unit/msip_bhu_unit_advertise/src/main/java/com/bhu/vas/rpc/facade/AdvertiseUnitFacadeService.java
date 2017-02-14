@@ -67,7 +67,7 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
@@ -430,6 +430,7 @@ public class AdvertiseUnitFacadeService {
 					advertise.setReject_reason(msg);
 					AdvertiseTipsHashService.getInstance().adComment(advertise.getUid(), advertiseId, AdvertiseStateType.VerifyFailure.getDesc());
 					advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.VerifyFailure.getType(),msg);
+					AdvertisePortalHashService.getInstance().advertiseVerifyFailure(advertiseId, msg);
 				}
 				advertiseService.update(advertise);
 				if(state!=0 && advertise.getType() != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){//退费（个人热播暂不退费）
@@ -761,7 +762,7 @@ public class AdvertiseUnitFacadeService {
 						}else{
 							vtos = new ArrayList<AdvertiseVTO>();
 							AdvertiseVTO vto = null;
-							List<String> extparams = new ArrayList<String>();
+							List<String> adids = new ArrayList<String>();
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
@@ -791,12 +792,12 @@ public class AdvertiseUnitFacadeService {
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
-								extparams.add(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
+								adids.add(doc.getId());
 								vtos.add(vto);
 							}
-							List<String> portalPv =  AdvertisePortalStringService.getInstance().queryAdvertisePV(extparams);
-							List<String> portalAct =  AdvertisePortalStringService.getInstance().queryAdvertiseAct(extparams);
+							List<String> portalPv =  AdvertisePortalHashService.getInstance().queryAdvertisePV(adids);
+							List<String> portalAct =  AdvertisePortalHashService.getInstance().queryAdvertiseAct(adids);
 							int index = 0;
 							for(AdvertiseVTO vto1 : vtos){
 								 vto1.setAct(portalAct.get(index));
