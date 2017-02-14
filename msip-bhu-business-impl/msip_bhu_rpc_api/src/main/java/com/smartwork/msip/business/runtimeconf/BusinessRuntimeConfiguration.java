@@ -232,7 +232,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String SharedNetworkWifi_Default_WechatSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/wechat/index_before.html";
 	public static String SharedNetworkWifi_Default_Remote_portal_server_url = "uportal.bhuwifi.com:18085";//192.168.66.157:18085
 	public static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
-	public static String SharedNetworkWifi_Default_FreeAd_Url = "http://xxxxxxx/free.js";
+	public static String SharedNetworkWifi_Default_FreeAd_Url = "http://ucloud.bhuwifi.com:9158/portal/js/bhu.js";
 	
 	
 	public static String DeviceTesting_Mac_Prefix = "42:66";
