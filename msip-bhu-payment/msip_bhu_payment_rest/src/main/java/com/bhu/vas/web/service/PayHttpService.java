@@ -51,7 +51,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://upay.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/payment/getMidas";
     //重定向地址
@@ -83,14 +83,19 @@ public class PayHttpService {
     //打赏页面跳转同步通知页面路径
     public static String MIDAS_RETURN_URL = "/msip_bhu_payment_rest/payment/midasReturn";
 	
+    public static String PAYPAL_RETURN_URL = PAY_HOST_URL+"/paypalReturn";
+    
+  //打赏成功web回调地址
+    public static String WEB_RETURN_URL = "http://ucloudtest.bhuwifi.com:9158/portal/success.html?payokurl=http://bbs.bhuwifi.com/jump.php";
+    
     //打赏失败web回调地址
-    public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+//    public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
 //    public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-//    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //充值失败web回调地址
-     public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+//     public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
 //    public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-//    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
   
    //短信预警通知联系人list
    public static String Internal_level1_error_man = "18515465766,13911210204,18601267579,18910735595,13911716572,15910526881,15901090128";

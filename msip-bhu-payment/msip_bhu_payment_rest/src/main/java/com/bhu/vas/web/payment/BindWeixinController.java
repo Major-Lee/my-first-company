@@ -26,7 +26,7 @@ import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 
 /**
  * @Editor Eclipse
- * @Author Zongshuai
+ * @Author Reid
  * @CreateTime 2016年5月25日 上午10:26:53
  */
 @Controller

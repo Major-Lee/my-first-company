@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
@@ -194,6 +195,12 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 			int pageNo, int pageSize) {
 		logger.info(String.format("walletDetailPages with uid[%s] transmode[%s] transtype[%s] pn[%s] ps[%s]",uid,transmode,transtype,pageNo,pageSize));
 		return userWalletUnitFacadeService.walletDetailPages(uid, transmode, transtype, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<BillVTO>> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize) {
+		logger.info(String.format("pagebillPlanPages with startTime[%s] endTime[%s] pn[%s] ps[%s]",startTime,endTime,pageNo,pageSize));
+		return userWalletUnitFacadeService.walletbillPlanPages(startTime, endTime, pageNo, pageSize);
 	}
 	
 }

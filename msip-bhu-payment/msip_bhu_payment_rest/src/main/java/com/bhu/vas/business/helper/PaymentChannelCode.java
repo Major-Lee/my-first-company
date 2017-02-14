@@ -17,6 +17,7 @@ public enum PaymentChannelCode {
 	BHU_HEEPAY_WEIXIN("Hee", "HEWX"),
 	BHU_MIDAS_WEIXIN("Midas", "MDWX"),
 	BHU_NOW_WEIXIN("Now", "NOWX"),
+	BHU_WAP_PAYPAL("WapPayPal", "WPPP"),
 	BHU_QRCODE_WEIXIN("Qrcode", "WXSM");
 	
 	
@@ -57,6 +58,6 @@ public enum PaymentChannelCode {
     }
     
     public static void main(String[] args) {
-		System.out.println(BHU_WAP_WEIXIN.code  + ":::" + BHU_WAP_WEIXIN.i18n());
+		System.out.println(BHU_WAP_PAYPAL.code  + ":::" + BHU_WAP_PAYPAL.i18n());
 	}
 }
