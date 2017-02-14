@@ -35,8 +35,10 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -2284,6 +2286,15 @@ public class DeviceURouterRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		} catch (ElasticsearchIllegalArgumentException eiaex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
+		}
+	}
+	
+	public RpcResponseDTO<DeviceCapability> getDeviceCapability(Integer uid, String mac) {
+		try {
+			WifiDevice dev = wifiDeviceService.getById(mac);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(DeviceUnitType.getDeviceCapabilityFromVersion(dev.getOrig_swver()));
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 }

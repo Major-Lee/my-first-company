@@ -54,6 +54,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String d_distributor_type; //运营商类型
 	private String d_industry;//行业信息
 	private String d_industry_desc;
+	private String icon;//设备的图标url前缀
 	
 	public int getIndex() {
 		return index;
@@ -310,6 +311,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_industry_locale(Locale locale){
 		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry, locale);
+	}
+	public String getIcon() {
+		return icon;
+	}
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 	
 }

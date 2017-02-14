@@ -19,7 +19,9 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.helper.IndustryEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -567,6 +569,8 @@ public class DeviceRestBusinessFacadeService {
 									vto.setIndex(++startIndex);
 									BeanUtils.copyProperties(wifiDeviceDocument, vto);
 									vto.setD_industry_locale(locale);
+									DeviceCapability cap = DeviceUnitType.getDeviceCapabilityFromVersion(vto.getD_origswver());
+									vto.setIcon(cap.getIcon());
 									vtos.add(vto);
 									cursor++;
 								}

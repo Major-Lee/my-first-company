@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
@@ -716,4 +717,11 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 
 	}
 
+	@Override
+	public RpcResponseDTO<DeviceCapability> getDeviceCapability(Integer uid, String mac) {
+		logger.info(String.format("DeviceURouterRestRPC getDeviceCapability invoke uid[%s] mac[%s]", uid, mac));
+		return deviceURouterRestBusinessFacadeService.getDeviceCapability(uid, mac);
+
+	}
+	
 }

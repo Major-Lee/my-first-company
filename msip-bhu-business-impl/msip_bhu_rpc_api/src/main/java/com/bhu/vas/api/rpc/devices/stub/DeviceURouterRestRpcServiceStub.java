@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
@@ -341,4 +342,10 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	public RpcResponseDTO<Boolean> urouterUserMobilePushDestory(Integer uid) {
 		return deviceURouterRestRpcService.urouterUserMobilePushDestory(uid);
 	}
+	
+	@Override
+	public RpcResponseDTO<DeviceCapability> getDeviceCapability(Integer uid, String mac){
+		return deviceURouterRestRpcService.getDeviceCapability(uid, mac);
+	}
+
 }
