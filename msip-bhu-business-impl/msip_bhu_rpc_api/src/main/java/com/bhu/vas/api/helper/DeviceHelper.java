@@ -1004,6 +1004,8 @@ public class DeviceHelper {
 							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
 							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
 							" drop_agent=\"Apache-HttpClient/*\" " +
+							" freead=\"%s\" " +
+							" freead_url=\"%s\" " +
 							"/>"+ 
 						"</setting>"+
 					"</webportal>"+
@@ -1064,6 +1066,8 @@ public class DeviceHelper {
 							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
 							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
 							" drop_agent=\"Apache-HttpClient/*\" " +
+							" freead=\"%s\" " +
+							" freead_url=\"%s\" " +
 							"/>"+ 
 						"</setting>"+
 					"</webportal>"+

@@ -114,6 +114,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String free_ait_mobile;
 	//是否开启免费上网
 	private int isfree = 0;
+	//是否对免费上网用户插入广告
+	private int freead = 1;
 	//是否开启首次认证
 	private int firstLogin = 0;
 
@@ -172,7 +174,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			}
 		}else{
 			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
-				properties = new Object[17];
+				properties = new Object[19];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid).concat(WifiDeviceHelper.Default_Dual_Suffix);
 				properties[2] = users_tx_rate * 8;//转成大B-》小b的单位
@@ -195,8 +197,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[14] = remote_auth_url;
 				properties[15] = portal_server_url;
 				properties[16] = dns_default_ip;
+				properties[17] = getRealFreeAd();
+				properties[18] = BusinessRuntimeConfiguration.SharedNetworkWifi_Default_FreeAd_Url;
 			}else{//单频
-				properties = new Object[14];
+				properties = new Object[16];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
 				properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
@@ -216,10 +220,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[11] = remote_auth_url;
 				properties[12] = portal_server_url;
 				properties[13] = dns_default_ip;
+				properties[14] = getRealFreeAd();
+				properties[15] = BusinessRuntimeConfiguration.SharedNetworkWifi_Default_FreeAd_Url;
 			}
 		}
-		
-		
 		return properties;
 	}
 
@@ -578,6 +582,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(paramDTO.getForce_timeout() != dbDTO.getForce_timeout()) return true;
 		if(paramDTO.getMax_clients() != dbDTO.getMax_clients()) return true;
 		if(!paramDTO.getOpen_resource().equals(dbDTO.getOpen_resource())) return true;
+		if(paramDTO.getRealFreeAd() != dbDTO.getRealFreeAd()) return true;
+		
 		
 		String paramStr = paramDTO.getOpen_mac_string();
 		String dbdtoStr = dbDTO.getOpen_mac_string();
@@ -734,6 +740,15 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.open_macs = open_mac;
 	}
 	
+	public int getFreead() {
+		return freead;
+	}
+	public void setFreead(int freead) {
+		this.freead = freead;
+	}
+	public int getRealFreeAd(){
+		return (this.isfree == 1)?freead:0;
+	}
 	private String getOpen_mac_string(){
 		if(open_macs == null || open_macs.isEmpty())
 			return null;

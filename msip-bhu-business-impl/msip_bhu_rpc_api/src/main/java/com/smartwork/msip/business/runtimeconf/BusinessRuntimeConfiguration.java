@@ -164,6 +164,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	SharedNetworkWifi_Default_Remote_portal_server_url = PropertiesHelper.getString("sharednetworkwifi.default.remote.protalserverurl", paramProperties, SharedNetworkWifi_Default_Remote_portal_server_url);
         	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
         	SharedNetworksTemplateMaxLimit = PropertiesHelper.getInt("sharednetwork.template.max.limit", paramProperties, SharedNetworksTemplateMaxLimit);
+        	SharedNetworkWifi_Default_FreeAd_Url = PropertiesHelper.getString("sharednetwork.default.freead.url", paramProperties, SharedNetworkWifi_Default_FreeAd_Url);
+        	
         	
         	Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
         	Search_Result_Export_Uri = PropertiesHelper.getString("search.result.export.uri", paramProperties, Search_Result_Export_Uri);
@@ -230,6 +232,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String SharedNetworkWifi_Default_WechatSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/wechat/index_before.html";
 	public static String SharedNetworkWifi_Default_Remote_portal_server_url = "uportal.bhuwifi.com:18085";//192.168.66.157:18085
 	public static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
+	public static String SharedNetworkWifi_Default_FreeAd_Url = "http://xxxxxxx/free.js";
 	
 	
 	public static String DeviceTesting_Mac_Prefix = "42:66";
