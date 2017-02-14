@@ -32,6 +32,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -68,6 +69,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
@@ -426,6 +428,7 @@ public class AdvertiseUnitFacadeService {
 					
 					advertise.setState(AdvertiseStateType.VerifyFailure.getType());
 					advertise.setReject_reason(msg);
+					AdvertiseTipsHashService.getInstance().adComment(advertise.getUid(), advertiseId, AdvertiseStateType.VerifyFailure.getDesc());
 					advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.VerifyFailure.getType(),msg);
 				}
 				advertiseService.update(advertise);
@@ -547,13 +550,17 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		Advertise advertise=advertiseService.getById(advertiseId);
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
-
+		
+		if(advertise == null || doc == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
+		}
+		
 		if(advertise.getState() == AdvertiseStateType.OnPublish.getType()){
 			List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
 			AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
 		}
-		advertise.setState(AdvertiseStateType.OnPublish.getType());
+		advertise.setState(AdvertiseStateType.EscapeOrder.getType());
 		advertiseService.update(advertise);
 		advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.EscapeOrder.getType(),null);
 
@@ -876,12 +883,17 @@ public class AdvertiseUnitFacadeService {
 	 * @return 
 	 */
 	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score){
+		Advertise advertise = advertiseService.getById(adid);
+		if(advertise == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
+		}
 		if(uid == 2){
 			uid = vuid;
 		}
 		switch(type){
 			case 0 :
 				AdvertiseCommentSortedSetService.getInstance().AdComment(uid, adid, message);
+				AdvertiseTipsHashService.getInstance().adComment(advertise.getUid(), adid, uid+"");
 				break;
 			case 1 :
 				AdvertiseCommentSortedSetService.getInstance().AdReply(adid, score, message);
@@ -921,5 +933,18 @@ public class AdvertiseUnitFacadeService {
 			results.add(result);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
+	}
+	
+	/**
+	 * 用户广告相关
+	 * @param uid
+	 * @return 
+	 */
+	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid){
+		AdvertiseUserDetailVTO vto = new AdvertiseUserDetailVTO();
+		vto.setTips(AdvertiseTipsHashService.getInstance().fetchAdTips(uid));
+		//用户钱包余额
+		vto.setBalance(0);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 }

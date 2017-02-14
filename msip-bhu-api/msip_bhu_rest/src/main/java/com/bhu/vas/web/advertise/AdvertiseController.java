@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -371,6 +372,27 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) String[]  adids) {
 		try{
 	        RpcResponseDTO<List<AdCommentsVTO>> rpcResult = advertiseRpcService.fetchCommentDetail(adids);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/tips", method = {RequestMethod.POST})
+    public void userAdvertiseDetail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int  uid) {
+		try{
+	        RpcResponseDTO<AdvertiseUserDetailVTO> rpcResult = advertiseRpcService.userAdvertiseDetail(uid);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

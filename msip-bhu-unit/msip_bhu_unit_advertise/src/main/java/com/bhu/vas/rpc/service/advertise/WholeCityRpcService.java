@@ -224,4 +224,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info("fetchCommentDetail");
 		return advertiseUnitFacadeService.fetchCommentDetail(adids);
 	}
+	
+	@Override
+	public RpcResponseDTO<List<AdCommentsVTO>> userAdvertiseDetail(int uid) {
+		logger.info(String.format("userAdvertiseDetail uid[%s] ",uid));
+		return advertiseUnitFacadeService.userAdvertiseDetail(uid);
+	}
 }

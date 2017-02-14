@@ -9,6 +9,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -126,5 +127,7 @@ public interface IAdvertiseRpcService{
 			String message, int type, Double score);
 
 	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids);
+
+	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 
 }
