@@ -917,11 +917,6 @@ public class AdvertiseUnitFacadeService {
 		}
 		List<AdCommentsVTO> results = new ArrayList<AdCommentsVTO>();
 		for(String adid : adids){
-			System.out.println(adid);
-			Advertise advertise = advertiseService.getById(adid);
-			if(advertise == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
-			}
 			Set<Tuple> tuples = AdvertiseCommentSortedSetService.getInstance().fetchAdComments(adid);
 			List<AdCommentVTO> vtos = new ArrayList<AdCommentVTO>();
 			AdCommentsVTO result = new AdCommentsVTO();
