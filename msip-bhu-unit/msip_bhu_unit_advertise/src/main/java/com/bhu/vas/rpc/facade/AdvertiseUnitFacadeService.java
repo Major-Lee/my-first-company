@@ -18,6 +18,7 @@ import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
+import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
@@ -39,6 +40,7 @@ import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -105,6 +107,9 @@ public class AdvertiseUnitFacadeService {
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
+	@Resource
+	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
+	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
 	}
@@ -144,6 +149,9 @@ public class AdvertiseUnitFacadeService {
 			
 			AdvertiseType adType = BusinessEnumType.AdvertiseType.fromKey(type);
 			double cash = 0d;
+			
+			boolean isAdmin = userFacadeService.isAdminByUid(uid);
+			
 			switch(adType){
 				case HomeImage :
 					AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
@@ -196,13 +204,14 @@ public class AdvertiseUnitFacadeService {
 					entity.setLat(lat);
 					entity.setLon(lon);
 					entity.setDistance(distance);
+					
 					break;
 					
 				default:
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			}
 			
-			if(count==0 && !userFacadeService.isAdminByUid(uid)){
+			if(count==0 && !isAdmin){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
 			
@@ -226,7 +235,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
-			if(userFacadeService.isAdminByUid(uid)){
+			if(isAdmin){
 				entity.setUid(vuid);
 			}else{
 				entity.setUid(uid);
@@ -257,13 +266,21 @@ public class AdvertiseUnitFacadeService {
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
+			if(!isAdmin){
+				userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+			}
+			
+			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+			
+			advertiseService.update(entity);
+			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
+
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
-			if(userFacadeService.isAdminByUid(uid)){
-				//运营后台创建广告 直接发布
-				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
-			}
+			
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
 
@@ -851,6 +868,11 @@ public class AdvertiseUnitFacadeService {
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore + topScore,1);
 			
 		}else if (isRefresh){//刷新
+			
+			if(!userFacadeService.isAdminByUid(uid)){
+				userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+			}
+			
 			if(topState == 1){
 				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
 						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));

@@ -74,10 +74,7 @@ public class UserConsumptiveWalletFacadeService{
 	 */
 	private UserConsumptiveWallet userWallet(int uid){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		synchronized(lockObjectFetch(uid)){
-			UserConsumptiveWallet wallet = userConsumptiveWalletService.getOrCreateById(uid);
-			return wallet;
-		}
+		return userConsumptiveWalletService.getOrCreateById(uid);
 	}
 	
 	public String getUserCash(int uid){

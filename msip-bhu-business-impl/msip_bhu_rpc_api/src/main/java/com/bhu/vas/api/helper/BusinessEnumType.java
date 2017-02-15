@@ -425,9 +425,9 @@ public class BusinessEnumType {
 	 */
 	public enum UConsumptiveWalletTransType{
 		Recharge2C("R2C","余额充值"),
-		AdsPublish("ADP","发布传单"),
-		AdsRefresh("ADR","刷新传单"),
-		AdsStick("ADS","置顶传单"),
+		AdsPublish("ADP","发布小传单"),
+		AdsRefresh("ADR","刷新小传单"),
+		AdsStick("ADS","置顶小传单"),
 		AdsCPM("ADCPM","CPM计费"),
 		;
 		
