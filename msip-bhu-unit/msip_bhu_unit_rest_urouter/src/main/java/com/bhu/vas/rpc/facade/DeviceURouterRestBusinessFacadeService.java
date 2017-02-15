@@ -38,6 +38,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
@@ -2251,6 +2252,8 @@ public class DeviceURouterRestBusinessFacadeService {
 							userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 							userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
 							userDeviceDTO.setD_industry_locale(locale);
+							DeviceCapability cb = VapEnumType.DeviceUnitType.getDeviceCapabilityFromVersion(wifiDeviceDocument.getD_origswver());
+							userDeviceDTO.setIcon(cb.getIcon());
 							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
 								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
 								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;

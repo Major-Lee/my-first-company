@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
@@ -259,6 +260,8 @@ public class UserWifiDeviceFacadeService {
 					userDeviceDTO.setVer(wifiDevice.getOrig_swver());
 					userDeviceDTO.setWork_mode(wifiDevice.getWork_mode());
 					userDeviceDTO.setOrig_model(wifiDevice.getOrig_model());
+					DeviceCapability cb = VapEnumType.DeviceUnitType.getDeviceCapabilityFromVersion(wifiDevice.getOrig_swver());
+					userDeviceDTO.setIcon(cb.getIcon());
 				}
 				bindDevicesDTO.add(userDeviceDTO);
 			}

@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.helper.DeviceCapability;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
@@ -462,6 +463,8 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 				userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
 				userDeviceDTO.setD_industry_locale(locale);
+				DeviceCapability cb = VapEnumType.DeviceUnitType.getDeviceCapabilityFromVersion(wifiDeviceDocument.getD_origswver());
+				userDeviceDTO.setIcon(cb.getIcon());
 				if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 				} else {
@@ -523,6 +526,8 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 							userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
 							userDeviceDTO.setD_industry_locale(locale);
+							DeviceCapability cb = VapEnumType.DeviceUnitType.getDeviceCapabilityFromVersion(wifiDeviceDocument.getD_origswver());
+							userDeviceDTO.setIcon(cb.getIcon());
 							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
 								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
 								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;

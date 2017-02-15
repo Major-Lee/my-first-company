@@ -54,9 +54,18 @@ public class UserDeviceDTO implements Serializable {
     private String d_distributor_type;//运营商类型
     private String d_industry;//行业信息
     private String d_industry_desc;//行业信息
+    private String icon;//设备类型对应的图标
 
     
-    public String getD_industry_desc() {
+    public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public String getD_industry_desc() {
     	return d_industry_desc;
 	}
 
