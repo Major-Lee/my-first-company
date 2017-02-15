@@ -954,7 +954,7 @@ public class AdvertiseUnitFacadeService {
 				vto.setTime(tuple.getScore());
 				vtos.add(vto);
 			}
-			if(vtos.size() > ps){
+			if(vtos.size() > ps*(pn+1)){
 				result.setSign(true);
 			}
 			result.setAdid(adid);
