@@ -62,8 +62,8 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = true) String distributor_type,
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
-            @RequestParam(required = true,value = "cbto",defaultValue="true") boolean canbeturnoff,
-            @RequestParam(required = false,value = "noapp",defaultValue="false") boolean noapp,
+            @RequestParam(required = true,value = "cbto") String canbeturnoffstr,
+            @RequestParam(required = false,value = "noapp") String noappstr,
             @RequestParam(required = true,value = "percent") String owner_percent,
             @RequestParam(required = true,value = "percent_m") String manufacturer_percent,
             @RequestParam(required = true,value = "percent_d") String distributor_percent,
@@ -81,6 +81,9 @@ public class OperatorImportController extends BaseController{
 		}
 
         try{
+        	Boolean canbeturnoff = null;
+        	Boolean noapp = null;
+        	
         	if(StringUtils.isEmpty(sns) || StringUtils.isEmpty(opsid)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY);
         	}
@@ -106,7 +109,13 @@ public class OperatorImportController extends BaseController{
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
 
-        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, distributor_l2, distributor_type,
+    		if(StringUtils.isNotEmpty(canbeturnoffstr))
+    			canbeturnoff = Boolean.valueOf(canbeturnoffstr);
+    		
+    		if(StringUtils.isNotEmpty(noappstr))
+    			noapp = Boolean.valueOf(noappstr);
+
+    		RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, distributor_l2, distributor_type,
         			sellor,
         			partner,
         			canbeturnoff, noapp,

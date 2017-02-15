@@ -76,8 +76,8 @@ public class ChargingFacadeService {
     public BatchImportVTO doBatchImportCreate(int uid,
     		int countrycode,String mobileno, int distributor_uid,
     		String sellor,String partner,
-    		boolean canbeturnoff,
-    		boolean noapp,
+    		Boolean canbeturnoff,
+    		Boolean noapp,
     		boolean enterpriselevel,
     		boolean customized,
     		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
@@ -165,7 +165,7 @@ public class ChargingFacadeService {
     public BatchImportVTO doOpsBatchImportCreate(int uid, String opsid,
     		int countrycode,String mobileno, int distributor_uid, int distributor_l2_uid, String distributor_type,
     		String sellor,String partner,
-    		boolean canbeturnoff, boolean noapp,
+    		Boolean canbeturnoff, Boolean noapp,
     		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, String sharedeal_distributor_l2_percent,
 			String channel_lv1, String channel_lv2,
     		String remark){
@@ -566,10 +566,10 @@ public class ChargingFacadeService {
 //			}
 		}
 		if(canbeturnoff != null){
-			configs.setCanbe_turnoff(canbeturnoff.booleanValue());
+			configs.setCanbe_turnoff(canbeturnoff);
 		}
 		if(noapp != null){
-			configs.setNoapp(noapp.booleanValue());
+			configs.setNoapp(noapp);
 		}
 		if(enterpriselevel != null){
 			configs.setEnterpriselevel(enterpriselevel.booleanValue());
