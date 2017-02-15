@@ -74,6 +74,7 @@ public class UserRegisterOp {
 		UserService userService = (UserService)ctx.getBean("userService");
 		UserTokenService userTokenService = (UserTokenService)ctx.getBean("userTokenService");
 		UserFacadeService userFacadeService = (UserFacadeService)ctx.getBean("userFacadeService");
+
 		
 		int id = Integer.parseInt(argv[1]);
 		String acc = argv[2];
@@ -97,10 +98,12 @@ public class UserRegisterOp {
 				User byId = userService.getById(uid);
 				if(byId != null){
 					System.out.println(String.format("acc[%s] 已经被注册，请换个号码！", acc));
+					System.exit(0);
 					return;
 				}else{
 					UniqueFacadeService.removeByMobileno(86, acc);
 					System.out.println(String.format("acc[%s] 记录被移除！", acc));
+					System.exit(0);
 					return;
 				}
 			}
@@ -113,7 +116,8 @@ public class UserRegisterOp {
 			if(StringUtils.isNotEmpty(nick)){
 				//判定nick是否已经存在
 				if(UniqueFacadeService.checkNickExist(nick)){
-					System.out.println("选用的nick已经被别人使用了，请换个nick！");
+					System.out.println(String.format("选用的nick [%s]已经被别人使用了，请换个nick！", nick));
+					System.exit(0);
 					return;
 				}else{
 					user.setNick(nick);
@@ -145,7 +149,8 @@ public class UserRegisterOp {
 			if(StringUtils.isNotEmpty(nick)){
 				//判定nick是否已经存在
 				if(UniqueFacadeService.checkNickExist(nick)){
-					System.out.println("选用的nick已经被别人使用了，请换个nick！");
+					System.out.println(String.format("选用的nick [%s]已经被别人使用了，请换个nick！", nick));
+					System.exit(0);
 					return;
 				}
 			}
@@ -180,5 +185,6 @@ public class UserRegisterOp {
 			}
 			System.out.println(String.format("RemoveAndADD[id:%s mobileno:%s nick:%s] successfully!", user.getId(),user.getMobileno(),user.getNick()));
 		}
+		System.exit(0);
 	}
 }
