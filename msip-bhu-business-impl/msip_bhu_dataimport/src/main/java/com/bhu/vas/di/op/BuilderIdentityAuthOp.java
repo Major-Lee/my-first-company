@@ -30,7 +30,6 @@ public class BuilderIdentityAuthOp {
 		System.out.println("insert start...");
 		for(Order order : orders){
 			UserIdentityAuth auth = new UserIdentityAuth();
-			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			auth.setId(order.getUmac());
 			auth.setMobileno(order.getContext());
 			if(userIdentityAuthService.getById(auth.getId()) == null){
