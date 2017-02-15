@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.alibaba.dubbo.container.page.PageHandler;
 import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
@@ -53,6 +54,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -911,7 +913,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param adid
 	 * @return
 	 */
-	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids){
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids,int pn,int ps){
 		if(adids == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 		}
@@ -926,7 +928,7 @@ public class AdvertiseUnitFacadeService {
 				vtos.add(vto);
 			}
 			result.setAdid(adid);
-			result.setComments(vtos);
+			result.setComments(PageHelper.pageList(vtos, pn, ps));
 			results.add(result);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
