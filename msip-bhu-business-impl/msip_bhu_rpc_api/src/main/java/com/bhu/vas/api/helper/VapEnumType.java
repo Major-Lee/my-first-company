@@ -136,8 +136,14 @@ public class VapEnumType {
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-27\"}]}"),
 		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"Haier mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP",
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
+		uRouterTU_821("TU_H821","AP821","*","M21",DUT_uRouter,"SJBY pro","uRouter 821","世纪本原FW7628A(MT7628A+MT7612E)双频","世纪本原FW7628A(MT7628A+MT7612E)双频",
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-18\"}]}"),
 		uRouterTU_830("TU_H830","AP830","*","M30",DUT_uRouter,"Fuqiao mini","uRouter 830","MTK7620单频AP","MTK7620单频AP",
-				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
+		uRouterTU_840("TU_H840","AP840","*","M40",DUT_uRouter,"MYB mini","uRouter 840","蚂蚁帮A5 MT7628N","蚂蚁帮A5 MT7628N",
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
+		uRouterTU_841("TU_H841","AP841","*","M41",DUT_uRouter,"MYB mini pro","uRouter 841","蚂蚁帮A6 MT7628AN+MT7612E","蚂蚁帮A6 MT7628AN+MT7612E",
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-18\"}]}"),
 
 		
 		
@@ -438,7 +444,10 @@ public class VapEnumType {
 					|| prefix.equals(uRouterTU_802.getPrefix()) 
 					|| prefix.equals(uRouterTU_810.getPrefix()) 
 					|| prefix.equals(uRouterTU_820.getPrefix()) 
+					|| prefix.equals(uRouterTU_821.getPrefix()) 
 					|| prefix.equals(uRouterTU_830.getPrefix())
+					|| prefix.equals(uRouterTU_840.getPrefix())
+					|| prefix.equals(uRouterTU_841.getPrefix())
 					|| prefix.equals(uRouterMiniTU_NSL_901.getPrefix())) && type.equals(uRouterRoot.getIndex())){
 				return true;
 			}
@@ -460,6 +469,8 @@ public class VapEnumType {
 					|| MassAP_AC_Pro_305.getPrefix().equals(prefix)
 //					|| uRouterTU_802.getPrefix().equals(prefix)
 					|| uRouterTU_810.getPrefix().equals(prefix)
+					|| uRouterTU_821.getPrefix().equals(prefix)
+					|| uRouterTU_841.getPrefix().equals(prefix)
 					){
 				return true;
 			}
@@ -474,6 +485,8 @@ public class VapEnumType {
 					|| orig_swver.startsWith(MassAP_AC_Pro_305.getPrefix())
 //					|| orig_swver.startsWith(uRouterTU_802.getPrefix())
 					|| orig_swver.startsWith(uRouterTU_810.getPrefix())
+					|| orig_swver.startsWith(uRouterTU_821.getPrefix())
+					|| orig_swver.startsWith(uRouterTU_841.getPrefix())
 					){
 				return true;
 			}
