@@ -53,6 +53,10 @@ public class AdvertiseCommentSortedSetService extends AbstractRelationSortedSetC
 		this.zadd(generateKey(adid), score,JsonHelper.getJSONString(dto));
 	}
 	
+	public Long AdCommentCount(String adid){
+		return this.zcard(generateKey(adid));
+	}
+	
 	public Set<Tuple> fetchAdComments(String adid){
 		return this.zrevrangeWithScores(generateKey(adid), 0, -1);
 	}

@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -9,8 +12,11 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.procedure.ConsumptiveWalletInOrOutProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWallet;
 import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 
 /**
  * @author fengshibo
@@ -25,6 +31,17 @@ public class UserConsumptiveWalletFacadeService{
 	@Resource
 	private UserService userService;
 	
+	private Map<String,String> lockMap = new HashMap<>();
+	
+	private synchronized String lockObjectFetch(int uid){
+		String lockKey = String.valueOf(uid);
+		if(!lockMap.containsKey(lockKey)){
+			lockMap.put(lockKey, lockKey);
+			return lockKey;
+		}else{
+			return lockMap.get(lockKey);
+		}
+	}
 	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
 				transMode, transType,
@@ -32,6 +49,9 @@ public class UserConsumptiveWalletFacadeService{
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
 		if(executeRet == 0){
 			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
+					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
+		}else if(executeRet == 1){
+			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
 		}else{
 			logger.info( String.format("消费者钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
@@ -44,6 +64,22 @@ public class UserConsumptiveWalletFacadeService{
 		logger.info(String.format("userPurchaseGoods uid[%s] orderid[%s] cash[%s] transType[%s] desc[%s] memo[%s].", uid, orderid, cash, transType, desc, memo));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		return userConsumptiveWalletInOutWithProcedure(uid, orderid,UConsumptiveWalletTransMode.CashPayment, transType, cash, cash,desc, memo);
+	}
+	
+	
+	/**
+	 * 对于同一uid进行synchronized操作
+	 * @param uid
+	 * @return
+	 */
+	private UserConsumptiveWallet userWallet(int uid){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		return userConsumptiveWalletService.getOrCreateById(uid);
+	}
+	
+	public String getUserCash(int uid){
+		UserConsumptiveWallet userWallet = userWallet(uid);
+		return ArithHelper.longCurrencyToDouble(userWallet.getCash(), BusinessRuntimeConfiguration.WalletDataBaseDegree)+"";
 	}
 	
 }

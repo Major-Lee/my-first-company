@@ -1,7 +1,10 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.advertise;
 
+import java.util.List;
+
 import redis.clients.jedis.JedisPool;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseCPMDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -21,8 +24,12 @@ public class AdvertiseCPMListService  extends AbstractRelationListCache{
         return ServiceHolder.instance;
     }
     
-    public void AdCPMPosh(String adid){
-    	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, adid);
+    public void AdCPMPosh(List<String> adids){
+    	for(String adid : adids){
+        	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
+        	dto.setAdid(adid);
+        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, adid);
+    	}
     }
     
     public String AdCPMNotify(){
