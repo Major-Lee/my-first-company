@@ -795,6 +795,7 @@ public class AdvertiseUnitFacadeService {
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
+								vto.setTop(doc.getA_score() > 100000000000000L? 1:0);
 								adids.add(doc.getId());
 								vtos.add(vto);
 							}
@@ -988,6 +989,7 @@ public class AdvertiseUnitFacadeService {
 						vto.setImage(doc.getA_image());
 						vto.setExtparams(doc.getA_extparams());
 						vto.setReject_reason(doc.getA_reject_reason());
+						vto.setTop(doc.getA_score() > 100000000000000L? 1:0);
 						adids.add(doc.getId());
 						vtos.add(vto);
 					}
