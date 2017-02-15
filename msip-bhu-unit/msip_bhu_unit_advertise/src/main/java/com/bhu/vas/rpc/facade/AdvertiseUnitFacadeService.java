@@ -911,12 +911,13 @@ public class AdvertiseUnitFacadeService {
 	 * @param adid
 	 * @return
 	 */
-	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids){
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids){
 		if(adids == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 		}
 		List<AdCommentsVTO> results = new ArrayList<AdCommentsVTO>();
 		for(String adid : adids){
+			System.out.println(adid);
 			Advertise advertise = advertiseService.getById(adid);
 			if(advertise == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);

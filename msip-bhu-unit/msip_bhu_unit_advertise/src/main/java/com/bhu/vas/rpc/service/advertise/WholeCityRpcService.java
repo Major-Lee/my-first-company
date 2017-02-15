@@ -221,7 +221,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids) {
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids) {
 		logger.info("fetchCommentDetail");
 		return advertiseUnitFacadeService.fetchCommentDetail(adids);
 	}

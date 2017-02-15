@@ -126,7 +126,7 @@ public interface IAdvertiseRpcService{
 	public RpcResponseDTO<Boolean> advertiseComment(int uid,Integer vuid, String adid,
 			String message, int type, Double score);
 
-	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids);
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids);
 
 	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 

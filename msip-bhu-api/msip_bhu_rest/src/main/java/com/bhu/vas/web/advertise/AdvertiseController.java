@@ -369,7 +369,7 @@ public class AdvertiseController extends BaseController{
     public void fetchCommentDetail(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) String[]  adids) {
+            @RequestParam(required = true) String[] adids) {
 		try{
 	        RpcResponseDTO<List<AdCommentsVTO>> rpcResult = advertiseRpcService.fetchCommentDetail(adids);
 			if(!rpcResult.hasError()){
