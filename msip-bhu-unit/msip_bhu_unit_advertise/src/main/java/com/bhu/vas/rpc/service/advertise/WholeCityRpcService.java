@@ -27,6 +27,8 @@ import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -221,9 +223,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids) {
-		logger.info("fetchCommentDetail");
-		return advertiseUnitFacadeService.fetchCommentDetail(adids);
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids,int pn,int ps) {
+		logger.info(String.format("fetchCommentDetail adids[%s], pn[%s] ps[%s]" ,StringHelper.toString(adids),pn,ps ));
+		return advertiseUnitFacadeService.fetchCommentDetail(adids,pn,ps);
 	}
 	
 	@Override

@@ -369,9 +369,11 @@ public class AdvertiseController extends BaseController{
     public void fetchCommentDetail(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) String[] adids) {
+            @RequestParam(required = true) String[] adids,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		try{
-	        RpcResponseDTO<List<AdCommentsVTO>> rpcResult = advertiseRpcService.fetchCommentDetail(adids);
+	        RpcResponseDTO<List<AdCommentsVTO>> rpcResult = advertiseRpcService.fetchCommentDetail(adids,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

@@ -16,9 +16,6 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 public class UserConsumptiveWallet extends BaseIntModel{// implements ISequenceGenable,TableSplitable<Integer>{
 	
 	public static final int Default_WalletUID_WhenUIDNotExist = 1;
-	//支付密码
-	private String password;
-	private String plainpwd;
 	//现金零钱
 	private long cash = 0;
 	
@@ -37,30 +34,9 @@ public class UserConsumptiveWallet extends BaseIntModel{// implements ISequenceG
 		if (this.created_at == null) {
 			this.created_at = new Date();
 		}
-		
-		if(StringUtils.isNotEmpty(this.plainpwd) && StringUtils.isEmpty(this.password))
-			this.password = BCryptHelper.hashpw(plainpwd, BCryptHelper.gensalt());//DigestHelper.md5ToHex(this.plainpwd);
 		super.preInsert();
 	}
 	
-	@Override
-	public void preUpdate() {
-		if(StringUtils.isNotEmpty(this.plainpwd) && StringUtils.isEmpty(this.password))
-			this.password = BCryptHelper.hashpw(plainpwd, BCryptHelper.gensalt());//DigestHelper.md5ToHex(this.plainpwd);
-		super.preUpdate();
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getPlainpwd() {
-		return plainpwd;
-	}
-	public void setPlainpwd(String plainpwd) {
-		this.plainpwd = plainpwd;
-	}
 	public Date getCreated_at() {
 		return created_at;
 	}
