@@ -520,6 +520,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String BhuToGomeReportGid = "bffrfg";
 	public static String GomeApiUrl = "";
 	public static int GomeDistributorId = 0;
+	public static int WalletDataBaseDegree = 4;
 	
 	/**
 	 * 判断是否是console用户

@@ -416,6 +416,104 @@ public class BusinessEnumType {
 		}
 	}
 	
+	/**
+	 * 用户消费钱包里的余额进行消费或者充值的类型定义
+	 * @author fengshibo
+	 * Recharge 充值
+	 * Cash 余额（供用户消费使用）
+	 * Spend 消费
+	 */
+	public enum UConsumptiveWalletTransType{
+		Recharge2C("R2C","余额充值"),
+		PurchaseAdvertiseServiceUsedC("PASC","余额购买小传单服务"),
+		;
+		
+		private String key;
+		private String name;
+		static Map<String, UConsumptiveWalletTransType> allWalletTransTypes;
+		
+		private UConsumptiveWalletTransType(String key,String name){
+			this.key = key;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public static UConsumptiveWalletTransType fromKey(String key){
+			return allWalletTransTypes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allWalletTransTypes.containsKey(key);
+		}
+		
+		static {
+			allWalletTransTypes = new HashMap<String, UConsumptiveWalletTransType>();
+			UConsumptiveWalletTransType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (UConsumptiveWalletTransType type : types){
+				allWalletTransTypes.put(type.getKey(), type);
+			}
+		}
+	}
+	
+	
+	/**
+	 * 交易模式定义
+	 * @author fengshibo
+	 *
+	*/
+	public enum UConsumptiveWalletTransMode{
+		RealMoneyPayment("RMP","现金支付"),
+		CashPayment("CAP","余额支付")
+		;
+		private String key;
+		private String name;
+		static Map<String, UConsumptiveWalletTransMode> allWalletTransModes;
+			
+		private UConsumptiveWalletTransMode(String key,String name){
+			this.key = key;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+			
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public static UConsumptiveWalletTransMode fromKey(String key){
+			return allWalletTransModes.get(key);
+		}
+			
+		public static boolean supported(String key){
+			return allWalletTransModes.containsKey(key);
+		}
+			
+		static {
+			allWalletTransModes = new HashMap<String, UConsumptiveWalletTransMode>();
+			UConsumptiveWalletTransMode[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (UConsumptiveWalletTransMode type : types){
+				allWalletTransModes.put(type.getKey(), type);
+			}
+		}
+	}
+	
 	//订单基本状态
 	public enum OrderStatus{
 		//Pending(0,"订单原始状态","生成订单最原始的状态"),

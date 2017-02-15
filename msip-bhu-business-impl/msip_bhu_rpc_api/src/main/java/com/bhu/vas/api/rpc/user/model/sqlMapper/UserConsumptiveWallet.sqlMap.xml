@@ -6,7 +6,6 @@
 
   <resultMap id="modelResult" type="userConsumptiveWallet">
     <id property="id" column="id"/>
-    <result property="password" column="password"/>
     <result property="cash" column="cash"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -20,7 +19,6 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	password,
 	    	cash,
 	    	created_at,
 	    	updated_at,
@@ -28,7 +26,6 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	password,
 	    	cash,
 	    	created_at,
 	    	updated_at,
@@ -37,14 +34,12 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{password},
 	    	#{cash},
 	    	#{created_at},
 	    	#{updated_at},
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	password = #{password},
 	    	cash = #{cash},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
