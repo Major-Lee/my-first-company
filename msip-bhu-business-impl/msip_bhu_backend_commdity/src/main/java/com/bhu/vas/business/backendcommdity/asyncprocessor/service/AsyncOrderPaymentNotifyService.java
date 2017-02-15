@@ -220,7 +220,7 @@ public class AsyncOrderPaymentNotifyService{
 				rewardOrderReceiptHandle(order, rpcn_dto);
 				break;
 			case BHU_PREPAID_BUSINESS:
-				if(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory() == order.getType()){
+				if(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory().equals(order.getType())){
 					orderFacadeService.orderPaymentFinishedDontDeliver(rpcn_dto.isSuccess(), order, rpcn_dto.getPaymented_ds(), 
 							rpcn_dto.getPayment_type(), rpcn_dto.getPayment_proxy_type());
 					if(rpcn_dto.isSuccess()){

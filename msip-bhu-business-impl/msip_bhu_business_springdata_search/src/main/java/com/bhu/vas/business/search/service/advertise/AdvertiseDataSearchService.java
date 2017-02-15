@@ -11,6 +11,8 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.core.field.FieldDefine;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.bhu.vas.business.search.repository.advertise.AdvertiseDocumentRepository;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 
@@ -52,5 +54,10 @@ public class AdvertiseDataSearchService extends AbstractDataSearchConditionServi
 			return 0L;
 		}
 		return super.searchCountByConditionMessage(scm);
+	}
+	
+	public Page<AdvertiseDocument> searchPageByCreated(){
+		SearchConditionMessage scm = AdvertiseSearchMessageBuilder.builderSearchMessageByCreated();
+		return super.searchByConditionMessage(scm, 0, 2);
 	}
 }

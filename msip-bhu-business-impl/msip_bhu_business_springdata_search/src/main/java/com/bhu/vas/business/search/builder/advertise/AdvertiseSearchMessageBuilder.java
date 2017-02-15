@@ -2,6 +2,7 @@ package com.bhu.vas.business.search.builder.advertise;
 
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
@@ -40,4 +41,22 @@ public class AdvertiseSearchMessageBuilder {
 		
 		return scm;
 	}
+	
+	public static SearchConditionMessage builderSearchMessageByCreated(){
+
+		SearchCondition sc_a_state = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_STATE.getName(),  SearchConditionPattern.StringEqual.getPattern(), BusinessEnumType.AdvertiseStateType.OnPublish.getType()+"");
+		
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_a_state);
+		
+		SearchConditionSort sc_sortByCreated = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
+				Field.A_CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		scm.addSorts(sc_sortByCreated);
+		
+		return scm;
+	}
+	
 }

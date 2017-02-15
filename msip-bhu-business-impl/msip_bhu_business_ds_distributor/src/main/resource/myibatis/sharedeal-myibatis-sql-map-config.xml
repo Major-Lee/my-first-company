@@ -21,11 +21,11 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="paymentAlipaylocation" type="com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation" />
+		<typeAlias alias="distributorWalletLog" type="com.bhu.vas.api.rpc.distributor.model.DistributorWalletLog" />
 	</typeAliases>
 
 	<mappers>
-		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentAlipaylocation.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/distributor/model/sqlMapper/DistributorWalletLog.sqlMap.xml" />
 	</mappers>
 
 </configuration>
