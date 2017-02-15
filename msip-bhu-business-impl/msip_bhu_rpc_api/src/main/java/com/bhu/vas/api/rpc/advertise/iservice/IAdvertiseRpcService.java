@@ -35,7 +35,7 @@ public interface IAdvertiseRpcService{
 	 */
 	public 	RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid, Integer vuid,String adid, int tag, int type, String image, String url,
 			String domain, String province, String city, String district,double lat, double lon, String distance, String description,
-			String title, long start, long end, String extparams)throws ParseException;
+			String title, long start, long end, boolean isTop,String extparams)throws ParseException;
 
 	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(
 			int uid ,int type, String province, String city ,String district);

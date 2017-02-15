@@ -34,9 +34,10 @@ public class AdvertiseCommentSortedSetService extends AbstractRelationSortedSetC
         return sb.toString();
     }
 	
-	public void AdComment(int uid ,String adid,String comment){
+	public void AdComment(int uid,String nick ,String adid,String comment){
 		AdCommentDTO dto = new AdCommentDTO();
 		dto.setUid(uid);
+		dto.setNick(nick);
 		dto.setComment(comment);
 		this.zadd(generateKey(adid),Double.parseDouble(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)) ,JsonHelper.getJSONString(dto));
 	}

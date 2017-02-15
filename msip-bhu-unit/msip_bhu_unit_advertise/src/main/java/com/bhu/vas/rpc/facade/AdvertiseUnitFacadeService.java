@@ -138,7 +138,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid,int tag,
 			int type,String image, String url,String domain, String province, String city,
-			String district,double lat,double lon,String distance,String description,String title, long start, long end,String extparams) throws ParseException {
+			String district,double lat,double lon,String distance,String description,String title, long start, long end,boolean isTop,String extparams) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -266,20 +266,22 @@ public class AdvertiseUnitFacadeService {
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
-			if(!isAdmin){
-				userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
-			}
-			
-			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
-			
-			advertiseService.update(entity);
-			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
+//			if(!isAdmin){
+//				int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+//			}
+//			
+//			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+//			
+//			advertiseService.update(entity);
+//			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
 
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
 			
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			if(isAdmin){
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			}
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
@@ -917,9 +919,10 @@ public class AdvertiseUnitFacadeService {
 		if(uid == 2){
 			uid = vuid;
 		}
+		User user = userService.getById(uid);
 		switch(type){
 			case 0 :
-				AdvertiseCommentSortedSetService.getInstance().AdComment(uid, adid, message);
+				AdvertiseCommentSortedSetService.getInstance().AdComment(uid,user.getNick(), adid, message);
 				AdvertiseTipsHashService.getInstance().adComment(advertise.getUid(), adid, uid+"");
 				break;
 			case 1 :
@@ -951,8 +954,12 @@ public class AdvertiseUnitFacadeService {
 				vto.setTime(tuple.getScore());
 				vtos.add(vto);
 			}
+			if(vtos.size() > ps){
+				result.setSign(true);
+			}
 			result.setAdid(adid);
 			result.setComments(PageHelper.pageList(vtos, pn, ps));
+			result.setComment_sum(vtos.size());
 			results.add(result);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);

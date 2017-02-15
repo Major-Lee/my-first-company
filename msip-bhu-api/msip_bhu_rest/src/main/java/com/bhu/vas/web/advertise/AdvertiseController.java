@@ -65,11 +65,12 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) String title,
             @RequestParam(required = true) long start,
             @RequestParam(required = true) long end,
+            @RequestParam(required = false,defaultValue = "false") boolean isTop,
             @RequestParam(required = false) String extparams
             ) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid,vuid,adid,tag,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,extparams);
+					    (uid,vuid,adid,tag,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,isTop,extparams);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{
