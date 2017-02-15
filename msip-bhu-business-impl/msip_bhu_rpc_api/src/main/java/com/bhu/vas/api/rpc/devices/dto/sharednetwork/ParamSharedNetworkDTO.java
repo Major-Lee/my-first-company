@@ -197,7 +197,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[14] = remote_auth_url;
 				properties[15] = portal_server_url;
 				properties[16] = dns_default_ip;
-				properties[17] = getRealFreeAd();
+				properties[17] = (getRealFreeAd() == 1)?WifiDeviceHelper.Enable:WifiDeviceHelper.Disable;
 				properties[18] = BusinessRuntimeConfiguration.SharedNetworkWifi_Default_FreeAd_Url;
 			}else{//单频
 				properties = new Object[16];
@@ -220,7 +220,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[11] = remote_auth_url;
 				properties[12] = portal_server_url;
 				properties[13] = dns_default_ip;
-				properties[14] = getRealFreeAd();
+				properties[14] = (getRealFreeAd() == 1)?WifiDeviceHelper.Enable:WifiDeviceHelper.Disable;
 				properties[15] = BusinessRuntimeConfiguration.SharedNetworkWifi_Default_FreeAd_Url;
 			}
 		}

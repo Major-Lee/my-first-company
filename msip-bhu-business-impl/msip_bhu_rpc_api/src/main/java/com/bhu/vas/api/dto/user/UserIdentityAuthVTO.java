@@ -3,7 +3,6 @@ package com.bhu.vas.api.dto.user;
 @SuppressWarnings("serial")
 public class UserIdentityAuthVTO implements java.io.Serializable{
 	private String mobileno;
-	private String created_at;
 	private boolean isAuthorize;
 	private Integer uid;
 	private String nick;
@@ -14,12 +13,6 @@ public class UserIdentityAuthVTO implements java.io.Serializable{
 	}
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
-	}
-	public String getCreated_at() {
-		return created_at;
-	}
-	public void setCreated_at(String created_at) {
-		this.created_at = created_at;
 	}
 	public boolean isAuthorize() {
 		return isAuthorize;
