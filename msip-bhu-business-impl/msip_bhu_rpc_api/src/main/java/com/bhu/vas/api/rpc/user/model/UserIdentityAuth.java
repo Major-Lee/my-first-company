@@ -12,8 +12,17 @@ public class UserIdentityAuth extends BaseStringModel {
 	private String mobileno;
 	private String created_at;
 	private boolean isAuthorize;
+	private Integer uid;
 
 
+
+	public Integer getUid() {
+		return uid;
+	}
+
+	public void setUid(Integer uid) {
+		this.uid = uid;
+	}
 
 	public boolean isAuthorize() {
 		return isAuthorize;

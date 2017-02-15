@@ -38,6 +38,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresen
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
+import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -110,6 +111,11 @@ public class UserUnitFacadeService {
 	
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
+	
+	@Resource
+	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
+
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -1088,6 +1094,23 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	
+	
+	public RpcResponseDTO<Boolean> updateLoginDevice(int uid, int countrycode, String acc, String mac){
+		try {
+			userIdentityAuthFacadeService.updateLoginDevice(uid, countrycode, acc, mac);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 	
 	public static void main(String[] args) {
 //		Date date = new Date();  

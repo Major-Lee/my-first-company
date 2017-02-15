@@ -23,4 +23,19 @@ public class UserIdentityAuthFacadeService {
 		 }
 		 return mobileno;
 	}
+	
+	public void updateLoginDevice(int uid, int countrycode, String acc, String mac){
+		 UserIdentityAuth auth = userIdentityAuthService.getById(mac);
+		 if(auth == null){
+			 auth = new UserIdentityAuth();
+			 auth.setId(mac);
+			 auth.setUid(uid);
+			 auth.setMobileno(String.format("%s %s",  countrycode, acc));
+			 userIdentityAuthService.insert(auth);
+		 } else {
+			 auth.setUid(uid);
+			 auth.setMobileno(String.format("%s %s",  countrycode, acc));
+			 userIdentityAuthService.update(auth);
+		 }
+	}
 }

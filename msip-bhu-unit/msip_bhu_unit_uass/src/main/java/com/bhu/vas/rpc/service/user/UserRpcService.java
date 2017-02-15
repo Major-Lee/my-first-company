@@ -190,4 +190,9 @@ public class UserRpcService implements IUserRpcService{
 		return userUnitFacadeService.UsersStatistics(uid,time);
 	}
 	
+	@Override
+	public RpcResponseDTO<Boolean> updateLoginDevice(int uid, int countrycode, String acc, String mac){
+		return userUnitFacadeService.updateLoginDevice(uid, countrycode, acc, mac);
+	}
+
 }

@@ -202,4 +202,6 @@ public interface IUserRpcService {
 	RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,
 			int countrycode, String acc);
 
+	RpcResponseDTO<Boolean> updateLoginDevice(int uid, int countrycode, String acc, String mac);
+
 }

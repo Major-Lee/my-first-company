@@ -6,22 +6,23 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import sun.nio.cs.ext.MacHebrew;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.user.UserIdentityAuthVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -38,7 +39,10 @@ public class UserCaptchaCodeUnitFacadeService {
 	private UserCaptchaCodeService userCaptchaCodeService;
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
-	
+
+	@Resource
+	private UserService userService;
+
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
@@ -196,10 +200,19 @@ public class UserCaptchaCodeUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<UserIdentityAuth> validateIdentity(String hdmac){
+	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac){
 		try {
+			UserIdentityAuthVTO authVto = null;
 			UserIdentityAuth auth = userIdentityAuthService.validateIdentity(hdmac);
-			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(auth);
+			if(auth != null){
+				authVto = new UserIdentityAuthVTO();
+				BeanUtils.copyProperties(auth, authVto);
+				if(authVto.getUid() != null){
+					User user = userService.getById(authVto.getUid());
+					authVto.setNick(user.getNick());
+				}
+			}
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(authVto);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
 		} 

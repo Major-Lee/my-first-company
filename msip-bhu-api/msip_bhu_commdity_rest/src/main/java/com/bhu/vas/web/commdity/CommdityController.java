@@ -16,12 +16,12 @@ import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.CommditySaasAmountDTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
+import com.bhu.vas.api.dto.user.UserIdentityAuthVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
@@ -179,7 +179,7 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = false, defaultValue = "0") Integer channel
 			) {
 		
-		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase());
+		RpcResponseDTO<UserIdentityAuthVTO> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase());
 		if(!rpcResult.hasError()){
 			if(rpcResult.getPayload().isAuthorize()){
 				String user_agent = request.getHeader("User-Agent");

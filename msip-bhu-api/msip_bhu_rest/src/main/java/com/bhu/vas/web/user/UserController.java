@@ -341,4 +341,21 @@ public class UserController extends BaseController{
     		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
+	
+	
+	@ResponseBody()
+    @RequestMapping(value="/update_login_device", method={RequestMethod.POST})
+    public void updateLoginDevice(HttpServletRequest request, HttpServletResponse response, 
+    		@RequestParam(required = true) int uid,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+    		@RequestParam(required = true) String mac){
+    	RpcResponseDTO<Boolean> rpcResult = userRpcService.updateLoginDevice(uid, countrycode, acc, mac);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+    	}
+    }
+
 }

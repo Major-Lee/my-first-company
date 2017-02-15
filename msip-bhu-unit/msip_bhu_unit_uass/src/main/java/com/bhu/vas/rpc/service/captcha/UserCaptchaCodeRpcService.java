@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.user.UserIdentityAuthVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.rpc.facade.UserCaptchaCodeUnitFacadeService;
 
 @Service("userCaptchaCodeRpcService")
@@ -39,7 +39,7 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<UserIdentityAuth> validateIdentity(String hdmac) {
+	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac) {
 		logger.info(String.format("IdentityAuth hdmac[%s]", hdmac));
 		return userCaptchaCodeUnitFacadeService.validateIdentity(hdmac);
 	}
