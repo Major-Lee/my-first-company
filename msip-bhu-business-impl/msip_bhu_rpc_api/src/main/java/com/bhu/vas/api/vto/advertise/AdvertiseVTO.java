@@ -36,6 +36,7 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private String pv;
 	//点赞数
 	private String act;
+	private long comment_sum;
 	private Date create_at;
 	
 	
@@ -210,5 +211,14 @@ public class AdvertiseVTO implements java.io.Serializable{
 	}
 	public void setAct(String act) {
 		this.act = act;
+	}
+	public long getComment_sum() {
+		return comment_sum;
+	}
+	public void setComment_sum(long comment_sum) {
+		this.comment_sum = comment_sum;
+	}
+	public int getTop() {
+		return top;
 	}
 }
