@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 import nl.bitwalker.useragentutils.UserAgent;
 
 /**
@@ -19,28 +22,9 @@ public class T {
 
 
     public static void main(String[] args) {
-        Map<String,Integer> map = new HashMap<String, Integer>();
-        map.put("tanx.com", 4);
-        map.put("baidu.com", 24);
-        map.put("google.com", 14);
-
-        //String agentString = "Mozilla/5.0 (Linux; Android 4.4.2; SM705 Build/SANFRANCISCO) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36";
-        //String agentString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36";
-        String agentString = "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.1.5 NetType/WIFI";
-        //String agentString = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;Miser Report)";
-        //String agentString = "Mozilla/5.0 (Linux; U; Android 4.2.2; zh-cn; HUAWEI D2-2010 Build/HuaweiD2-2010) AppleWebKit/533.1 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.4 TBS/025411 Mobile Safari/533.1 MicroMessenger/6.1.0.73_r1097298.543 NetType/WIFI";
-        //String agentString = "Mozilla/5.0 (Linux; U; Android 4.1.2; zh-cn; GT-I9268 Build/JZO54K) AppleWebKit/533.1 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.4 TBS/025411 Mobile Safari/533.1 MicroMessenger/6.1.0.66_r1062275.542 NetType/WIFI";
-        UserAgent useragent = new UserAgent(agentString);
-        System.out.println(useragent.getOperatingSystem());
-        System.out.println(useragent.getBrowser());
-        System.out.println(useragent.getId());
-        System.out.println(useragent.getBrowserVersion());
-        System.out.println(T.catchUserAgentTermianl(agentString));
-        //OperatingSystem.
-        //if(useragent.getOperatingSystem().equals(OperatingSystem.LINUX)||useragent.getOperatingSystem().equals(OperatingSystem.MAC_OS)||useragent.getOperatingSystem().equals(OperatingSystem.MAC_OS_X));{
-      	
-       // }
-
+    	String str = "{\"paypal\":[{\"count\":0,\"amount\":0}],\"alipay\":[{\"count\":0,\"amount\":0}],\"weixin\":[{\"count\":0,\"amount\":0}],\"wifiHelper\":[{\"count\":0,\"amount\":0}],\"wifiManage\":[{\"count\":0,\"amount\":0}], \"hee\":[{\"count\":0,\"amount\":0}], \"now\":[{\"count\":0,\"amount\":0}]}";
+    	ResponsePaymentInfoDTO dto = JsonHelper.getDTO(str, ResponsePaymentInfoDTO.class);
+    	System.out.println(dto.getNow().size());
     }
     public static String catchUserAgentTermianl( String userAgent){
     	Pattern pattern = Pattern.compile(";\\s?(\\S*?\\s?\\S*?)\\s?(Build)?/");

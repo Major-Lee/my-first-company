@@ -25,6 +25,9 @@ public class UserConsumptiveWalletLog extends BaseLongModel{// implements IRedis
 	private String cash;
 	//交易内容描述
 	private String memo;
+	//订单流程状态
+	private Integer process_status = 0;
+
 
 	private String description;
 
@@ -55,6 +58,14 @@ public class UserConsumptiveWalletLog extends BaseLongModel{// implements IRedis
 		this.orderid = orderid;
 	}
 
+
+	public Integer getProcess_status() {
+		return process_status;
+	}
+
+	public void setProcess_status(Integer process_status) {
+		this.process_status = process_status;
+	}
 
 	public String getTransmode() {
 		return transmode;

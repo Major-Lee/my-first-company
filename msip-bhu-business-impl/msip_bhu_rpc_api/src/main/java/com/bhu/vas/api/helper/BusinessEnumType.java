@@ -517,6 +517,75 @@ public class BusinessEnumType {
 		}
 	}
 	
+	
+	public enum CPMStateType{
+		UnProcess(0,"待处理","待处理"),
+		Processed(100,"处理完成","所有参与热播的设备完成分成"),
+		;
+		private Integer type;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, CPMStateType> allCPMStateTypeTypes;
+		
+		private CPMStateType(Integer type,String name,String desc){
+			this.type = type;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		
+		public Integer getType() {
+			return type;
+		}
+
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static boolean correct(Integer type, CPMStateType cpmStateType){
+			if(type == null || cpmStateType == null) return false;
+			
+			if(type.equals(cpmStateType.getType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static CPMStateType fromKey(Integer type){
+			if(type == null) return null;
+			return allCPMStateTypeTypes.get(type);
+		}
+		
+		public static boolean supported(Integer type){
+			return allCPMStateTypeTypes.containsKey(type);
+		}
+		
+		
+		static {
+			allCPMStateTypeTypes = new HashMap<Integer, CPMStateType>();
+			CPMStateType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (CPMStateType type : types){
+				allCPMStateTypeTypes.put(type.getType(), type);
+			}
+		}
+	}
+	
 	//订单基本状态
 	public enum OrderStatus{
 		//Pending(0,"订单原始状态","生成订单最原始的状态"),
