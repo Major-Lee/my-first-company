@@ -117,6 +117,10 @@ public class UserFacadeService {
 		return uid == 2;
 	}
 	
+	public boolean isShamUser(int uid){
+		return uid >80000 && uid <81000;
+	}
+	
 /*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
 		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
 		UserSnsState model = userSnsStateService.getById(pk);
