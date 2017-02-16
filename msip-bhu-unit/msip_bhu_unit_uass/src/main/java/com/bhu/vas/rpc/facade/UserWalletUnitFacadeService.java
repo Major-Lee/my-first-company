@@ -1999,7 +1999,7 @@ public class UserWalletUnitFacadeService {
 			
 			//获取该时间段内平台收益
 			String param = "startTime="+startTime+"&endTime="+endTime;
-			Object response = sendPost("http://pay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+			Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
 			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
 			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
 				
