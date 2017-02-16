@@ -75,7 +75,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			public void run() {
 				try{
 					System.out.println("onProcessor");
-					
+					asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("AsyncAdvertiseCPMNotify onProcessor", ex);

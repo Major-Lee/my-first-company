@@ -265,22 +265,20 @@ public class AdvertiseUnitFacadeService {
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
-//			if(!isAdmin){
-//				int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
-//			}
-//			
-//			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
-//			
-//			advertiseService.update(entity);
-//			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
+			if(!isAdmin){
+				int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+			}
+			
+			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+			
+			advertiseService.update(entity);
+			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
 
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
 			
-			if(isAdmin){
-				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
-			}
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
