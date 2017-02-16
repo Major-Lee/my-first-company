@@ -47,7 +47,7 @@ public class PostRequestUtil {
 //			
 //		}
 		String aa = "startTime=2017-02-11&endTime=2017-02-14";
-		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", aa);
+		Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", aa);
 		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
 		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
 		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());

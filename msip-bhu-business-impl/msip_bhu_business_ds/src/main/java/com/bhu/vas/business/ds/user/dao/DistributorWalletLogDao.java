@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.distributor.dao;
+package com.bhu.vas.business.ds.user.dao;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractSharedealDao;
  * @CreateTime 2016年4月18日 下午5:40:19
  */
 @Repository
-public class DistributorWalletLogDao extends AbstractSharedealDao<Long, DistributorWalletLog>{
+public class DistributorWalletLogDao extends AbstractCoreDao<Long, DistributorWalletLog>{
 	public List<Map<String,Object>> bhuAccountIncome(Map<String, Object> map) {
 		return super.getSqlSessionSlaverTemplate().selectList(DistributorWalletLog.class.getName()+".bhuAccountIncome",map);
 	}

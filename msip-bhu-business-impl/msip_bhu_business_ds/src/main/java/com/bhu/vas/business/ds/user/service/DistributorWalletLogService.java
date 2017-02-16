@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.distributor.service;
+package com.bhu.vas.business.ds.user.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +20,10 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractSharedealService;
  */
 
 @Service
-@Transactional("sharedealTransactionManager")
+@Transactional("coreTransactionManager")
 public class DistributorWalletLogService
 		extends
-		AbstractSharedealService<Long, DistributorWalletLog, DistributorWalletLogDao> {
+		AbstractCoreService<Long, DistributorWalletLog, DistributorWalletLogDao> {
 
 	@Resource
 	@Override

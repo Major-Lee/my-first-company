@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.distributor.model;
+package com.bhu.vas.api.rpc.user.model;
 
 import java.util.Date;
 

@@ -1,1 +1,0 @@
-MSIP is the abbreviation of Multi-service Infrastructure Platform

@@ -167,6 +167,7 @@
 		<typeAlias alias="userActivity" 	type="com.bhu.vas.api.rpc.user.model.UserActivity" />
 		
 		<typeAlias alias="userSharedealDistributorView" 	type="com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView" />
+		<typeAlias alias="distributorWalletLog" 	type="com.bhu.vas.api.rpc.user.model.DistributorWalletLog" />
 		<!-- portal 身份认证 -->
 		<typeAlias alias="userIdentityAuth" 	type="com.bhu.vas.api.rpc.user.model.UserIdentityAuth" />
 		
@@ -310,6 +311,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserActivity.sqlMap.xml" />
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSharedealDistributorView.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/DistributorWalletLog.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
 		<!-- 广告 -->
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />

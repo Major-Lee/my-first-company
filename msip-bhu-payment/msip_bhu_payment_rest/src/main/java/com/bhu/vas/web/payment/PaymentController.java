@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,8 +22,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.annotation.Resource;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -70,7 +67,6 @@ import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
 import com.bhu.vas.web.model.MidasRespone;
 import com.bhu.vas.web.payments.util.ResultPrinter;
-import com.bhu.vas.web.payments.util.TlsCheck;
 import com.bhu.vas.web.service.PayHttpService;
 import com.bhu.vas.web.service.PayLogicService;
 import com.bhu.vas.web.service.PaypalService;
