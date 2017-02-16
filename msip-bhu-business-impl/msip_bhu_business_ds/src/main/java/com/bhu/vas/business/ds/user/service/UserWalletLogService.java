@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.charging.vto.UserIncomeVTO;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.business.ds.user.dao.UserWalletLogDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
@@ -74,5 +73,12 @@ public class UserWalletLogService extends AbstractCoreService<Long,UserWalletLog
 		map.put("pre_day", preDay);
 		map.put("today", today);
 		return super.entityDao.findGpathIncomeListByTime(map);
+	}
+	
+	public List<Object> userAccountIncome(String preDay, String today) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("pre_day", preDay);
+		map.put("today", today);
+		return super.entityDao.userAccountIncome(map);
 	}
 }

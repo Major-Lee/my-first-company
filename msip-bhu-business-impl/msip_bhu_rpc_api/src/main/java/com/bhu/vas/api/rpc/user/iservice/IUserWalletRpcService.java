@@ -166,7 +166,7 @@ public interface IUserWalletRpcService {
 	public RpcResponseDTO<UserWalletDetailPagesVTO> walletDetailPages(int uid, String transmode, String transtype,
 			int pageNo, int pageSize);
 
-	public RpcResponseDTO<TailPage<BillVTO>> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize);
+	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

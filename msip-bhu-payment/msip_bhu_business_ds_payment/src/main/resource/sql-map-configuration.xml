@@ -12,9 +12,9 @@ PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
 		<setting name="defaultExecutorType" value="SIMPLE"/>
 		<setting name="defaultStatementTimeout" value="25000"/>
 	</settings>
-	<typeAliases>
+	<!-- <typeAliases>
 		<typeAlias type="com.et.business.user.model.User" alias="user"/>
-	</typeAliases>
+	</typeAliases> -->
 	<!--
 	<plugins>
 		指定数据库分页方言Dialect, 其它方言:OracleDialect,SQLServerDialect,SybaseDialect,DB2Dialect,PostgreSQLDialect,MySQLDialect,DerbyDialect,HSQLDialect

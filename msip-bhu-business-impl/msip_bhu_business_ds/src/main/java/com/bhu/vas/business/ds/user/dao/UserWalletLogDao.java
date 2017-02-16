@@ -8,8 +8,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
-import com.bhu.vas.api.rpc.charging.vto.UserIncomeVTO;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
@@ -89,5 +87,9 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 
 	public List<Object> findGpathIncomeListByTime(Map<String, Object> map) {
 		return super.getSqlSessionSlaverTemplate().selectList(UserWalletLog.class.getName()+".findGpathIncomeListByTime",map);
+	}
+	
+	public List<Object> userAccountIncome(Map<String, Object> map) {
+		return super.getSqlSessionSlaverTemplate().selectList(UserWalletLog.class.getName()+".userAccountIncome",map);
 	}
 }

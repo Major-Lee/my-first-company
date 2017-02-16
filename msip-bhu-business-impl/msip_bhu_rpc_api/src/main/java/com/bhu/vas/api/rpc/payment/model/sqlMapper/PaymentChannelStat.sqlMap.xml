@@ -28,6 +28,14 @@
 			updated_at
 	    ]]>
 	</sql>
+	<sql id="modelPlatformColumns">
+	    <![CDATA[
+	    	id,
+			amount,
+			count,
+			info
+	    ]]>
+	</sql>
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 			amount,
@@ -109,7 +117,7 @@
 		where id=#{id}
 	</delete>
 
-	<delete id="delete" parameterType="paymentRecord">
+	<delete id="delete" parameterType="paymentChannelStat">
 		delete from
 		<include refid="modelTableName" />
 		<where>
@@ -118,7 +126,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="paymentRecord">
+	<insert id="insert" parameterType="paymentChannelStat">
 		insert into
 		<include refid="modelTableName" />
 		(
@@ -130,7 +138,7 @@
 			select last_insert_id(); </selectKey> -->
 	</insert>
 
-	<update id="update" parameterType="paymentRecord">
+	<update id="update" parameterType="paymentChannelStat">
 		update
 		<include refid="modelTableName" />
 		set
@@ -184,6 +192,9 @@
 		<if test="_parameter != null">
 			<include refid="model_CRITERIA_SQL_GenCondition" />
 		</if>
+	</select>
+	<select id="platformIncome" resultMap="modelResult" parameterType="String">
+		SELECT	<include refid="modelPlatformColumns" /> FROM t_payment_channel_stat WHERE id BETWEEN #{pre_day} AND #{today}
 	</select>
 
 	<delete id="removeByModelCriteria">

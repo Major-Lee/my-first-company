@@ -97,6 +97,13 @@
 	    ]]>
 	</sql> 
 	
+	<sql id="modelUserAccountIncomeColumns">
+	    <![CDATA[
+	    	SUM(cash) income,
+	    	time
+	    ]]>
+	</sql> 
+	
 	<sql id="modelGpathIncomeColumns">
 	    <![CDATA[
 	    	count(*) as times, 
@@ -395,6 +402,12 @@
 		 group by current_gpath		
 	</select>
 	
+	<select id="userAccountIncome" resultType="userIncome" parameterType="String">
+		SELECT <include refid="modelUserAccountIncomeColumns" /> FROM	(SELECT	format(sum(cash), 2) AS cash, date_format(updated_at, '%y-%m-%d') time FROM	t_vas_users_wallet_log
+		WHERE updated_at BETWEEN #{pre_day} AND #{today} AND	(transmode = 'SDP'	OR transmode = 'DWP' OR transmode = 'RFD') GROUP BY time) AS t
+		GROUP BY time
+	</select>
+	
 	<select id="countIncome" resultType="Map" parameterType="Map">
 		SELECT sum(cash) as cash,count(*) as num from t_vas_users_wallet_log  WHERE   transmode='SDP' 	
 		<if test="uid!=null">
@@ -436,7 +449,10 @@
 	
 	<select id="accountIncome" resultType="Map" parameterType="Map">
 		SELECT SUM(truncate(o.amount,4)) AS amount,SUM(truncate(l.cash,4)) AS cash,count(*) as num from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o
-		 WHERE l.uid=#{uid} AND l.orderid=o.id and (l.transmode='SDP' or l.transmode='DWP') and (l.transtype='P2C' or l.transtype='R2C') 	
+		 WHERE l.orderid=o.id and (l.transmode='SDP' or l.transmode='DWP') and (l.transtype='P2C' or l.transtype='R2C') 	
+		<if test="uid!=0">
+			and l.uid=#{uid}
+		</if>
 		<if test="mac!=null">
 			and l.mac=#{mac}
 		</if>	

@@ -198,7 +198,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<BillVTO>> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize) {
+	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize) {
 		logger.info(String.format("pagebillPlanPages with startTime[%s] endTime[%s] pn[%s] ps[%s]",startTime,endTime,pageNo,pageSize));
 		return userWalletUnitFacadeService.walletbillPlanPages(startTime, endTime, pageNo, pageSize);
 	}

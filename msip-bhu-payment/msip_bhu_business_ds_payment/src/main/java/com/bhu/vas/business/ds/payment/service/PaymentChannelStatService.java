@@ -2,7 +2,9 @@ package com.bhu.vas.business.ds.payment.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -86,5 +88,14 @@ public class PaymentChannelStatService extends EntityService<String, PaymentChan
 		}
 		
 		return recordInfoDTO;
+	}
+	
+	
+
+	public List<Object> queryPlanInfo(String preDay, String today) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("pre_day", preDay);
+		map.put("today", today);
+		return super.entityDao.platformIncome(map);
 	}
 }

@@ -12,17 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.payment.dto.PaymentRecordInfoDTO;
 import com.bhu.vas.api.rpc.payment.model.PaymentChannelStat;
 import com.bhu.vas.api.rpc.payment.vto.PaymentChannelStatVTO;
-import com.bhu.vas.api.rpc.payment.vto.PaymentRecordVTO;
 import com.bhu.vas.business.ds.payment.service.PaymentChannelStatService;
-import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
@@ -33,12 +27,9 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @Controller
 @RequestMapping("/channelStat")
 public class ChannelStatController extends BaseController {
-//	@Resource
-//	PaymentRecordService paymentRecordService;
+	
 	@Resource
 	PaymentChannelStatService paymentChannelStatService;
-//	@Resource
-//	PaymentReckoningService paymentReckoningService;
 
 	@ResponseBody()
 	@RequestMapping(value = "/info", method = { RequestMethod.GET, RequestMethod.POST })
@@ -49,24 +40,24 @@ public class ChannelStatController extends BaseController {
 	}
 
 	private Object doRecordInfo(HttpServletRequest request) {
-		//this.updateTodayRecordInfo();
-		List<PaymentChannelStat> list = paymentChannelStatService.queryOrderByIdDesc(15);
+		String startTime = request.getParameter("startTime");
+		String endTime = request.getParameter("endTime");
+		List<Object> paltformIncomeList = paymentChannelStatService.queryPlanInfo(startTime, endTime);
 		List<PaymentChannelStatVTO> infos = new ArrayList<PaymentChannelStatVTO>();
-		for (int i = 0; i < list.size(); i++) {
-			PaymentChannelStatVTO paymentRecordVTO = new PaymentChannelStatVTO();
-			String curDay = list.get(i).getId().toString();
-			String mouth = curDay.substring(2, 4);
-			String day = curDay.substring(4);
-			paymentRecordVTO.setTimeD(mouth+"月"+day+"日");
-			paymentRecordVTO.setAmount(list.get(i).getAmount());
-			paymentRecordVTO.setCount(list.get(i).getCount());
-			paymentRecordVTO.setInfo(list.get(i).getInfo());
-			infos.add(paymentRecordVTO);
+		if(paltformIncomeList != null){
+			for (Object object : paltformIncomeList) {
+				PaymentChannelStat paltformInfo = (PaymentChannelStat) object;
+				PaymentChannelStatVTO paymentRecordVTO = new PaymentChannelStatVTO();
+				paymentRecordVTO.setTimeD(paltformInfo.getId());
+				paymentRecordVTO.setAmount(paltformInfo.getAmount());
+				paymentRecordVTO.setCount(paltformInfo.getCount());
+				paymentRecordVTO.setInfo(paltformInfo.getInfo());
+				infos.add(paymentRecordVTO);
+				//System.out.println("paltformAmount = " + paltformInfoVTO.getAmount() + ", time = " + paltformInfoVTO.getId()+ ", info = " + paltformInfoVTO.getInfo());  
+	    	}
 		}
-		if (list.size() > 0)
-			return ResponseSuccess.embed(infos);
-		else
-			return ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request));
+		return ResponseSuccess.embed(infos);
+			//return ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request));
 	}
 
 //	private void updateTodayRecordInfo() {

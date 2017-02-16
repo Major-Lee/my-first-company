@@ -1,7 +1,13 @@
 package com.bhu.vas.rpc.facade;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -17,12 +23,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentChannelSatDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -34,9 +42,11 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.payment.vto.PaymentChannelStatVTO;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -47,6 +57,7 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
+import com.bhu.vas.api.vto.bill.BillDayVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
@@ -62,6 +73,7 @@ import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.distributor.service.DistributorWalletLogService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeMonthRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
@@ -71,8 +83,10 @@ import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSharedealDistributorViewService;
+import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -114,7 +128,13 @@ public class UserWalletUnitFacadeService {
 	private UserIncomeMonthRankService userIncomeMonthRankService;
 
 	@Resource
+	UserWalletLogService userWalletLogService;
+	
+	@Resource
 	private OrderService orderService;
+	
+	@Resource
+	private DistributorWalletLogService distributorWalletLogService;
 
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
@@ -1708,30 +1728,35 @@ public class UserWalletUnitFacadeService {
 		 //System.out.println(formater.format(b));
 		 return formater.format(b);
 	}
-	public static void main(String[] args) {
-		//System.out.println(getDaysList("2016-11-01", "2016-11-11"));
-//		String ss="0.0005";
-//		double e=Double.valueOf(ss);
-//		System.out.println(e);
-//		String se=String.valueOf(e);
-//		System.out.println(se);
-		
-		Date s=new Date();
-		// 得到日历
-		Calendar calendar = Calendar.getInstance();
-		// 把当前时间赋给日历
-		calendar.setTime(s);
-		// 设置为前一天
-		calendar.add(Calendar.DAY_OF_MONTH, 0);
-		// 得到前一天的时间
-		Date dBefore = calendar.getTime();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String retDate = sdf.format(dBefore);
-		System.out.println(daysBetween("2015-11-09",
-				GetDateTime("yyyy-MM-dd", 0)));
-		//System.out.println(GetDateTime("yyyy-MM-dd", 0));
-		//System.out.println(doubleCut2(2.356,2));
-	}
+//	public static void main(String[] args) {
+//		//System.out.println(getDaysList("2016-11-01", "2016-11-11"));
+////		String ss="0.0005";
+////		double e=Double.valueOf(ss);
+////		System.out.println(e);
+////		String se=String.valueOf(e);
+////		System.out.println(se);
+////		Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
+////		Date s=new Date();
+////		// 得到日历
+////		Calendar calendar = Calendar.getInstance();
+////		// 把当前时间赋给日历
+////		calendar.setTime(s);
+////		// 设置为前一天
+////		calendar.add(Calendar.DAY_OF_MONTH, 0);
+////		// 得到前一天的时间
+////		Date dBefore = calendar.getTime();
+////		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+////		String retDate = sdf.format(dBefore);
+//		
+//		Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
+//		SimpleDateFormat sdf =DateTimeHelper.longDateFormat;
+//		;
+//		System.out.println(sdf.format(dayOfMonth)); ;
+//		System.out.println(DateTimeHelper.getDateTime(DateTimeHelper.DefalutFormatPattern)); ;
+//		//System.out.println(daysBetween("2015-11-09",GetDateTime("yyyy-MM-dd", 0)));
+//		//System.out.println(GetDateTime("yyyy-MM-dd", 0));
+//		//System.out.println(doubleCut2(2.356,2));
+//	}
 
 	/**
 	 * 字符串的日期格式的计算
@@ -1935,97 +1960,202 @@ public class UserWalletUnitFacadeService {
 	}
 	
 	//拼装提现管理系统-财务对账页面查询页面信息数据
-	public RpcResponseDTO<TailPage<BillVTO>> walletbillPlanPages(String startTime, String endTime, int pageNo,
-			int pageSize) {
-		//获取该时间段内公司收益
-		Map<String,Object> pages = userWalletFacadeService.pageBillPlan(startTime,endTime, pageNo, pageSize);
-		TailPage<BillVTO> result_pages = null;
+	public RpcResponseDTO<BillVTO> walletbillPlanPages(String startTime, String endTime, int pageNo,
+			int pageSize){
+		try {
+			if(StringUtils.isBlank(startTime)){
+				Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
+				SimpleDateFormat sdf =DateTimeHelper.longDateFormat;
+				startTime = sdf.format(dayOfMonth);
+			}
+			if(StringUtils.isBlank(endTime)){
+				endTime = DateTimeHelper.getDateTime(DateTimeHelper.DefalutFormatPattern);
+			}
+			RpcResponseDTO<BillVTO> result_pages = new RpcResponseDTO<BillVTO>();
+			
+			//获取该时间段内公司收益
+			Map<String,String> bhuIncomeMap = new HashMap<String,String>();
+			List<Map<String,Object>> bhuIncomeList = distributorWalletLogService.queryPlanInfo("2017-01-01",endTime);
+			if(bhuIncomeList != null){
+				for (int i = 0; i < bhuIncomeList.size(); i++) {
+					Map<String,Object> paltformInfoVTO = bhuIncomeList.get(i);
+					String income = paltformInfoVTO.get("income")+"";
+					String time = paltformInfoVTO.get("time")+"";
+					bhuIncomeMap.put(time, income);
+					System.out.println("bhuIncome = " + income + ", time = " + time);  
+				}
+			}
+			
+			//获取该时间段内用户收益
+			Map<String,String> userIncomeMap = new HashMap<String,String>();
+			List<Object> userIncomeList = userWalletLogService.userAccountIncome("2017-01-01 00:00:00","2017-02-14 00:00:00");
+			if(userIncomeList != null){
+				for (Object object : userIncomeList) {
+					UserIncome userIncome = (UserIncome) object;
+					userIncomeMap.put(userIncome.getTime(), userIncome.getIncome());
+					System.out.println("userIncome = " + userIncome.getIncome() + ", time = " + userIncome.getTime());
+				}
+			}
+			
+			//获取该时间段内平台收益
+			String param = "startTime="+startTime+"&endTime="+endTime;
+			Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", param);
+			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+				
+			BillVTO bill = new BillVTO();
+			bill.setStartTime(startTime);
+			bill.setEndTtime(endTime);
+			
+			List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();
+			long totalA = 0l;
+			long totalBHUA =0l;
+			long totalUserA =0l;
+			if (paymentChannelList != null) {
+				for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
+					System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
+					String info =paymentChannelStatVTO.getInfo();
+					org.json.JSONObject infoJson  = new org.json.JSONObject(info);
+					org.json.JSONObject hee =  (org.json.JSONObject) infoJson.get("hee");
+					org.json.JSONObject now =  (org.json.JSONObject) infoJson.get("now");
+					org.json.JSONObject paypal =  (org.json.JSONObject) infoJson.get("paypal");
+					org.json.JSONObject wifiManage =  (org.json.JSONObject) infoJson.get("wifiManage");
+					org.json.JSONObject wifiHelper =  (org.json.JSONObject) infoJson.get("wifiHelper");
+					org.json.JSONObject weixin =  (org.json.JSONObject) infoJson.get("weixin");
+					org.json.JSONObject alipay =  (org.json.JSONObject) infoJson.get("alipay");
+					System.out.println(now.get("amount"));
+					String dateT = paymentChannelStatVTO.getTimeD();
+					BillDayVTO billDay = new BillDayVTO();
+			    	billDay.setDate(dateT);
+			    	billDay.setAilpayA(alipay.get("amount")+"");
+			    	billDay.setAilpayN("支付宝支付");
+			    	billDay.setHeeA(hee.get("amount")+"");
+			    	billDay.setHeeN("汇元支付");
+			    	billDay.setPaypalA(paypal.get("amount")+"");
+			    	billDay.setPaypalN("贝宝支付");
+			    	billDay.setWifiManageN("wifi安全管家");
+			    	billDay.setWifiManageA(wifiManage.get("amount")+"");
+			    	billDay.setWeixinA(weixin.get("amount")+"");
+			    	billDay.setWeixinN("微信支付");
+			    	billDay.setWifiHelperA(wifiHelper.get("amount")+"");
+			    	billDay.setWifiHelperN("wifi助手");
+			    	billDay.setNowA(now.get("amount")+"");
+			    	billDay.setNowN("现在支付");
+			    	String dayTotalBHUA = "0";
+			    	String dayTotalUserA = "0";
+			    	String dayTotalA = "0";
+			    	String userIcomeStr = userIncomeMap.get(dateT);
+			    	if(StringUtils.isNotBlank(userIcomeStr)){
+			    		dayTotalUserA = userIcomeStr;
+			    	}
+			    	
+			    	String bhuIcomeStr = bhuIncomeMap.get(dateT);
+			    	if(StringUtils.isNotBlank(bhuIcomeStr)){
+			    		dayTotalBHUA = bhuIcomeStr;
+			    	}
+			    	dayTotalA = Long.parseLong(bhuIcomeStr)+Long.parseLong(userIcomeStr)+"";
+			    	bhuIncomeMap.get(dateT);
+			    	billDay.setTotalBHUA(dayTotalBHUA);
+			    	billDay.setTotalUserA(dayTotalUserA);
+			    	billDay.setTotalA(dayTotalA);
+			    	billDayList.add(billDay);
+			    	
+			    	totalBHUA +=Long.parseLong(bhuIcomeStr);
+			    	totalA += Long.parseLong(dayTotalA);
+			    	totalUserA += Long.parseLong(userIcomeStr);
+			    	bill.setBillDay(billDayList);
+				}
+			}
+			bill.setAmountC(totalBHUA+"");
+			bill.setAmountT(totalA+"");
+			bill.setAmountU(totalUserA+"");
+			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
+			logger.info("fetch bill rpc response："+JsonHelper.getJSONString(bill));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(bill);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(
+					bex.getErrorCode(), bex.getPayload());
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public static void main(String[] args) {
+		Map<String,String> bhuIncomeMap = new HashMap<String,String>();
+		bhuIncomeMap.put("dd", "dd");
+		bhuIncomeMap.put("dd1", "dd1");
+		bhuIncomeMap.put("dd2", "dd2");
+		bhuIncomeMap.put("dd3", "dd3");
 		
-		//获取该时间段内用户收益
-		
-		////获取该时间段内平台收益
-		
-		return null;
-//		List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
-//		if (!pages.isEmpty()) {
-//			List<Integer> uids = new ArrayList<>();
-//			for (UserWalletWithdrawApply apply : pages.getItems()) {
-//				uids.add(apply.getUid());
-//			}
-//			List<User> users = this.userService.findByIds(uids, true, true);
-//			int index = 0;
-//			for (UserWalletWithdrawApply apply : pages.getItems()) {
-//				User user = users.get(index);
-//				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService()
-//						.calculateWithdrawCost(apply.getUid(), apply.getId(),apply.getCash());
-//				// 查询操作人和审核人信息
-//				User verifyUser = null;
-//				if (apply.getVerify_uid() != 0) {
-//					verifyUser = new User();
-//					verifyUser = this.userService.getById(apply.getVerify_uid());
-//				}
-//				User operateUser = null;
-//				if (apply.getOperate_uid() != 0) {
-//					operateUser = new User();
-//					operateUser = this.userService.getById(apply.getOperate_uid());
-//				}
-//				//userWallet
-//				UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
-////				double totalCash = uwallet.getTotal_cash_sum();
-//				Date updateTime = apply.getUpdated_at();
-//				String totalCash = null;
-//				String  lastCash = uwallet.getCash()+"";
-//				int totalOrderNum = 0;
-//				String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(apply.getUid());
-//				Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
-//				if(totalIncomeMap.get("num")!=null){
-//					totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
-//				}
-//				if(totalIncomeMap.get("cash")!=null){
-//					totalCash= totalIncomeMap.get("cash")+"";
-//				}
-//				System.out.println("totalOrderNum  "+totalOrderNum+"     totalCash"+totalCash);
-//				UserWithdrawApplyVTO uWithdrawAplyVTO = null;
-//				if (StringUtils.isNotEmpty(utype)) {
-//					if(user.getUtype()==Integer.parseInt(utype)){
-//						uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
-//								user != null ? UserType.getByIndex(user.getUtype()).getFname()
-//								: StringUtils.EMPTY,
-//								user != null ? user.getMobileno()
-//										: StringUtils.EMPTY,
-//								user != null ? user.getNick() : StringUtils.EMPTY,
-//								verifyUser != null ? verifyUser.getNick()
-//										: StringUtils.EMPTY,
-//								operateUser != null ? operateUser.getNick()
-//										: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
-//					}
-//				}else{
-//					uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
-//							user != null ? UserType.getByIndex(user.getUtype()).getFname()
-//							: StringUtils.EMPTY,
-//							user != null ? user.getMobileno()
-//									: StringUtils.EMPTY,
-//							user != null ? user.getNick() : StringUtils.EMPTY,
-//							verifyUser != null ? verifyUser.getNick()
-//									: StringUtils.EMPTY,
-//							operateUser != null ? operateUser.getNick()
-//									: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash,updateTime);
-//				}
-//				vtos.add(uWithdrawAplyVTO);
-//				index++;
-//			}
+		System.out.println(bhuIncomeMap.get("dd1"));;
+//		String aa = "startTime=2017-02-11&endTime=2017-02-14";
+//		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", aa);
+//		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+//		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+//		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());
+//		String info = paymentChannelList.get(1).getInfo();
+//		
+//		org.json.JSONObject json;
+//		try {
+//			json = new org.json.JSONObject(info);
+//			org.json.JSONObject now =  (org.json.JSONObject) json.get("hee");
+//			//JSONObject jsons = new JSONObject(now);
+//			System.out.println(now.get("amount"));
+//		} catch (JSONException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
 //		}
-//		System.out.println("JJJKKK"+JsonHelper.getJSONString(vtos));
-//		result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(),pages.getTotalItemsCount(), vtos);
-//		logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
-//		return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
-//	} catch (BusinessI18nCodeException bex) {
-//		return RpcResponseDTOBuilder.builderErrorRpcResponse(
-//				bex.getErrorCode(), bex.getPayload());
-//	} catch (Exception ex) {
-//		ex.printStackTrace(System.out);
-//		return RpcResponseDTOBuilder
-//				.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-//	}
+	}
+	public static String sendPost(String url, String param) {
+		PrintWriter out = null;
+		BufferedReader in = null;
+		String result = "";
+		try {
+			URL realUrl = new URL(url);
+			// 打开和URL之间的连接
+			URLConnection conn = realUrl.openConnection();
+			// 设置通用的请求属性
+			conn.setRequestProperty("accept", "*/*");
+			conn.setRequestProperty("Accept-Encoding", "utf-8");
+			conn.setRequestProperty("connection", "Keep-Alive");
+			conn.setRequestProperty("user-agent",
+					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			// 发送POST请求必须设置如下两行
+			conn.setConnectTimeout(2000);  
+			conn.setReadTimeout(3000);
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			// 获取URLConnection对象对应的输出流
+			out = new PrintWriter(conn.getOutputStream());
+			// 发送请求参数
+			out.print(param);
+			// flush输出流的缓冲
+			out.flush();
+			// 定义BufferedReader输入流来读取URL的响应
+			in = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null) {
+				result += line;
+			}
+		} catch (Exception e) {
+			System.out.println("发送 POST 请求出现异常！" + e);
+			e.printStackTrace();
+		}
+		// 使用finally块来关闭输出流、输入流
+		finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return result;
 	}
 }

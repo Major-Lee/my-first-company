@@ -20,6 +20,7 @@
         <module>msip-bhu-business-impl/msip_bhu_web</module>
         <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
+		<module>msip-bhu-business-impl/msip_bhu_business_ds_distributor</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
 		<module>msip-bhu-business-impl/msip_bhu_business_ds_portrait</module>
 		<module>msip-bhu-business-impl/msip_bhu_business_ds_payment_pro</module>
@@ -192,6 +193,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_ds</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_distributor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

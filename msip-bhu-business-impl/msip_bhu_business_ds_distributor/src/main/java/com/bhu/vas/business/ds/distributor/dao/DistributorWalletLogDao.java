@@ -1,8 +1,12 @@
 package com.bhu.vas.business.ds.distributor.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.distributor.model.DistributorWalletLog;
+import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractSharedealDao;
 
 /**
@@ -12,5 +16,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractSharedealDao;
  */
 @Repository
 public class DistributorWalletLogDao extends AbstractSharedealDao<Long, DistributorWalletLog>{
-	
+	public List<Map<String,Object>> bhuAccountIncome(Map<String, Object> map) {
+		return super.getSqlSessionSlaverTemplate().selectList(DistributorWalletLog.class.getName()+".bhuAccountIncome",map);
+	}
 }

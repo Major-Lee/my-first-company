@@ -1,7 +1,9 @@
 package com.bhu.vas.web.console;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -51,17 +54,13 @@ public class ConsoleBillController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "31", value = "ps") int pageSize
     		) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
+    	
 		//RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid,utype,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
-		RpcResponseDTO<TailPage<BillVTO>> rpcResult = userWalletRpcService.pagebillPlan(startTime,endTime,pageNo, pageSize);
-		if(!rpcResult.hasError())
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	RpcResponseDTO<BillVTO> rpcResult = userWalletRpcService.pagebillPlan(startTime,endTime,pageNo, pageSize);
+		if(rpcResult != null)
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, BusinessWebHelper.getLocale(request)));
     }
     public static void main(String[] args) {
     	List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();

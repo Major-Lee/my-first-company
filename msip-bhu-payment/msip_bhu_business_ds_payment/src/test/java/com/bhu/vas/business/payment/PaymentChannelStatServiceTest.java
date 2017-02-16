@@ -1,6 +1,7 @@
 package com.bhu.vas.business.payment;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,8 +10,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentChannelStat;
+import com.bhu.vas.api.rpc.payment.vto.PaymentChannelStatVTO;
 import com.bhu.vas.business.ds.payment.service.PaymentChannelStatService;
-import com.bhu.vas.business.payment.help.BusinessHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -24,16 +25,27 @@ public class PaymentChannelStatServiceTest extends BaseTest {
 
 	@Test
 	public void test001BatchCreateOrder() {
-		for (int i = 1; i < 2; i++) {
-			PaymentChannelStat record = new PaymentChannelStat();
-			String tId = "O"+BusinessHelper.getMillis();
-			record.setAmount(22);
-			record.setId("05");
-			record.setCount(11);
-			record.setInfo("test");
-			record.setUpdated_at(new Date());
-			paymentChannelStatService.insert(record);
+//		for (int i = 1; i < 2; i++) {
+//			PaymentChannelStat record = new PaymentChannelStat();
+//			String tId = "O"+BusinessHelper.getMillis();
+//			record.setAmount(22);
+//			record.setId("05");
+//			record.setCount(11);
+//			record.setInfo("test");
+//			record.setUpdated_at(new Date());
+//			paymentChannelStatService.insert(record);
+//		}
+		
+    	List<Object> paltformIncomeList = paymentChannelStatService.queryPlanInfo("17-02-01", "17-02-14");
+		List<PaymentChannelStatVTO> infos = new ArrayList<PaymentChannelStatVTO>();
+		if(paltformIncomeList != null){
+			for (Object object : paltformIncomeList) {
+				PaymentChannelStat paltformInfoVTO = (PaymentChannelStat) object;
+				//infos.add(paltformInfoVTO);
+				System.out.println("paltformAmount = " + paltformInfoVTO.getAmount() + ", time = " + paltformInfoVTO.getId()+ ", info = " + paltformInfoVTO.getInfo());  
+	    	}
 		}
+	
 	}
 
 //	@Test

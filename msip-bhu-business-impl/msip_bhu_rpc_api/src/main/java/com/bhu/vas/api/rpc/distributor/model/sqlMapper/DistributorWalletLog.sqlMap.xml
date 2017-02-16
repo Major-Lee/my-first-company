@@ -23,6 +23,11 @@
 	    <result property="description" column="description"/>
 	    <result property="updated_at" column="updated_at"/>
 	</resultMap>
+	
+	<resultMap id="bhuIncome" type="hashmap">
+    <result property="income" column="income" javaType="java.lang.String"/>
+    <result property="time" column="time" javaType="java.lang.String"/>
+  </resultMap>
 
 	<sql id="modelTableName">
 	    <![CDATA[
@@ -68,6 +73,13 @@
 	    	description,
 	    	adjusted,
 	    	updated_at
+	    ]]>
+	</sql>
+	
+	<sql id="modelBHUAccountIncomeColumns">
+	    <![CDATA[
+	    	SUM(amount) income,
+	    	time
 	    ]]>
 	</sql>
 
@@ -238,6 +250,11 @@
 		<if test="_parameter != null">
 			<include refid="model_CRITERIA_SQL_GenCondition" />
 		</if>
+	</select>
+
+	<select id="bhuAccountIncome" resultMap="bhuIncome" parameterType="String">
+		SELECT <include refid="modelBHUAccountIncomeColumns" />  FROM( SELECT format(sum(cash), 2) amount,date_format(updated_at, '%y-%m-%d') time FROM	t_vas_users_wallet_log_distributor
+		WHERE uid = '110' AND updated_at BETWEEN #{pre_day} AND #{today} GROUP BY updated_at ) as t GROUP BY time
 	</select>
 
 	<delete id="removeByModelCriteria">

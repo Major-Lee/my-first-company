@@ -1,5 +1,9 @@
 package com.bhu.vas.business.ds.distributor.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -26,5 +30,11 @@ public class DistributorWalletLogService
 	public void setEntityDao(DistributorWalletLogDao distributorWalletLog) {
 		super.setEntityDao(distributorWalletLog);
 	}
-
+	
+	public List<Map<String,Object>> queryPlanInfo(String preDay, String today) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("pre_day", preDay);
+		map.put("today", today);
+		return super.entityDao.bhuAccountIncome(map);
+	}
 }

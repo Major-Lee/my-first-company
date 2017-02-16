@@ -6,9 +6,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
-import com.bhu.vas.business.helper.BusinessHelper;
-import com.smartwork.msip.localunit.RandomPicker;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentChannelSatDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDetailDTO;
+import com.bhu.vas.api.rpc.payment.vto.PaymentChannelStatVTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * java发送post请求
@@ -31,15 +38,49 @@ public class PostRequestUtil {
 		//http://sms.chanzor.com:8001/sms.aspx?action=send&userid=&account=账号&password=密码&mobile=手机号&sendTime=&content=内容
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=15127166171&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
 		
-		for (int i = 0; i < 10000; i++) {
-			String goodNo = RandomPicker.randString(BusinessHelper.letters, 10);
-			String aa = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&"
-					+ "payment_type=PcWeixin&total_fee=0.01&umac=ws:ww:22&goods_no="+goodNo;
-			Object sr = sendPost("http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", aa);
-//			System.out.println( sr);
-			
-		}
+//		for (int i = 0; i < 10000; i++) {
+////			String goodNo = RandomPicker.randString(BusinessHelper.letters, 10);
+////			String aa = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&"
+////					+ "payment_type=PcWeixin&total_fee=0.01&umac=ws:ww:22&goods_no="+goodNo;
+////			Object sr = sendPost("http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", aa);
+////			System.out.println( sr);
+//			
+//		}
+		String aa = "startTime=2017-02-11&endTime=2017-02-14";
+		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", aa);
+		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());
+		String info = paymentChannelList.get(1).getInfo();
 		
+		JSONObject json;
+		try {
+			json = new JSONObject(info);
+			JSONObject now =  (JSONObject) json.get("hee");
+			//JSONObject jsons = new JSONObject(now);
+			System.out.println(now.get("amount"));
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//		try {
+//			JSONObject dds = json.optJSONObject(info);
+//			System.out.println(dds.get("hee"));
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		Object[] ddd = JsonHelper.getObjectArrayFromJson(info);
+//		System.out.println("info OK"+ddd);
+//		ResponsePaymentInfoDTO dd = JsonHelper.getDTO(info, ResponsePaymentInfoDTO.class);
+////		ResponsePaymentInfoDTO dd = (ResponsePaymentInfoDTO) JSONObject.stringToValue(info);
+//		System.out.println(dd.getAlipay().get(0).getCount());;
+//		info = JsonHelper.getJSONString(info);
+//		System.out.println("info String" + info);
+//		
+//		List<ResponsePaymentInfoDetailDTO> heeInfoDeList = infoO.getHee();
+//		ResponsePaymentInfoDetailDTO heeDetail = heeInfoDeList.get(0);
+//		System.out.println("heeDetail amount"+heeDetail.getAmount());
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=18515465766&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
 //		Object sr = sendPost("http://sms.chanzor.com:8001/sms.aspx", aa);
 		//Object sr = sendPost("http://m.api.dianping.com/tohome/openapi/jiadianguanjia/", par);
