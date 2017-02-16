@@ -63,45 +63,15 @@ public class ConsoleBillController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, BusinessWebHelper.getLocale(request)));
     }
     public static void main(String[] args) {
-    	List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();
-    	BillVTO bill = new BillVTO();
-    	bill.setAmountC("223.44");
-    	bill.setAmountT("33.44");
-    	bill.setAmountU("998.98");
-    	bill.setStartTime("2月1日");
-    	bill.setEndTtime("2月28日");
-    	BillDayVTO billDay = new BillDayVTO();
-    	billDay.setDate("2月1日");
-    	billDay.setTotalA("1223");
-    	billDay.setTotalBHUA("887");
-    	billDay.setTotalUserA("98");
-    	billDay.setAilpayA("20");
-    	billDay.setAilpayN("支付宝支付");
-    	billDay.setHeeA("34.34");
-    	billDay.setHeeN("汇元支付");
-    	billDay.setPaypalA("33.32");
-    	billDay.setPaypalN("贝宝支付");
-    	billDay.setWifiManageN("wifi安全管家");
-    	billDay.setWifiManageA("24.2");
-    	billDay.setWeixinA("22.55");
-    	billDay.setWeixinN("微信支付");
-    	billDay.setWifiHelperA("333.23");
-    	billDay.setWifiHelperN("wifi助手");
-    	billDayList.add(billDay);
-    	bill.setBillDay(billDayList);
-    	System.out.println(JsonHelper.getJSONString(bill));;
 	}
     
     
     @ResponseBody()
-    @RequestMapping(value = "/apply_status", method = {RequestMethod.POST})
-    public void fetch_apply(
+    @RequestMapping(value = "/bill_total", method = {RequestMethod.POST})
+    public void bill_total(
             HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String applyid
-    		) {
-		RpcResponseDTO<String> rpcResult = userWalletRpcService.withdrawApplyStatus(uid, applyid);
+            HttpServletResponse response) {
+		RpcResponseDTO<String> rpcResult = userWalletRpcService.billTotal(uid, applyid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}

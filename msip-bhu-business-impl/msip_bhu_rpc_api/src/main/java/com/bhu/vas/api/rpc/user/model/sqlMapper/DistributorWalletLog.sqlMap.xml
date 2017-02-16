@@ -253,7 +253,7 @@
 	</select>
 
 	<select id="bhuAccountIncome" resultMap="bhuIncome" parameterType="String">
-		SELECT <include refid="modelBHUAccountIncomeColumns" />  FROM( SELECT format(sum(cash), 2) amount,date_format(updated_at, '%y-%m-%d') time FROM	t_vas_users_wallet_log_distributor
+		SELECT <include refid="modelBHUAccountIncomeColumns" />  FROM( SELECT format(sum(cash), 2) amount,date_format(updated_at, '%Y-%m-%d') time FROM	t_vas_users_wallet_log_distributor
 		WHERE uid = '110' AND updated_at BETWEEN #{pre_day} AND #{today} GROUP BY updated_at ) as t GROUP BY time
 	</select>
 

@@ -403,8 +403,8 @@
 	</select>
 	
 	<select id="userAccountIncome" resultType="userIncome" parameterType="String">
-		SELECT <include refid="modelUserAccountIncomeColumns" /> FROM	(SELECT	format(sum(cash), 2) AS cash, date_format(updated_at, '%y-%m-%d') time FROM	t_vas_users_wallet_log
-		WHERE updated_at BETWEEN #{pre_day} AND #{today} AND	(transmode = 'SDP'	OR transmode = 'DWP' OR transmode = 'RFD') GROUP BY time) AS t
+		SELECT <include refid="modelUserAccountIncomeColumns" /> FROM	(SELECT	format(sum(cash), 2) AS cash, date_format(updated_at, '%Y-%m-%d') time FROM	t_vas_users_wallet_log
+		WHERE updated_at BETWEEN #{pre_day} AND #{today} AND	(transmode = 'SDP'	OR transmode = 'DWP' OR (transmode = 'RFD' AND transtype ='A2O')) GROUP BY time) AS t
 		GROUP BY time
 	</select>
 	
