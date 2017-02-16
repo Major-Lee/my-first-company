@@ -36,7 +36,7 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 		int uid = entity.getUid();
 		int result = 1;
 		if(uid< 80000 && uid >80999){
-			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), 0.3, UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null);
+			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), 0.3d, UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null);
 		}
 		if(cpmDto.getMac() != null && result == 0){
 			//TODO 分润
