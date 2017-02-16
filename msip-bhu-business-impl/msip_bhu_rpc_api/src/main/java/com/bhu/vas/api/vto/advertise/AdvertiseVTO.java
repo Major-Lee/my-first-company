@@ -6,6 +6,7 @@ import java.util.Date;
 public class AdvertiseVTO implements java.io.Serializable{
 	private String id;
 	private String uid;
+	private String nick;
 	private int type;
 	private int tag;
 	private int top = -1;//-1：默认 1：置顶  0：取消置顶
@@ -40,7 +41,12 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private long comment_sum;
 	private Date create_at;
 	
-	
+	public String getNick() {
+		return nick;
+	}
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
 	public Date getCreate_at() {
 		return create_at;
 	}
