@@ -1,8 +1,5 @@
 package com.bhu.vas.business.ds.user.facade;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -31,18 +28,7 @@ public class UserConsumptiveWalletFacadeService{
 	@Resource
 	private UserService userService;
 	
-	private Map<String,String> lockMap = new HashMap<>();
-	
-	private synchronized String lockObjectFetch(int uid){
-		String lockKey = String.valueOf(uid);
-		if(!lockMap.containsKey(lockKey)){
-			lockMap.put(lockKey, lockKey);
-			return lockKey;
-		}else{
-			return lockMap.get(lockKey);
-		}
-	}
-	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
+	public int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
 				transMode, transType,
 				rmoney, cash, desc, memo);
@@ -68,7 +54,6 @@ public class UserConsumptiveWalletFacadeService{
 	
 	
 	/**
-	 * 对于同一uid进行synchronized操作
 	 * @param uid
 	 * @return
 	 */

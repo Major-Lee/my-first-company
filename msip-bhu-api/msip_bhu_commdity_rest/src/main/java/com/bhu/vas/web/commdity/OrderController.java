@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.CommdityOrderCommonVTO;
 import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
@@ -24,7 +25,6 @@ import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
-import com.bhu.vas.api.dto.commdity.TechServiceOrderVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -641,14 +641,14 @@ public void hot_play_paymenturl(
 		String user_agent = request.getHeader("User-Agent");
 		Locale locale = BusinessWebHelper.getLocale(request);	
 		//生成订单
-		RpcResponseDTO<TechServiceOrderVTO> rpcResult = orderRpcService.createTechServiceOrder(commdityid, uid, macs, 
+		RpcResponseDTO<CommdityOrderCommonVTO> rpcResult = orderRpcService.createTechServiceOrder(commdityid, uid, macs, 
 				payment_type, channel, user_agent);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}	
 		
-		TechServiceOrderVTO order_vto = rpcResult.getPayload();
+		CommdityOrderCommonVTO order_vto = rpcResult.getPayload();
 		String orderid = order_vto.getOrderid();
 		String order_amount = order_vto.getAmount();
 		Integer appid = order_vto.getAppid();
@@ -677,5 +677,61 @@ public void hot_play_paymenturl(
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
-			
+	
+	
+
+	@ResponseBody()
+	@RequestMapping(value="/query/balance/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_balance_paymenturl(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) Integer commdityid,
+			@RequestParam(required = true) String payment_type,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "0") String version,
+			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
+			) {
+		long start = System.currentTimeMillis();
+		
+		String user_agent = request.getHeader("User-Agent");
+		Locale locale = BusinessWebHelper.getLocale(request);	
+		//生成订单
+		RpcResponseDTO<CommdityOrderCommonVTO> rpcResult = orderRpcService.createRechargeCashOrder(commdityid, uid, 
+				payment_type, channel, context, user_agent);
+		if(rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
+			return;
+		}
+		
+		CommdityOrderCommonVTO order_vto = rpcResult.getPayload();
+		String orderid = order_vto.getOrderid();
+		String order_amount = order_vto.getAmount();
+		Integer appid = order_vto.getAppid();
+		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
+		String requestIp = WebHelper.getRemoteAddr(request);
+		
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
+				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,goods_name,"20m");
+		if(rcp_dto == null){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
+			return;
+		}
+		if(!rcp_dto.isSuccess()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
+			return;
+		}
+		logger.info(String.format("query_balance_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, commdityid, requestIp,
+				(System.currentTimeMillis() - start)+"ms",goods_name));
+		logger.info(String.format("query_balance_paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
+		
+		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
+		retDto.setId(order_vto.getOrderid());
+		retDto.setThird_payinfo(rcp_dto.getParams());
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
+	}
 }

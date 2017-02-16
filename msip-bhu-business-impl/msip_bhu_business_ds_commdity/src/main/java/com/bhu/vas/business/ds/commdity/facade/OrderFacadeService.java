@@ -30,6 +30,8 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
+import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
+import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
@@ -48,6 +50,7 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -81,8 +84,12 @@ public class OrderFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
 	/**
 	 * 查询最近的一条满足条件的订单
 	 * 主要条件为umac
@@ -551,11 +558,57 @@ public class OrderFacadeService {
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
-				logger.info(String.format("RechargeVCurrencyOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				logger.info(String.format("orderPaymentFinishedDontDeliver successed deliver notify: orderid[%s]", orderid));
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
 				changed_process_status = OrderProcessStatus.PayFailured.getKey();
 			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	public Order rechargeConsumerWalletOrderPaymentCompletedNotify(boolean success, Order order, String paymented_ds,
+			String payment_type, String payment_proxy_type){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			Integer order_status = order.getStatus();
+			if(!OrderHelper.lte_notpay(order_status)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
+			}
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+			
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.PaySuccessed.getKey();
+				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+				
+				double cash = Double.parseDouble(order.getAmount());
+				int deliver_notify_ret = userConsumptiveWalletFacadeService.userConsumptiveWalletInOutWithProcedure(order.getUid(), 
+						orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
+						UConsumptiveWalletTransType.Recharge2C, cash, cash, "充值余额"+cash+"元", "充值余额"+cash+"元");
+				if(deliver_notify_ret == 0){
+					logger.info(String.format("uid[%s] 充值余额 %s 元成功.",order.getUid(), cash));
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+				}
+				
+				logger.info(String.format("rechargeConsumerWalletOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+			
 		}catch(Exception ex){
 			throw ex; 
 		}finally{
@@ -1339,6 +1392,26 @@ public class OrderFacadeService {
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
+		orderService.insert(order);
+		return order;
+	}
+
+	public Order createRechargeCashOrder(Commdity commdity, Integer uid, String payment_type, Integer channel,
+			String context, String user_agent) {
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.BHU_PREPAID_BUSINESS.getKey());
+		order.setChannel(channel);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setUser_agent(user_agent);
+		order.setContext(context);
+		if (uid != null)
+			order.setUid(uid);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(commdity.getPrice());
 		orderService.insert(order);
 		return order;
 	}
