@@ -5,6 +5,7 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class AdvertiseVTO implements java.io.Serializable{
 	private String id;
+	private String uid;
 	private int type;
 	private int tag;
 	private int top = -1;//-1：默认 1：置顶  0：取消置顶
@@ -55,6 +56,12 @@ public class AdvertiseVTO implements java.io.Serializable{
 	//可取消标识
 	private boolean escapeFlag=false;
 	
+	public String getUid() {
+		return uid;
+	}
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 	public boolean isEscapeFlag() {
 		return escapeFlag;
 	}

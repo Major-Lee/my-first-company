@@ -784,6 +784,7 @@ public class AdvertiseUnitFacadeService {
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
+								vto.setUid(doc.getU_id());
 								vto.setType(doc.getA_type());
 								vto.setTitle(doc.getA_title());
 								vto.setState(doc.getA_state());
@@ -991,6 +992,7 @@ public class AdvertiseUnitFacadeService {
 					for(AdvertiseDocument doc : searchDocuments){
 						vto = new AdvertiseVTO();
 						vto.setId(doc.getId());
+						vto.setUid(doc.getU_id());
 						vto.setType(doc.getA_type());
 						vto.setTitle(doc.getA_title());
 						vto.setState(doc.getA_state());
