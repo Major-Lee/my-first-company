@@ -266,7 +266,15 @@ public class AdvertiseUnitFacadeService {
 			advertiseDataSearchService.refresh(true);
 			
 			if(!isAdmin){
-				int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				if(executeRet != 1){
+					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
+					if(Double.valueOf(balance) < 1){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+					}else{
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+					}
+				}
 			}
 			
 			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
@@ -849,7 +857,9 @@ public class AdvertiseUnitFacadeService {
 		
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(adid);
 		Advertise advertise = advertiseService.getById(adid);
-		
+		if(advertise.getUid() !=uid){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+		}
 		if(advertise == null || advertise.getState() != BusinessEnumType.AdvertiseStateType.OnPublish.getType()){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
 		}
@@ -872,9 +882,17 @@ public class AdvertiseUnitFacadeService {
 		}else if (isRefresh){//刷新
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				if(executeRet != 1){
+					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
+					if(Double.valueOf(balance) < 1){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+					}else{
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+					}
+				}
 			}
-			
+
 			if(topState == 1){
 				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
 						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));

@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.advertise.AdvertiseCPMDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.model.async.advertise.BatchAdvertiseCPMNotifyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
@@ -37,6 +40,14 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 		int result = 1;
 		if(uid< 80000 && uid >80999){
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), 0.3d, UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null);
+			if(result != 1){
+				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
+				if(Double.valueOf(balance) < 1){
+					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+				}else{
+					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+				}
+			}
 		}
 		if(cpmDto.getMac() != null && result == 0){
 			//TODO 分润
