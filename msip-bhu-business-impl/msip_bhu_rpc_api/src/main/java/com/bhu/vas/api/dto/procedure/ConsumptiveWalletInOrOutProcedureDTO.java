@@ -3,7 +3,6 @@ package com.bhu.vas.api.dto.procedure;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;

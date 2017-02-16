@@ -14,6 +14,7 @@ import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * @author fengshibo
@@ -28,7 +29,7 @@ public class UserConsumptiveWalletFacadeService{
 	@Resource
 	private UserService userService;
 	
-	public int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
+	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
 				transMode, transType,
 				rmoney, cash, desc, memo);
@@ -65,6 +66,15 @@ public class UserConsumptiveWalletFacadeService{
 	public String getUserCash(int uid){
 		UserConsumptiveWallet userWallet = userWallet(uid);
 		return ArithHelper.longCurrencyToDouble(userWallet.getCash(), BusinessRuntimeConfiguration.WalletDataBaseDegree)+"";
+	}
+	
+	public int rechargeConsumptiveWalletCash(int uid, String amount, String orderid, String desc){
+		logger.info(String.format("rechargeConsumptiveWalletCash uid[%s] amount[%s]"
+				+ "orderid[%s] desc[%s]", uid, amount, orderid, desc));
+		double cash = Double.parseDouble(amount);
+		return userConsumptiveWalletInOutWithProcedure(uid, 
+				orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
+				UConsumptiveWalletTransType.Recharge2C, cash, cash, desc, StringHelper.EMPTY_STRING_GAP);
 	}
 	
 }

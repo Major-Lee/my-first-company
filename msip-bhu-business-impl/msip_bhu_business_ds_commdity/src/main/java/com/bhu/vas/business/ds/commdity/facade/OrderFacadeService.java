@@ -30,8 +30,6 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
-import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
-import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
@@ -593,12 +591,10 @@ public class OrderFacadeService {
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 				
-				double cash = Double.parseDouble(order.getAmount());
-				int deliver_notify_ret = userConsumptiveWalletFacadeService.userConsumptiveWalletInOutWithProcedure(order.getUid(), 
-						orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
-						UConsumptiveWalletTransType.Recharge2C, cash, cash, "充值余额"+cash+"元", "充值余额"+cash+"元");
+				int deliver_notify_ret = userConsumptiveWalletFacadeService.rechargeConsumptiveWalletCash(order.getUid(), 
+						order.getAmount(), orderid, "充值余额 "+order.getAmount()+"元");
 				if(deliver_notify_ret == 0){
-					logger.info(String.format("uid[%s] 充值余额 %s 元成功.",order.getUid(), cash));
+					logger.info(String.format("uid[%s] 充值余额 %s 元成功.",order.getUid(), order.getAmount()));
 					changed_status = OrderStatus.DeliverCompleted.getKey();
 					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
 				}
