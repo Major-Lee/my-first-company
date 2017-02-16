@@ -578,6 +578,16 @@ public class AdvertiseUnitFacadeService {
 		Advertise advertise=advertiseService.getById(advertiseId);
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
 		
+		if(userFacadeService.isAdminByUid(uid)){
+			if(!userFacadeService.isShamUser(advertise.getUid())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+			}
+		}else{
+			if(uid != advertise.getUid()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+			}
+		}
+		
 		if(advertise == null || doc == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
 		}
