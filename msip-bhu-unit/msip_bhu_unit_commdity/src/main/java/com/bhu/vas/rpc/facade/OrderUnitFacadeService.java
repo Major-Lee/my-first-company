@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.CommdityOrderCommonVTO;
 import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
@@ -35,7 +36,6 @@ import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.TechServiceDataDTO;
-import com.bhu.vas.api.dto.commdity.TechServiceOrderVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -1268,7 +1268,7 @@ public class OrderUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<TechServiceOrderVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
+	public RpcResponseDTO<CommdityOrderCommonVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
 			String payment_type, Integer channel, String user_agent) {
 		try{
 			if (StringHelper.isEmpty(macs)){
@@ -1283,7 +1283,7 @@ public class OrderUnitFacadeService {
 			String context = JsonHelper.getJSONString(TechServiceDataDTO.builder(macsList));
 			Order order = orderFacadeService.createTechServiceOrder(uid, commdity, null, WifiDeviceSharedealConfigs.Default_ConfigsWifiID,amount,
 					payment_type, channel, user_agent, context);
-			TechServiceOrderVTO vto = new TechServiceOrderVTO();
+			CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
 			vto.setAmount(amount);
 			vto.setAppid(order.getAppid());
 			vto.setOrderid(order.getId());
@@ -1294,6 +1294,27 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
 		}catch(Exception ex){
 			logger.error("createTechServiceOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
+			String payment_type, Integer channel, String context, String user_agent) {
+		try{
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			Order order = orderFacadeService.createRechargeCashOrder(commdity, uid, payment_type, 
+					channel, context, user_agent);
+			CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
+			vto.setAmount(order.getAmount());
+			vto.setAppid(order.getAppid());
+			vto.setOrderid(order.getId());
+			vto.setGoods_name(commdity.getName());
+			vto.setName_key(commdity.getName_key());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException be){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
+		}catch(Exception ex){
+			logger.error("createRechargeCashOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

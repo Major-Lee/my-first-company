@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.commdity.iservice;
 
+import com.bhu.vas.api.dto.commdity.CommdityOrderCommonVTO;
 import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
@@ -12,7 +13,6 @@ import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
-import com.bhu.vas.api.dto.commdity.TechServiceOrderVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
@@ -84,6 +84,9 @@ public interface IOrderRpcService {
 	
 	public RpcResponseDTO<Boolean> doOrderSharedealCancel(int uid, String orderid, String remark);
 
-	public RpcResponseDTO<TechServiceOrderVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
+	public RpcResponseDTO<CommdityOrderCommonVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
 			String payment_type, Integer channel, String user_agent);
+
+	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
+			String payment_type, Integer channel, String context, String user_agent);
 }

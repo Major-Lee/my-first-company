@@ -678,6 +678,7 @@ public class BusinessEnumType {
 		RewardInternetLimit(0,"打赏上网","打赏上网"),
 		HotPlayAdvLimit(30,"全城热播广告商品","全城热播广告商品"),
 		SoftServiceLimit(40,"软件服务商品","软件服务商品"),
+		ConsumerWalletLimit(50,"消费者钱包","消费者钱包"),
 		;
 		private Integer category;
 		private String name;

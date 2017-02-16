@@ -25,7 +25,6 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
-import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
@@ -227,7 +226,10 @@ public class AsyncOrderPaymentNotifyService{
 						//op系统的saas服务，通过异步消息通知asyncbackend做发货处理
 						asyncDeliverMessageService.sendOrderDevlierRequestActionMessage(orderid);
 					}
-				} else {
+				}else if(BusinessEnumType.CommdityCategory.ConsumerWalletLimit.getCategory().equals(order.getType())){
+					orderFacadeService.rechargeConsumerWalletOrderPaymentCompletedNotify(rpcn_dto.isSuccess(), order, rpcn_dto.getPaymented_ds(), 
+							rpcn_dto.getPayment_type(), rpcn_dto.getPayment_proxy_type());
+				}else {
 					rechargeVCurrencyOrderReceiptHandle(order, rpcn_dto);
 				}
 				break;
