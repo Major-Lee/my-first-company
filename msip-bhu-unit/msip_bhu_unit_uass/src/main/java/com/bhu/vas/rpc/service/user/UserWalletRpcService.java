@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.user;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -201,6 +202,13 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize) {
 		logger.info(String.format("pagebillPlanPages with startTime[%s] endTime[%s] pn[%s] ps[%s]",startTime,endTime,pageNo,pageSize));
 		return userWalletUnitFacadeService.walletbillPlanPages(startTime, endTime, pageNo, pageSize);
+	}
+
+	@Override
+	public Map<String, Object> billTotal() {
+		logger.info(String.format("billTotal..."));
+		return userWalletUnitFacadeService.billTotal();
+	
 	}
 	
 }

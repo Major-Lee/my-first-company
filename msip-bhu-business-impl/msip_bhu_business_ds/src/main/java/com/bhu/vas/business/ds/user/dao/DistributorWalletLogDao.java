@@ -5,9 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.bhu.vas.api.rpc.distributor.model.DistributorWalletLog;
-import com.bhu.vas.api.rpc.user.model.UserWalletLog;
-import com.smartwork.msip.business.abstractmsd.dao.AbstractSharedealDao;
+import com.bhu.vas.api.rpc.user.model.DistributorWalletLog;
+import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 /**
  * @Editor Eclipse

@@ -71,11 +71,12 @@ public class ConsoleBillController extends BaseController {
     public void bill_total(
             HttpServletRequest request,
             HttpServletResponse response) {
-		RpcResponseDTO<String> rpcResult = userWalletRpcService.billTotal(uid, applyid);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}
+    	Map<String,Object> rpcResult = new HashMap<String,Object>();
+    	rpcResult =  userWalletRpcService.billTotal();
+    	if(rpcResult != null)
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL, BusinessWebHelper.getLocale(request)));
+    
     }
 }

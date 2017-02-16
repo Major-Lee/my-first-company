@@ -9,9 +9,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.distributor.model.DistributorWalletLog;
-import com.bhu.vas.business.ds.distributor.dao.DistributorWalletLogDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractSharedealService;
+import com.bhu.vas.api.rpc.user.model.DistributorWalletLog;
+import com.bhu.vas.business.ds.user.dao.DistributorWalletLogDao;
+import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
 /**
  * @Editor Eclipse

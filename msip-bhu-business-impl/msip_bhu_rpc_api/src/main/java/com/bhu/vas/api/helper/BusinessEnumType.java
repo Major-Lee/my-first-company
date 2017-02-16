@@ -1637,9 +1637,69 @@ public class BusinessEnumType {
 		}
 		
 	}
+	public enum PaymentThirdType{
+		NOW(0,"now","现在支付"),
+		HEE(1,"hee","汇元支付"),
+		PAYPAL(2,"paypal","贝宝支付"),
+		ALIPAY(3,"alipay","支付宝支付"),
+		WEIXIN(4,"weixin","微信支付"),
+		WIFIMANAGE(5,"wifiManage","WiFi管家"),
+		WIFIHELPER(6,"wifiHelper","WiFi助手"),
+		;
+		private Integer channel;
+		private String name;
+		private String name_zh;
+		
+		
+		private PaymentThirdType(Integer channel,String name,String name_zh){
+			this.channel = channel;
+			this.name = name;
+			this.name_zh = name_zh;
+		}
+		
+		
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getName_zh() {
+			return name_zh;
+		}
+
+
+		public void setName_zh(String name_zh) {
+			this.name_zh = name_zh;
+		}
+
+
+		public Integer getChannel() {
+			return channel;
+		}
+		
+		
+		public void setChannel(Integer channel) {
+			this.channel = channel;
+		}
+		
+		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
+			if(msgType == null || timPushMsgType == null) return false;
+			
+			if(msgType.equals(timPushMsgType.getMsgType())){
+				return true;
+			}
+			return false;
+		}
+	}
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
 		System.out.println(OAuthType.fromType("腾讯微信"));
+		
+		String third = PaymentThirdType.NOW.name_zh;
+		System.out.println(third);
 	}
 }
