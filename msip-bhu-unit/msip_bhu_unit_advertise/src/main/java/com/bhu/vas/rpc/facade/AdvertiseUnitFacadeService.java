@@ -992,7 +992,7 @@ public class AdvertiseUnitFacadeService {
 		AdvertiseUserDetailVTO vto = new AdvertiseUserDetailVTO();
 		vto.setTips(AdvertiseTipsHashService.getInstance().fetchAdTips(uid));
 		//用户钱包余额
-		vto.setBalance(0);
+		vto.setBalance(userConsumptiveWalletFacadeService.getUserCash(uid));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	

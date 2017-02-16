@@ -6,7 +6,7 @@ import java.util.Map;
 public class AdvertiseUserDetailVTO implements java.io.Serializable{
 	
 	private Map<String, String> tips;
-	private double balance;
+	private String balance;
 
 	public Map<String, String> getTips() {
 		return tips;
@@ -14,10 +14,10 @@ public class AdvertiseUserDetailVTO implements java.io.Serializable{
 	public void setTips(Map<String, String> tips) {
 		this.tips = tips;
 	}
-	public double getBalance() {
+	public String getBalance() {
 		return balance;
 	}
-	public void setBalance(double balance) {
+	public void setBalance(String balance) {
 		this.balance = balance;
 	}
 }
