@@ -37,6 +37,7 @@ import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentThirdType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
@@ -2027,19 +2028,19 @@ public class UserWalletUnitFacadeService {
 					BillDayVTO billDay = new BillDayVTO();
 			    	billDay.setDate(dateT);
 			    	billDay.setAilpayA(alipay.getAmount()+"");
-			    	billDay.setAilpayN("支付宝支付");
+			    	billDay.setAilpayN(PaymentThirdType.ALIPAY.getName_zh());
 			    	billDay.setHeeA(hee.getAmount()+"");
-			    	billDay.setHeeN("汇元支付");
+			    	billDay.setHeeN(PaymentThirdType.HEE.getName_zh());
 			    	billDay.setPaypalA(paypal.getAmount()+"");
-			    	billDay.setPaypalN("贝宝支付");
-			    	billDay.setWifiManageN("wifi安全管家");
+			    	billDay.setPaypalN(PaymentThirdType.PAYPAL.getName_zh());
+			    	billDay.setWifiManageN(PaymentThirdType.WIFIMANAGE.getName_zh());
 			    	billDay.setWifiManageA(wifiManage.getAmount()+"");
 			    	billDay.setWeixinA(weixin.getAmount()+"");
-			    	billDay.setWeixinN("微信支付");
+			    	billDay.setWeixinN(PaymentThirdType.WEIXIN.getName_zh());
 			    	billDay.setWifiHelperA(wifiHelper.getAmount()+"");
-			    	billDay.setWifiHelperN("wifi助手");
+			    	billDay.setWifiHelperN(PaymentThirdType.WIFIHELPER.getName_zh());
 			    	billDay.setNowA(now.getAmount()+"");
-			    	billDay.setNowN("现在支付");
+			    	billDay.setNowN(PaymentThirdType.NOW.getName_zh());
 			    	String dayTotalBHUA = "0";
 			    	String dayTotalUserA = "0";
 			    	String dayTotalA = "0";
@@ -2080,6 +2081,10 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
+	public Map<String, Object> billTotal() {
+		
+		return null;
+	}
 	public static String sendPost(String url, String param) {
 		PrintWriter out = null;
 		BufferedReader in = null;
@@ -2119,9 +2124,5 @@ public class UserWalletUnitFacadeService {
 			}
 		}
 		return result;
-	}
-	public Map<String, Object> billTotal() {
-		
-		return null;
 	}
 }
