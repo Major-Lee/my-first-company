@@ -30,6 +30,8 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentChannelSatDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDetailDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -1970,11 +1972,10 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isBlank(endTime)){
 				endTime = DateTimeHelper.getDateTime(DateTimeHelper.DefalutFormatPattern);
 			}
-			RpcResponseDTO<BillVTO> result_pages = new RpcResponseDTO<BillVTO>();
 			
 			//获取该时间段内公司收益
 			Map<String,String> bhuIncomeMap = new HashMap<String,String>();
-			List<Map<String,Object>> bhuIncomeList = distributorWalletLogService.queryPlanInfo("2017-01-01",endTime);
+			List<Map<String,Object>> bhuIncomeList = distributorWalletLogService.queryPlanInfo(startTime,endTime);
 			if(bhuIncomeList != null){
 				for (int i = 0; i < bhuIncomeList.size(); i++) {
 					Map<String,Object> paltformInfoVTO = bhuIncomeList.get(i);
@@ -1987,7 +1988,7 @@ public class UserWalletUnitFacadeService {
 			
 			//获取该时间段内用户收益
 			Map<String,String> userIncomeMap = new HashMap<String,String>();
-			List<Object> userIncomeList = userWalletLogService.userAccountIncome("2017-01-01 00:00:00","2017-02-14 00:00:00");
+			List<Object> userIncomeList = userWalletLogService.userAccountIncome(startTime,endTime);
 			if(userIncomeList != null){
 				for (Object object : userIncomeList) {
 					UserIncome userIncome = (UserIncome) object;
@@ -1998,7 +1999,7 @@ public class UserWalletUnitFacadeService {
 			
 			//获取该时间段内平台收益
 			String param = "startTime="+startTime+"&endTime="+endTime;
-			Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", param);
+			Object response = sendPost("http://pay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
 			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
 			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
 				
@@ -2014,31 +2015,30 @@ public class UserWalletUnitFacadeService {
 				for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
 					System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
 					String info =paymentChannelStatVTO.getInfo();
-					org.json.JSONObject infoJson  = new org.json.JSONObject(info);
-					org.json.JSONObject hee =  (org.json.JSONObject) infoJson.get("hee");
-					org.json.JSONObject now =  (org.json.JSONObject) infoJson.get("now");
-					org.json.JSONObject paypal =  (org.json.JSONObject) infoJson.get("paypal");
-					org.json.JSONObject wifiManage =  (org.json.JSONObject) infoJson.get("wifiManage");
-					org.json.JSONObject wifiHelper =  (org.json.JSONObject) infoJson.get("wifiHelper");
-					org.json.JSONObject weixin =  (org.json.JSONObject) infoJson.get("weixin");
-					org.json.JSONObject alipay =  (org.json.JSONObject) infoJson.get("alipay");
-					System.out.println(now.get("amount"));
+					ResponsePaymentInfoDTO paymentInfo = JsonHelper.getDTO(info, ResponsePaymentInfoDTO.class);
+					ResponsePaymentInfoDetailDTO hee =  paymentInfo.getHee();
+					ResponsePaymentInfoDetailDTO now =  paymentInfo.getNow();
+					ResponsePaymentInfoDetailDTO paypal =  paymentInfo.getPaypal();
+					ResponsePaymentInfoDetailDTO wifiManage =  paymentInfo.getWifiManage();
+					ResponsePaymentInfoDetailDTO wifiHelper =  paymentInfo.getWifiHelper();
+					ResponsePaymentInfoDetailDTO weixin =  paymentInfo.getWeixin();
+					ResponsePaymentInfoDetailDTO alipay =  paymentInfo.getAlipay();
 					String dateT = paymentChannelStatVTO.getTimeD();
 					BillDayVTO billDay = new BillDayVTO();
 			    	billDay.setDate(dateT);
-			    	billDay.setAilpayA(alipay.get("amount")+"");
+			    	billDay.setAilpayA(alipay.getAmount()+"");
 			    	billDay.setAilpayN("支付宝支付");
-			    	billDay.setHeeA(hee.get("amount")+"");
+			    	billDay.setHeeA(hee.getAmount()+"");
 			    	billDay.setHeeN("汇元支付");
-			    	billDay.setPaypalA(paypal.get("amount")+"");
+			    	billDay.setPaypalA(paypal.getAmount()+"");
 			    	billDay.setPaypalN("贝宝支付");
 			    	billDay.setWifiManageN("wifi安全管家");
-			    	billDay.setWifiManageA(wifiManage.get("amount")+"");
-			    	billDay.setWeixinA(weixin.get("amount")+"");
+			    	billDay.setWifiManageA(wifiManage.getAmount()+"");
+			    	billDay.setWeixinA(weixin.getAmount()+"");
 			    	billDay.setWeixinN("微信支付");
-			    	billDay.setWifiHelperA(wifiHelper.get("amount")+"");
+			    	billDay.setWifiHelperA(wifiHelper.getAmount()+"");
 			    	billDay.setWifiHelperN("wifi助手");
-			    	billDay.setNowA(now.get("amount")+"");
+			    	billDay.setNowA(now.getAmount()+"");
 			    	billDay.setNowN("现在支付");
 			    	String dayTotalBHUA = "0";
 			    	String dayTotalUserA = "0";
@@ -2080,58 +2080,25 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Map<String,String> bhuIncomeMap = new HashMap<String,String>();
-		bhuIncomeMap.put("dd", "dd");
-		bhuIncomeMap.put("dd1", "dd1");
-		bhuIncomeMap.put("dd2", "dd2");
-		bhuIncomeMap.put("dd3", "dd3");
-		
-		System.out.println(bhuIncomeMap.get("dd1"));;
-//		String aa = "startTime=2017-02-11&endTime=2017-02-14";
-//		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest//channelStat/info", aa);
-//		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
-//		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
-//		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());
-//		String info = paymentChannelList.get(1).getInfo();
-//		
-//		org.json.JSONObject json;
-//		try {
-//			json = new org.json.JSONObject(info);
-//			org.json.JSONObject now =  (org.json.JSONObject) json.get("hee");
-//			//JSONObject jsons = new JSONObject(now);
-//			System.out.println(now.get("amount"));
-//		} catch (JSONException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-	}
 	public static String sendPost(String url, String param) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
 		try {
 			URL realUrl = new URL(url);
-			// 打开和URL之间的连接
 			URLConnection conn = realUrl.openConnection();
-			// 设置通用的请求属性
 			conn.setRequestProperty("accept", "*/*");
 			conn.setRequestProperty("Accept-Encoding", "utf-8");
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("user-agent",
 					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-			// 发送POST请求必须设置如下两行
-			conn.setConnectTimeout(2000);  
-			conn.setReadTimeout(3000);
+			conn.setConnectTimeout(9000);  
+			conn.setReadTimeout(10000);
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
-			// 获取URLConnection对象对应的输出流
 			out = new PrintWriter(conn.getOutputStream());
-			// 发送请求参数
 			out.print(param);
-			// flush输出流的缓冲
 			out.flush();
-			// 定义BufferedReader输入流来读取URL的响应
 			in = new BufferedReader(
 					new InputStreamReader(conn.getInputStream()));
 			String line;
@@ -2139,10 +2106,7 @@ public class UserWalletUnitFacadeService {
 				result += line;
 			}
 		} catch (Exception e) {
-			System.out.println("发送 POST 请求出现异常！" + e);
-			e.printStackTrace();
 		}
-		// 使用finally块来关闭输出流、输入流
 		finally {
 			try {
 				if (out != null) {
@@ -2152,9 +2116,12 @@ public class UserWalletUnitFacadeService {
 					in.close();
 				}
 			} catch (IOException ex) {
-				ex.printStackTrace();
 			}
 		}
 		return result;
+	}
+	public Map<String, Object> billTotal() {
+		
+		return null;
 	}
 }

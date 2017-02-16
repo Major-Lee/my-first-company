@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
@@ -167,6 +168,8 @@ public interface IUserWalletRpcService {
 			int pageNo, int pageSize);
 
 	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize);
+
+	public Map<String, Object> billTotal();
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号
