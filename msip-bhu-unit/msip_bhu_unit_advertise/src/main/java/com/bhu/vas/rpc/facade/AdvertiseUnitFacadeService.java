@@ -13,7 +13,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.alibaba.dubbo.container.page.PageHandler;
 import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
@@ -24,7 +23,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 import com.bhu.vas.api.vto.advertise.AdCommentVTO;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
@@ -70,6 +68,7 @@ import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
@@ -759,7 +758,7 @@ public class AdvertiseUnitFacadeService {
 		return positionVto;
 	}
 	
-	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages){
+	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages){
 		List<TailPage<AdvertiseVTO>> resultList = null;
 		if(messages == null || messages.length == 0){
 			resultList = Collections.emptyList();
@@ -814,7 +813,7 @@ public class AdvertiseUnitFacadeService {
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
-								vto.setTop(doc.getA_score() > 100000000000000L? 1:0);
+								vto.setTop(doc.getA_top());
 								vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
 								adids.add(doc.getId());
 								vtos.add(vto);
@@ -827,6 +826,8 @@ public class AdvertiseUnitFacadeService {
 								 vto1.setPv(portalPv.get(index));
 								 index++;
 							}
+							if(customize)
+								AdvertiseCPMListService.getInstance().AdCPMPosh(adids);
 						}
 					}
 				}else{
@@ -954,7 +955,7 @@ public class AdvertiseUnitFacadeService {
 				vto.setTime(tuple.getScore());
 				vtos.add(vto);
 			}
-			if(vtos.size() > ps*(pn+1)){
+			if(vtos.size() > ps*pn){
 				result.setSign(true);
 			}
 			result.setAdid(adid);
@@ -1019,7 +1020,7 @@ public class AdvertiseUnitFacadeService {
 						vto.setImage(doc.getA_image());
 						vto.setExtparams(doc.getA_extparams());
 						vto.setReject_reason(doc.getA_reject_reason());
-						vto.setTop(doc.getA_score() > 100000000000000L? 1:0);
+						vto.setTop(doc.getA_top());
 						vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
 						adids.add(doc.getId());
 						vtos.add(vto);

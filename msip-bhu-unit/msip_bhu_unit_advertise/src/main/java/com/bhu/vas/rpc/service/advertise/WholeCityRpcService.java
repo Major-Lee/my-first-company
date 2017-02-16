@@ -201,10 +201,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages) {
-		logger.info(String.format("fetchBySearchConditionMessages pageNo[%s] pageSize[%s] messages[%s]",pageNo,
-				pageSize,messages));
-		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(pageNo,pageSize,messages);
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages) {
+		logger.info(String.format("fetchBySearchConditionMessages pageNo[%s] pageSize[%s] messages[%s] customize[%s]",pageNo,
+				pageSize,customize,messages));
+		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(pageNo,pageSize,customize,messages);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	

@@ -118,7 +118,7 @@ public interface IAdvertiseRpcService{
 			double lon, String distances);
 
 	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(
-			int pageNo, int pageSize, String...messages);
+			int pageNo, int pageSize,boolean customize, String...messages);
 
 	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid,
 			boolean isTop, boolean isRefresh);
