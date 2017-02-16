@@ -904,7 +904,7 @@ public class AdvertiseUnitFacadeService {
 	}
 	
 	/**
-	 * 广告评论、点赞
+	 * 广告评论、回复
 	 * @param uid
 	 * @param adid
 	 * @param message
