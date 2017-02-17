@@ -833,7 +833,9 @@ public class AdvertiseUnitFacadeService {
 								vto.setReject_reason(doc.getA_reject_reason());
 								vto.setTop(doc.getA_top());
 								vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
-								adids.add(doc.getId());
+								if(doc.getA_top() == 1){
+									adids.add(doc.getId());
+								}
 								vtos.add(vto);
 							}
 							List<String> portalPv =  AdvertisePortalHashService.getInstance().queryAdvertisePV(adids);
