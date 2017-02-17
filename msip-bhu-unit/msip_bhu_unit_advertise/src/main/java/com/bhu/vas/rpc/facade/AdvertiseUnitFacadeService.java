@@ -259,6 +259,12 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
 			
+			String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
+			
+			if(!isAdmin && Double.valueOf(balance) < 1){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+			}
+			
 			Advertise smAd= advertiseService.insert(entity);
 			
 			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
@@ -268,7 +274,7 @@ public class AdvertiseUnitFacadeService {
 			if(!isAdmin){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
 				if(executeRet != 1){
-					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
+					balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 					if(Double.valueOf(balance) < 1){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 					}else{
@@ -881,8 +887,13 @@ public class AdvertiseUnitFacadeService {
 		long topScore = 100000000000000L;
 		int topState = doc.getA_top();
 		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
-
+		String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 		if(isTop){//置顶
+			
+			if(Double.valueOf(balance) < 0.3){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+			}
+			
 			if(topState == 1)
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
 			
@@ -897,7 +908,6 @@ public class AdvertiseUnitFacadeService {
 			if(!userFacadeService.isAdminByUid(uid)){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
 				if(executeRet != 1){
-					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 					if(Double.valueOf(balance) < 1){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 					}else{
