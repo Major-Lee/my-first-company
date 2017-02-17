@@ -21,14 +21,14 @@
 	    	id,
 	    	cash,
 	    	created_at,
-	    	updated_at,
+	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	cash,
 	    	created_at,
-	    	updated_at,
+	    	updated_at
 	    ]]>
 	</sql>   
 	
@@ -36,7 +36,7 @@
 			#{id},
 	    	#{cash},
 	    	#{created_at},
-	    	#{updated_at},
+	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
