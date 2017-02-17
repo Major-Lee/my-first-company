@@ -41,6 +41,7 @@ public class ConsoleBillController extends BaseController {
     public void fetch_bill(
             HttpServletRequest request,
             HttpServletResponse response,
+            @RequestParam(required = false) int uid,
             @RequestParam(required = false, defaultValue = "", value = "startTime") String startTime,
             @RequestParam(required = false, defaultValue = "", value = "endTime") String endTime,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
