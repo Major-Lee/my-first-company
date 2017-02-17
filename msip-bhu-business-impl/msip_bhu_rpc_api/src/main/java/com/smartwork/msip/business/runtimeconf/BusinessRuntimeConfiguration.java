@@ -210,7 +210,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 //        	Default_Range_Cash_Pc_For_Month = PropertiesHelper.getString("safesecure.range.cash.pc.month", paramProperties, Default_Range_Cash_Pc_For_Month);
 //        	Default_Range_Cash_Mobile_For_Month = PropertiesHelper.getString("safesecure.range.cash.mobile.month", paramProperties, Default_Range_Cash_Mobile_For_Month);
         	
-        	
+        	RechargeBalance_Min_Amount = PropertiesHelper.getInt("commdity.recharge.minamount", paramProperties, RechargeBalance_Min_Amount);
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
     		
     		if(StringUtils.isNotEmpty(commdityWhiteListStr)){
@@ -488,7 +488,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int Soft_Service_Noapp_Commdity_ID = 25;
 	public static final int Soft_Service_CanbeTurnoff_Commdity_ID = 26;
 	public static final int RechargeBalance_OtherAmount_Commdity_ID = 33;
-	public static final int RechargeBalance_Min_Amount = 10;
+	public static int RechargeBalance_Min_Amount = 10;
 	
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";

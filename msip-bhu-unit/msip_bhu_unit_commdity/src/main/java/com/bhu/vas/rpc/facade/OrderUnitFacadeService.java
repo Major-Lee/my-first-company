@@ -1302,7 +1302,19 @@ public class OrderUnitFacadeService {
 			String payment_type, String amount, Integer channel, String context, String user_agent) {
 		try{
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
-			Order order = orderFacadeService.createRechargeCashOrder(commdity, uid, payment_type, amount,
+			if (commdity.getId().intValue() == BusinessRuntimeConfiguration.RechargeBalance_OtherAmount_Commdity_ID){
+				if (StringHelper.isEmpty(amount)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,
+							new String[]{"amount"});
+				}else{
+					if (Double.parseDouble(amount) < BusinessRuntimeConfiguration.RechargeBalance_Min_Amount){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_LITTLE,
+								new String[]{BusinessRuntimeConfiguration.RechargeBalance_Min_Amount+""});
+					}
+				}
+				commdity.setPrice(amount);
+			}
+			Order order = orderFacadeService.createRechargeCashOrder(commdity, uid, payment_type,
 					channel, context, user_agent);
 			CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
 			vto.setAmount(order.getAmount());
