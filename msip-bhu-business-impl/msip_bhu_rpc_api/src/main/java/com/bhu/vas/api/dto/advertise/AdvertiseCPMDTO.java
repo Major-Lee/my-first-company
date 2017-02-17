@@ -4,6 +4,7 @@ package com.bhu.vas.api.dto.advertise;
 public class AdvertiseCPMDTO implements java.io.Serializable{
 	private String adid;
 	private String mac;
+	private String umac;
 	
 	public String getAdid() {
 		return adid;
@@ -17,4 +18,11 @@ public class AdvertiseCPMDTO implements java.io.Serializable{
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
+	public String getUmac() {
+		return umac;
+	}
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
+	
 }

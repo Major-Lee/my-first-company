@@ -8,6 +8,7 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
+import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 
 /**
  * 钱包出入账存储过程定义
@@ -36,6 +37,8 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	private String pdescription;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String pmemo;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private Long cpmid;
 	
 	public int getPuserid() {
 		return puserid;
@@ -101,6 +104,13 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 		this.pcash = pcash;
 	}
 
+	public Long getCpmid() {
+		return cpmid;
+	}
+
+	public void setCpmid(Long cpmid) {
+		this.cpmid = cpmid;
+	}
 
 	public String getPdescription() {
 		return pdescription;
@@ -141,6 +151,7 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 		dto.setPrmoney("0");
 		dto.setPcash("0");
 		dto.setPdescription(description);
+		dto.setCpmid(Long.valueOf(0));
 		switch(transMode){
 			case CashPayment://消费
 				dto.setPcash(String.valueOf(cashLong));

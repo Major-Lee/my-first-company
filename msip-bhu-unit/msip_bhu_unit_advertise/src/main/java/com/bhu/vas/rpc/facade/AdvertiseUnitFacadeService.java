@@ -266,7 +266,8 @@ public class AdvertiseUnitFacadeService {
 			advertiseDataSearchService.refresh(true);
 			
 			if(!isAdmin){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, 
+						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 1){
 					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 					if(Double.valueOf(balance) < 1){
@@ -893,7 +894,8 @@ public class AdvertiseUnitFacadeService {
 		}else if (isRefresh){//刷新
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, String.format("createNewAdvertise uid[%s]", uid), null);
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, 
+						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 1){
 					String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 					if(Double.valueOf(balance) < 1){

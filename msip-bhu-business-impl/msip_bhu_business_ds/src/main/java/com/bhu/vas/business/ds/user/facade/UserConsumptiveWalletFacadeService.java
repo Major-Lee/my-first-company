@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -29,14 +31,16 @@ public class UserConsumptiveWalletFacadeService{
 	@Resource
 	private UserService userService;
 	
-	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,double rmoney,double cash,String desc,String memo){
+	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,
+			double rmoney,double cash,String desc,String memo, Map<String, Long>outParam){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
 				transMode, transType,
 				rmoney, cash, desc, memo);
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
 		if(executeRet == 0){
-			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
-					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
+			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s] cpmid[%s]",
+					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo, processorDTO.getCpmid()));
+			outParam.put("cpmid", processorDTO.getCpmid());
 		}else if(executeRet == 1){
 			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
@@ -47,10 +51,10 @@ public class UserConsumptiveWalletFacadeService{
 		return executeRet;
 	}
 	
-	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String desc, String memo){
+	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String desc, String memo, Map<String, Long>outParam){
 		logger.info(String.format("userPurchaseGoods uid[%s] orderid[%s] cash[%s] transType[%s] desc[%s] memo[%s].", uid, orderid, cash, transType, desc, memo));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		return userConsumptiveWalletInOutWithProcedure(uid, orderid,UConsumptiveWalletTransMode.CashPayment, transType, cash, cash,desc, memo);
+		return userConsumptiveWalletInOutWithProcedure(uid, orderid,UConsumptiveWalletTransMode.CashPayment, transType, cash, cash,desc, memo, outParam);
 	}
 	
 	
@@ -74,7 +78,7 @@ public class UserConsumptiveWalletFacadeService{
 		double cash = Double.parseDouble(amount);
 		return userConsumptiveWalletInOutWithProcedure(uid, 
 				orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
-				UConsumptiveWalletTransType.Recharge2C, cash, cash, desc, StringHelper.EMPTY_STRING_GAP);
+				UConsumptiveWalletTransType.Recharge2C, cash, cash, desc, StringHelper.EMPTY_STRING_GAP, null);
 	}
 	
 }

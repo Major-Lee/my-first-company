@@ -312,6 +312,7 @@ public class BusinessEnumType {
 		Advertise2C("A2C",	 "全城热播"),
 		Advertise2O("A2O",	 "全城热播(退费)"),
 		QualityGoods2C("Q2C",	 "良品分成"),
+		CPM2C("CPM",	 "CPM分成"),
 		;
 		
 		private String key;
@@ -1088,6 +1089,7 @@ public class BusinessEnumType {
 	public static String unknownPaymentType = "未知支付";
 	public static String templateRedpacketPaymentDesc = "通过%s%s打赏";
 	public static String templateQualityGoodsSaleDesc = "通过%s%s良品分成";
+	public static String templateCpmDesc = "CPM分成";
 	public static String templateReChargingRealmoney2VCurrencyPaymentDesc = "通过%s%s虎钻充值";
 	public static String advertiseSharedealDesc = "全城热播分成";
 	/**
