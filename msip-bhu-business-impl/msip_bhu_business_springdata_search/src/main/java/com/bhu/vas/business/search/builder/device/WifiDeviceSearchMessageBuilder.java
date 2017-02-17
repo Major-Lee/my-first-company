@@ -377,4 +377,21 @@ public class WifiDeviceSearchMessageBuilder {
 		if(searchConditionMessage == null) return null;
 		return JsonHelper.getJSONString(searchConditionMessage);
 	}
+	public static void main(String[] args) {
+		
+		SearchConditionGeopointDistancePayload geopointDistancePayload = SearchConditionGeopointDistancePayload.buildPayload(
+				"222", 1231, 1231, "20m");
+		
+		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
+		SearchCondition sc_d_ms_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
+				Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), "海淀");
+		SearchCondition sc_geopointDistance = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
+				Field.D_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
+				JsonHelper.getJSONString(geopointDistancePayload));
+		
+		pack.addChildSearchCondtions(sc_d_ms_distrcy);
+		pack.addChildSearchCondtions(sc_geopointDistance);
+		System.out.println(JsonHelper.getJSONString(pack));
+
+	}
 }
