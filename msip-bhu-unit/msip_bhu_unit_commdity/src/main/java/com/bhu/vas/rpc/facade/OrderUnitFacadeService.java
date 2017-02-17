@@ -1299,10 +1299,10 @@ public class OrderUnitFacadeService {
 	}
 
 	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
-			String payment_type, Integer channel, String context, String user_agent) {
+			String payment_type, String amount, Integer channel, String context, String user_agent) {
 		try{
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
-			Order order = orderFacadeService.createRechargeCashOrder(commdity, uid, payment_type, 
+			Order order = orderFacadeService.createRechargeCashOrder(commdity, uid, payment_type, amount,
 					channel, context, user_agent);
 			CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
 			vto.setAmount(order.getAmount());

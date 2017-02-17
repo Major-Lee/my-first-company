@@ -688,6 +688,7 @@ public void hot_play_paymenturl(
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) String payment_type,
+			@RequestParam(required = false) String amount,
 			@RequestParam(required = false, defaultValue = "0") Integer channel,
 			@RequestParam(required = false) String context,
 			@RequestParam(required = false, defaultValue = "0") String version,
@@ -699,7 +700,7 @@ public void hot_play_paymenturl(
 		Locale locale = BusinessWebHelper.getLocale(request);	
 		//生成订单
 		RpcResponseDTO<CommdityOrderCommonVTO> rpcResult = orderRpcService.createRechargeCashOrder(commdityid, uid, 
-				payment_type, channel, context, user_agent);
+				payment_type, amount, channel, context, user_agent);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;

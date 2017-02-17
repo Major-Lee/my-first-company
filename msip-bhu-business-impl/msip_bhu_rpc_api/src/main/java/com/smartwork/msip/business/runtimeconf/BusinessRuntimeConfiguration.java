@@ -487,6 +487,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int HotPlay_HomeImage_SmallArea_Commdity_ID = 24;
 	public static final int Soft_Service_Noapp_Commdity_ID = 25;
 	public static final int Soft_Service_CanbeTurnoff_Commdity_ID = 26;
+	public static final int RechargeBalance_OtherAmount_Commdity_ID = 33;
+	public static final String RechargeBalance_Min_Amount = "10.00";
 	
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";
