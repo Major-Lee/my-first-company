@@ -802,6 +802,7 @@ public class AdvertiseUnitFacadeService {
 							vtos = new ArrayList<AdvertiseVTO>();
 							AdvertiseVTO vto = null;
 							List<String> adids = new ArrayList<String>();
+							List<String> topAds = new ArrayList<String>();
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
@@ -835,22 +836,23 @@ public class AdvertiseUnitFacadeService {
 								vto.setExtparams(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
 								vto.setTop(doc.getA_top());
-								vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
 								if(doc.getA_top() == 1){
-									adids.add(doc.getId());
+									topAds.add(doc.getId());
 								}
+								vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
+								adids.add(doc.getId());
 								vtos.add(vto);
 							}
 							List<String> portalPv =  AdvertisePortalHashService.getInstance().queryAdvertisePV(adids);
 							List<String> portalAct =  AdvertisePortalHashService.getInstance().queryAdvertiseAct(adids);
 							int index = 0;
 							for(AdvertiseVTO vto1 : vtos){
-								 vto1.setAct(portalAct.get(index));
-								 vto1.setPv(portalPv.get(index));
-								 index++;
+								vto1.setAct(portalAct.get(index));
+								vto1.setPv(portalPv.get(index));
+								index++;
 							}
 							if(customize)
-								AdvertiseCPMListService.getInstance().AdCPMPosh(adids);
+								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
 						}
 					}
 				}else{
