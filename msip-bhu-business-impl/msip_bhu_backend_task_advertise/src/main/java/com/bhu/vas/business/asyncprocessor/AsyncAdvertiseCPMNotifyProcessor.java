@@ -84,11 +84,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 							if (StringUtils.isNotEmpty(message)){
 								onProcessor(message);
 							}else{
-								System.out.println("sleep 11111");
 								Thread.sleep(10);
 							}
 						}else{
-							System.out.println("sleep 22222");
 							Thread.sleep(10);
 						}
 					}catch(Exception ex){
@@ -111,7 +109,6 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			@Override
 			public void run() {
 				try{
-					System.out.println("onProcessor");
 //					asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
 					process(message);
 				}catch(Exception ex){
