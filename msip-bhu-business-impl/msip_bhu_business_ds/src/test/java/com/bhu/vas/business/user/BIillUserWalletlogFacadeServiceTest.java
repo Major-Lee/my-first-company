@@ -49,6 +49,7 @@ public class BIillUserWalletlogFacadeServiceTest extends BaseTest{
 	UserIncomeRankService userIncomeRankService;
 	@Resource
 	UserIncomeMonthRankService userIncomeMonthRankService;
+	
 	@Test
 	public void test() {
 		String startTime ="";

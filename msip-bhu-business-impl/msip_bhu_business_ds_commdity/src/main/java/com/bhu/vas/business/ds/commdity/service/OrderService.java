@@ -1,5 +1,9 @@
 package com.bhu.vas.business.ds.commdity.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -42,5 +46,12 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 	
 	public void dropCache(String orderid){
 		this.getEntityCache().remove(orderid);
+	}
+	
+	public List<Map<String,Object>> statOrderIncome(String preDay, String today) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("pre_day", preDay);
+		map.put("today", today);
+		return super.entityDao.statOrderIncome(map);
 	}
 }

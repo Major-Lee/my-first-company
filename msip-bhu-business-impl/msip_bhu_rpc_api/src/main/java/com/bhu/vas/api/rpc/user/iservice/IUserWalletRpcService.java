@@ -8,6 +8,7 @@ import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
+import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
@@ -169,7 +170,7 @@ public interface IUserWalletRpcService {
 
 	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize);
 
-	public Map<String, Object> billTotal();
+	public RpcResponseDTO<BillTotalVTO> billTotal();
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

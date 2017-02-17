@@ -38,6 +38,11 @@
    		<result property="process_status" column="process_status" javaType="java.lang.String"/>
    		<result property="created_at" column="created_at" javaType="java.lang.String"/>
    </resultMap>  
+   
+     <resultMap id="statOrderIncomePages" type="hashmap">
+   		<result property="income" column="income" javaType="java.lang.String"/>
+   		<result property="time" column="time" javaType="java.lang.String"/>
+   </resultMap>  
   
   
   	<sql id="modelTableName">
@@ -276,6 +281,18 @@
 	    	a.type='8' AND a.status='10'
 	    	AND a.created_at > DATE_SUB(NOW(), INTERVAL 15 DAY)
 		GROUP by a.process_status
+	</select>
+	
+	<select id="statOrderIncome" resultMap="statOrderIncomePages" parameterType="String">
+	    SELECT format(sum(amount),2) income, date(paymented_at) time   FROM <include refid="modelTableName" /> 
+	    where	<if test="pre_day != null">
+	    		paymented_at BETWEEN #{pre_day}
+	    	</if>
+	    	<if test="today != null">
+	    		 AND #{today} and
+	    	</if>
+	    	 status ='10' AND type in (0,1,3,8,30,40,50)
+	    	group by time ORDER BY  paymented_at desc
 	</select>
 	
 	<select id="qualityGoodsSharedealPages" resultMap="mapQualityGoodsSharedealPages" parameterType="Map">

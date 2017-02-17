@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
-import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository

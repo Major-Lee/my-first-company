@@ -79,13 +79,13 @@ public class UserWalletFacadeService{
 	private UserService userService;
 	
 	@Resource
-	private UserWalletService userWalletService;
-
-	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	
 	@Resource
 	private UserWalletLogService userWalletLogService;
+	
+	@Resource
+	private UserWalletService userWalletService;
 	
 	@Resource
 	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
@@ -1420,8 +1420,26 @@ public class UserWalletFacadeService{
 	public String fetchUserWithdrawSuccessCashSumNew(int uid) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
+		if(uid ==0){
+			map.put("uid", null);
+		}
 		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionSlaverTemplate().
 				selectOne(UserWalletWithdrawApply.class.getName()+".withdrawSuccessCashSum", map);
+	}
+	
+	public String fetchUserWithdrawUnfinishedCashSumNew(int uid) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		if(uid ==0){
+			map.put("uid", null);
+		}
+		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionSlaverTemplate().
+				selectOne(UserWalletWithdrawApply.class.getName()+".withdrawUnfinishedCashSum", map);
+	}
+	
+	public String fetchUserCurrentWalletBalanceUnfinishedCashSum() {
+		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionSlaverTemplate().
+				selectOne(UserWallet.class.getName()+".currentWalletBalance");
 	}
 	
 	public Map<String,Object> countIncome(Integer uid, String mac,

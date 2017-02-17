@@ -404,8 +404,17 @@
 	
 	<select id="userAccountIncome" resultType="userIncome" parameterType="String">
 		SELECT <include refid="modelUserAccountIncomeColumns" /> FROM	(SELECT	format(sum(cash), 2) AS cash, date_format(updated_at, '%Y-%m-%d') time FROM	t_vas_users_wallet_log
-		WHERE updated_at BETWEEN #{pre_day} AND #{today} AND	(transmode = 'SDP'	OR transmode = 'DWP' OR (transmode = 'RFD' AND transtype ='A2O')) GROUP BY time) AS t
-		GROUP BY time
+		<where>
+	    	<if test="pre_day != null">
+	    		AND updated_at BETWEEN #{pre_day}
+	    	</if>
+	    	<if test="today != null">
+	    		 AND #{today} and
+	    	</if>
+	    	1=1 AND (transmode = 'SDP'	OR transmode = 'DWP' OR (transmode = 'RFD' AND transtype ='A2O')) GROUP BY time ORDER BY time DESC) AS t
+		GROUP BY time ORDER BY time DESC
+	    </where> 
+		
 	</select>
 	
 	<select id="countIncome" resultType="Map" parameterType="Map">

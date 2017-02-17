@@ -1,9 +1,13 @@
 package com.bhu.vas.business.commdity;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -18,6 +22,7 @@ import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -133,12 +138,38 @@ public class OrderServiceTest extends BaseTest{
     
     @Test
     public void testFindByIds(){
-    	List<String> ids = new ArrayList<String>();
-    	ids.add("10012016031200000000000000000129");
-    	ids.add("-1");
-    	List<Order> orders = orderService.findByIds(ids, true, true);
-    	for(Order order : orders){
-    		System.out.println(order);
-    	}
+    	//总交易额
+    	String startTime ="";
+    	String endTime ="";
+    	if(StringUtils.isBlank(startTime)){
+			Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
+			SimpleDateFormat sdf =DateTimeHelper.longDateFormat;
+			startTime = sdf.format(dayOfMonth);
+		}
+		if(StringUtils.isBlank(endTime)){
+			endTime = DateTimeHelper.getDateTime(DateTimeHelper.DefalutFormatPattern);
+		}
+		System.out.println(startTime + endTime);
+    			Map<String,String> orderServiceListMap = new HashMap<String,String>();
+    			List<Map<String,Object>> orderServiceList = orderService.statOrderIncome(startTime,endTime);
+    			if(orderServiceList != null){
+    				for (int i = 0; i < orderServiceList.size(); i++) {
+    					Map<String,Object> paltformInfoVTO = orderServiceList.get(i);
+    					String income = paltformInfoVTO.get("income")+"";
+    					String time = paltformInfoVTO.get("time")+"";
+    					orderServiceListMap.put(time, income);
+    					System.out.println("statOrderIncome = " + income + ", time = " + time);  
+    				}
+    			}
     }
+//    @Test
+//    public void testFindByIds(){
+//    	List<String> ids = new ArrayList<String>();
+//    	ids.add("10012016031200000000000000000129");
+//    	ids.add("-1");
+//    	List<Order> orders = orderService.findByIds(ids, true, true);
+//    	for(Order order : orders){
+//    		System.out.println(order);
+//    	}
+//    }
 }

@@ -2,83 +2,40 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWallet">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.OrderIncome">
 
-  <resultMap id="modelResult" type="userWallet">
+  <resultMap id="modelResult" type="orderIncome">
     <id property="id" column="id"/>
-    <result property="password" column="password"/>
-    
-    <result property="vcurrency" column="vcurrency"/>
-    <result property="vcurrency_bing" column="vcurrency_bing"/>
-    <result property="cash" column="cash"/>
-    <result property="withdraw" column="withdraw"/>
-    <result property="created_at" column="created_at"/>
+    <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
-    <result property="today_cash_sum" column="today_cash_sum"/>
-    <result property="month_cash_sum" column="month_cash_sum"/>
-    <result property="last_update_cash_time" column="last_update_cash_time"/>
-    <result property="total_cash_sum" column="total_cash_sum"/>
   </resultMap>  
-  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet
+	    	t_statistic_orders_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	password,
-	    	vcurrency,
-	    	vcurrency_bing,
-	    	cash,
-	    	withdraw,
-	    	created_at,
-	    	updated_at,
-	    	today_cash_sum,
-	    	month_cash_sum,
-	    	last_update_cash_time,
-	    	total_cash_sum
+	    	income,
+	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	password,
-	    	vcurrency,
-	    	vcurrency_bing,
-	    	cash,
-	    	withdraw,
-	    	created_at,
-	    	updated_at,
-	    	today_cash_sum,
-	    	month_cash_sum,
-	    	last_update_cash_time,
-	    	total_cash_sum
+	    	income,
+	    	updated_at
 	    ]]>
 	</sql>   
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{password},
-	    	#{vcurrency},
-	    	#{vcurrency_bing},
-	    	#{cash},
-	    	#{withdraw},
-	    	#{created_at},
-	    	#{updated_at},
-	    	#{today_cash_sum},
-	    	#{month_cash_sum},
-            #{last_update_cash_time, jdbcType=TIMESTAMP},
-            #{total_cash_sum}
+	    	#{income},
+	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	password = #{password},
-	    	vcurrency = #{vcurrency},
-	    	vcurrency_bing = #{vcurrency_bing},
-	    	cash = #{cash},
-	    	withdraw = #{withdraw},
-	    	created_at = #{created_at},
+	    	income = #{income},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -128,12 +85,15 @@
 			</if>
 		</where>
 	</select>
-	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWallet">
+	<delete id="deleteAllRank"  parameterType="orderIncome">
+	   delete from <include refid="modelTableName" />
+	</delete>
+	
+	<delete id="delete" parameterType="orderIncome">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -141,11 +101,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWallet">
+	<insert id="insert" parameterType="orderIncome">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userWallet">
+	<update id="update" parameterType="orderIncome">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -169,7 +129,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="int">
+	<select id="pkSelectByModelCriteria" resultType="String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
@@ -180,10 +140,6 @@
 				limit #{limit} OFFSET #{start}
 			</if>
 	    </if>  
-	</select>
-	
-	<select id="currentWalletBalance" resultType="String">
-		select format(sum(cash),2) income from <include refid="modelTableName" /> 
 	</select>
 	
 	<select id="countByModelCriteria" resultType="int">
@@ -199,8 +155,11 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	<select id="orderCountIncome" resultType="String">
+	    select sum(income) from <include refid="modelTableName" />
+	</select>
 	
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
-	</select>		
+	</select>
 </mapper>

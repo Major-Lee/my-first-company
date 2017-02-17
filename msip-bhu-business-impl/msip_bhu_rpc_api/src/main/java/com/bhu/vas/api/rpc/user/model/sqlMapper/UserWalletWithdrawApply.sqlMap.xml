@@ -147,12 +147,22 @@
 	</select>
 	
 	<select id="withdrawSuccessCashSum" resultType="string">
-	    select truncate(sum(cash),2) from <include refid="modelTableName" /> 
+	    select format(sum(cash),2) from <include refid="modelTableName" /> 
 	    <where>
 			<if test="uid != null">
-				uid = #{uid}
+				uid = #{uid} AND
 			</if>
-			AND withdraw_oper = 'WS'
+			 withdraw_oper = 'WS'
+		</where>
+	</select>
+	
+	<select id="withdrawUnfinishedCashSum" resultType="string">
+	    select format(sum(cash),2) from <include refid="modelTableName" /> 
+	    <where>
+	    	<if test="uid != null">
+				uid = #{uid} AND
+			</if>
+			withdraw_oper in('AP','VP','WD','WV') 
 		</where>
 	</select>
 	

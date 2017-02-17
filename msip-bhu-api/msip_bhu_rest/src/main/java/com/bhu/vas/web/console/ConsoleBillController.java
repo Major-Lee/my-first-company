@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.bill.BillDayVTO;
+import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -71,8 +72,7 @@ public class ConsoleBillController extends BaseController {
     public void bill_total(
             HttpServletRequest request,
             HttpServletResponse response) {
-    	Map<String,Object> rpcResult = new HashMap<String,Object>();
-    	rpcResult =  userWalletRpcService.billTotal();
+    	RpcResponseDTO<BillTotalVTO> rpcResult =  userWalletRpcService.billTotal();
     	if(rpcResult != null)
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else

@@ -153,6 +153,8 @@
 		<!-- 收益统计 -->
 		<typeAlias alias="userIncome"
 			type="com.bhu.vas.api.rpc.charging.model.UserIncome" />
+		<typeAlias alias="orderIncome"
+			type="com.bhu.vas.api.rpc.charging.model.OrderIncome" />
 		<!-- 收益统计 -->
 		<!-- mac收益统计 -->
 		<typeAlias alias="macIncome"
@@ -301,6 +303,8 @@
 		<!-- 排名统计 -->
 		<!-- 收益统计 -->
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserIncome.sqlMap.xml" />
+		<!-- 收益统计 -->
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/OrderIncome.sqlMap.xml" />
 		<!-- 收益统计 -->
 		<!-- mac收益统计 -->
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/MacIncome.sqlMap.xml" />
