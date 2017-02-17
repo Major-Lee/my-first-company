@@ -39,7 +39,17 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	private String pmemo;
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private Long cpmid;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private long pbalance;
 	
+	public long getPbalance() {
+		return pbalance;
+	}
+
+	public void setPbalance(long pbalance) {
+		this.pbalance = pbalance;
+	}
+
 	public int getPuserid() {
 		return puserid;
 	}

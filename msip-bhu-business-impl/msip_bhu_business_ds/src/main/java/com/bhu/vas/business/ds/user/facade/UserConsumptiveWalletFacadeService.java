@@ -40,11 +40,16 @@ public class UserConsumptiveWalletFacadeService{
 		if(executeRet == 0){
 			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s] cpmid[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo, processorDTO.getCpmid()));
-			if(outParam != null)
+			if(outParam != null){
 				outParam.put("cpmid", processorDTO.getCpmid());
+				outParam.put("balance", ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+						BusinessRuntimeConfiguration.WalletDataBaseDegree));
+			}
 		}else if(executeRet == 1){
 			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
+			outParam.put("balance", ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+					BusinessRuntimeConfiguration.WalletDataBaseDegree));
 		}else{
 			logger.info( String.format("消费者钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
