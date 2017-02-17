@@ -8,10 +8,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+
+import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import redis.clients.jedis.Tuple;
 
 import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -35,6 +42,17 @@ import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -57,26 +75,6 @@ import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-
-import java.util.List;
-
-import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import redis.clients.jedis.Tuple;
-
-import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
-import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 
 @Service
 public class AdvertiseUnitFacadeService {
@@ -270,7 +268,7 @@ public class AdvertiseUnitFacadeService {
 			if(!isAdmin){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
-				if(executeRet != 1){
+				if(executeRet != 0){
 					balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 					if(Double.valueOf(balance) < 1){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
@@ -905,7 +903,7 @@ public class AdvertiseUnitFacadeService {
 			if(!userFacadeService.isAdminByUid(uid)){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
-				if(executeRet != 1){
+				if(executeRet != 0){
 					if(Double.valueOf(balance) < 1){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 					}else{

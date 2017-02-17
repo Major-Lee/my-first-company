@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.service.user;
 
 import java.util.Date;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,6 +14,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
@@ -205,7 +205,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public Map<String, Object> billTotal() {
+	public RpcResponseDTO<BillTotalVTO> billTotal() {
 		logger.info(String.format("billTotal..."));
 		return userWalletUnitFacadeService.billTotal();
 	

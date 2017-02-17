@@ -1,10 +1,5 @@
 package com.bhu.vas.web.console;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,15 +12,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
-import com.bhu.vas.api.vto.bill.BillDayVTO;
 import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.bhu.vas.validate.ValidateService;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
