@@ -113,7 +113,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 				try{
 					System.out.println("onProcessor");
 //					asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
-					onProcessor(message);
+					process(message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("AsyncAdvertiseCPMNotify onProcessor", ex);
@@ -173,7 +173,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		long oldScore = doc.getA_score();
 		long topScore = 100000000000000L;
 		
-		if(uid< 80000 && uid >80999){
+		if(uid< 80000 && uid >80999 && entity.getTop() == 1){
 			Map<String, Long>outParam = new HashMap<String, Long>();
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
 					UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
