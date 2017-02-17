@@ -88,5 +88,5 @@ public interface IOrderRpcService {
 			String payment_type, Integer channel, String user_agent);
 
 	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
-			String payment_type, Integer channel, String context, String user_agent);
+			String payment_type, String amount,Integer channel, String context, String user_agent);
 }
