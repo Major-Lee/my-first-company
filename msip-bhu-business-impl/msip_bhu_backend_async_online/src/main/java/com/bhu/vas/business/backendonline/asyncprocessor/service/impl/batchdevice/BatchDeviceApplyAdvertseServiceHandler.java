@@ -273,7 +273,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	public void adStateUpdIncrement(Advertise ad,List<String> maclist) throws ParseException{
 		if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 			
-			System.out.println("2222222222222");
 			ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 			ad.setSign(true);
 			
@@ -286,8 +285,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			  
 			int inputDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
 			cal.set(Calendar.DAY_OF_YEAR , inputDayOfYear+1);
-			
-//			ad.setEnd(cal.getTime());
 			SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date end = dateFormat2.parse("2099-12-31 23:59:59");
 			ad.setEnd(end);
@@ -295,12 +292,14 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			advertiseService.update(ad);
 			
 			long score = Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16));
-			
+			if(ad.getTop() == 1){
+				score+=100000000000000L;
+			}
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
 					maclist, JsonHelper.getJSONString(ad.toRedis()),score);
 			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType(),score);
 			AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
-
+			
 		}else{
 			advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.UnVerified.getType(), null);
 		}

@@ -228,6 +228,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
+			entity.setTop(isTop ? 1 : 0);
 			if(isAdmin){
 				entity.setUid(vuid);
 			}else{
@@ -253,43 +254,44 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
 			
-			String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
-			
-			if(!isAdmin && Double.valueOf(balance) < 1){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
-			}
-			
 			Advertise smAd= advertiseService.insert(entity);
 			
 			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
-			if(!isAdmin){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, cash, UConsumptiveWalletTransType.AdsPublish, 
-						String.format("createNewAdvertise uid[%s]", uid), null, null);
-				if(executeRet != 0){
-					balance = userConsumptiveWalletFacadeService.getUserCash(uid);
-					if(Double.valueOf(balance) < 1){
-						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
-					}else{
-						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-					}
-				}
-			}
-			
-			smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
-			
-			advertiseService.update(entity);
-			advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
-
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
 			
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			if(userFacadeService.isAdminByUid(uid)){
+				smAd.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+				advertiseService.update(entity);
+				advertiseIndexIncrementService.adStateUpdIncrement(adid, BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			}
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
+	}
+	
+	public RpcResponseDTO<Boolean> confirmPay(int uid ,String adid){
+		Advertise advertise = advertiseService.getById(adid);
+		if(advertise !=null && advertise.getUid() == uid){
+			final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
+					String.format("createNewAdvertise uid[%s]", uid), null, null);
+			if(executeRet != 0){
+				if(executeRet == 1){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+				}else{
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+				}
+			}else{
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			}
+		}else{
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 
 	/**

@@ -239,4 +239,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info("queryRandomAdvertiseDetails ...");
 		return advertiseUnitFacadeService.queryRandomAdvertiseDetails();
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> confirmPay(int uid,String adid) {
+		logger.info(String.format("confirmPay uid[%s] adid[%s]",uid,adid));
+		return advertiseUnitFacadeService.confirmPay(uid,adid);
+	}
 }

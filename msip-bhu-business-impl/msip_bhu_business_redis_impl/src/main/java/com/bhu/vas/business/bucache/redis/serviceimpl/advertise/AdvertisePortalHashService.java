@@ -47,7 +47,8 @@ public class AdvertisePortalHashService extends AbstractRelationHashCache{
 	public  List<String> queryAdvertisePV(List<String> adids){
 		List<String> adpvs = new ArrayList<String>();
 		for(String adid : generateKeys(adids)){
-			adpvs.add(this.hget(adid, adPortalPv));
+			String pv = this.hget(adid, adPortalPv);
+			adpvs.add(pv != null ? pv : "0");
 		}
 		return adpvs;
 	}
@@ -55,7 +56,8 @@ public class AdvertisePortalHashService extends AbstractRelationHashCache{
 	public  List<String> queryAdvertiseAct(List<String> adids){
 		List<String> adacts = new ArrayList<String>();
 		for(String adid : generateKeys(adids)){
-			adacts.add(this.hget(adid, adPortalAct));
+			String pv = this.hget(adid, adPortalAct);
+			adacts.add(pv != null ? pv : "0");
 		}
 		return adacts;
 	}

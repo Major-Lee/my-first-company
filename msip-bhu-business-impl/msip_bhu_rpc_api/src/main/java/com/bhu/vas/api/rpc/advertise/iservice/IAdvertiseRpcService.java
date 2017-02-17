@@ -132,4 +132,6 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails();
 
+	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
+
 }
