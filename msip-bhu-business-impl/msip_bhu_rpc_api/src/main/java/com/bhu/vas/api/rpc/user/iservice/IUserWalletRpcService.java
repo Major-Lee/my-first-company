@@ -1,7 +1,6 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.Date;
-import java.util.Map;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
