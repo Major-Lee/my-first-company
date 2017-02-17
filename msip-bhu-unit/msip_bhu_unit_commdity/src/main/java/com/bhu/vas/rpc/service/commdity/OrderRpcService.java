@@ -229,7 +229,7 @@ public class OrderRpcService implements IOrderRpcService{
 	@Override
 	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
 			String payment_type, String amount, Integer channel, String context, String user_agent) {
-		logger.info(String.format("createRechargeCashOrder commdityid[id] uid[%s] "
+		logger.info(String.format("createRechargeCashOrder commdityid[%s] uid[%s] "
 				+ "payment_type[%s] amount[%s] channel[%s] context[%s] user_agent[%s]", commdityid, 
 				uid, payment_type, amount, channel, context, user_agent));
 		return orderUnitFacadeService.createRechargeCashOrder(commdityid, 

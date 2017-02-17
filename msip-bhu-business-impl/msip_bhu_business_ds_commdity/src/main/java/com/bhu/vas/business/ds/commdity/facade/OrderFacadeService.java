@@ -1395,9 +1395,16 @@ public class OrderFacadeService {
 	public Order createRechargeCashOrder(Commdity commdity, Integer uid, String payment_type, String amount, Integer channel,
 			String context, String user_agent) {
 		
-		String order_amount = StringHelper.isNotEmpty(amount) ? amount : commdity.getPrice();
-		if (commdity.getId().intValue() == BusinessRuntimeConfiguration.RechargeBalance_OtherAmount_Commdity_ID && Double.parseDouble(order_amount) < 10){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_LITTLE,new String[]{BusinessRuntimeConfiguration.RechargeBalance_Min_Amount});
+		if (commdity.getId().intValue() == BusinessRuntimeConfiguration.RechargeBalance_OtherAmount_Commdity_ID){
+			if (StringHelper.isEmpty(amount)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"amount"});
+			}else{
+				if (Double.parseDouble(amount) < BusinessRuntimeConfiguration.RechargeBalance_Min_Amount){
+					throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_LITTLE,
+							new String[]{BusinessRuntimeConfiguration.RechargeBalance_Min_Amount+""});
+				}
+			}
+			commdity.setPrice(amount);
 		}
 		//订单生成
 		Order order = new Order();
@@ -1412,7 +1419,7 @@ public class OrderFacadeService {
 			order.setUid(uid);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
-		order.setAmount(order_amount);
+		order.setAmount(commdity.getPrice());
 		orderService.insert(order);
 		return order;
 	}
