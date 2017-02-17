@@ -32,7 +32,7 @@ public class UserConsumptiveWalletFacadeService{
 	private UserService userService;
 	
 	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,
-			double rmoney,double cash,String desc,String memo, Map<String, Long>outParam){
+			double rmoney,double cash,String desc,String memo, Map<String, Object>outParam){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
 				transMode, transType,
 				rmoney, cash, desc, memo);
@@ -40,7 +40,8 @@ public class UserConsumptiveWalletFacadeService{
 		if(executeRet == 0){
 			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s] cpmid[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo, processorDTO.getCpmid()));
-			outParam.put("cpmid", processorDTO.getCpmid());
+			if(outParam != null)
+				outParam.put("cpmid", processorDTO.getCpmid());
 		}else if(executeRet == 1){
 			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
@@ -51,7 +52,7 @@ public class UserConsumptiveWalletFacadeService{
 		return executeRet;
 	}
 	
-	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String desc, String memo, Map<String, Long>outParam){
+	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String desc, String memo, Map<String, Object>outParam){
 		logger.info(String.format("userPurchaseGoods uid[%s] orderid[%s] cash[%s] transType[%s] desc[%s] memo[%s].", uid, orderid, cash, transType, desc, memo));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		return userConsumptiveWalletInOutWithProcedure(uid, orderid,UConsumptiveWalletTransMode.CashPayment, transType, cash, cash,desc, memo, outParam);

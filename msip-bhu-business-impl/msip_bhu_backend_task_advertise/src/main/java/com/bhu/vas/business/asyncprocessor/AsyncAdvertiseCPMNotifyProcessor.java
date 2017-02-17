@@ -171,12 +171,12 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		long topScore = 100000000000000L;
 		
 		if(uid< 80000 && uid >80999 && entity.getTop() == 1){
-			Map<String, Long>outParam = new HashMap<String, Long>();
+			Map<String, Object>outParam = new HashMap<String, Object>();
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
 					UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
-					Long cpmid = outParam.get("cpmid");
+					Long cpmid = (Long)outParam.get("cpmid");
 					if(cpmid != null && cpmid.longValue() > 0){
 						cpmSharedeal(cpmDto.getMac(), cpmDto.getUmac(), entity.getId(), cpmid);
 					} else {
