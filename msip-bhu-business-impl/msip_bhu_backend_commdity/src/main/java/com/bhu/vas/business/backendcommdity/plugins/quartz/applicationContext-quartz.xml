@@ -34,9 +34,8 @@
 	
 
 	<!-- 每小时执行一次广告分成 -->
-	<bean id="qualityGoodsSharedealTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+<!--  	<bean id="qualityGoodsSharedealTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="qualityGoodsSharedealTaskLoaderCronJobDetail" />
-		<!-- <property name="cronExpression" value="0 0 0/1 * * ?" /> -->
 		<property name="cronExpression" value="${qualityGoods.sharedeal}" />
 	</bean>
 	<bean id="qualityGoodsSharedealTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -45,5 +44,5 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="qualityGoodsSharedealTaskLoaderJob" class="com.bhu.vas.business.backendcommdity.plugins.quartz.QualityGoodsSharedealTaskLoader" />
-	
+-->	
 </beans>

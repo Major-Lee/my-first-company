@@ -460,19 +460,22 @@ public class AsyncOrderPaymentNotifyService{
 			logger.error(String.format("hot play Orderid[%s] hpid[%s] DeliverFailed", order.getId(), hpid));
 		}
 	}
-	//必虎良品打赏包月不分成
+	//必虎良品打赏包月现在可以分成
 	public void rewardMonthlyInternetPaymentHandle(Order order, boolean success, 
 			User bindUser, String paymented_ds, String payment_type, 
 			String payment_proxy_type, String accessInternetTime){
 		
 		order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
 				payment_type, payment_proxy_type, accessInternetTime);
+		
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
 			logger.info(String.format("rewardMonthlyInternetPaymentHandle Orderid[%s] DeliverCompleted", order.getId()));
 		}else{
 			logger.error(String.format("rewardMonthlyInternetPaymentHandle Orderid[%s] DeliverFailed", order.getId()));
 		}
+		
+		qualityGoodsSharedealHandle(order);
 	}
 	/**
 	 * 打赏订单支付结束处理
