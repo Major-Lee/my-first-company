@@ -2064,15 +2064,18 @@ public class UserWalletUnitFacadeService {
 			    	String dayTotalUserA = "0";
 			    	String dayTotalA = "0";
 			    	String userIcomeStr = userIncomeMap.get(dateT);
+			    	System.out.println("dateT"+dateT +"  userIcomeStr:"+userIcomeStr);
 			    	if(StringUtils.isNotBlank(userIcomeStr)){
 			    		dayTotalUserA = userIcomeStr;
 			    	}
 			    	
 			    	String bhuIcomeStr = bhuIncomeMap.get(dateT);
+			    	System.out.println("dateT"+dateT +"  bhuIcomeStr:"+bhuIcomeStr);
 			    	if(StringUtils.isNotBlank(bhuIcomeStr)){
 			    		dayTotalBHUA = bhuIcomeStr;
 			    	}
 			    	String statOrderIncomeStr = statOrderIncomeMap.get(dateT);
+			    	System.out.println("dateT"+dateT +"  statOrderIncomeStr:"+statOrderIncomeStr);
 			    	if(StringUtils.isNotBlank(statOrderIncomeStr)){
 			    		dayTotalA = statOrderIncomeStr;
 			    	}
@@ -2103,6 +2106,16 @@ public class UserWalletUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	public static void main(String[] args) {
+		long totalBHUA = 0l;
+		for (int i = 1; i < 5; i++) {
+			String bhuIcomeStr = "2"; 
+			System.out.println("cur"+bhuIcomeStr);
+			totalBHUA +=Long.parseLong(bhuIcomeStr);
+		}
+		System.out.println(totalBHUA);
 	}
 	
 	public RpcResponseDTO<BillTotalVTO> billTotal() {
