@@ -210,10 +210,6 @@ public class AdvertiseUnitFacadeService {
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			}
 			
-			if(count==0 && !isAdmin){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
-			}
-			
 			if(StringUtils.isNotBlank(city))
 				entity.setCity(city);
 			if(StringUtils.isNotBlank(district))
