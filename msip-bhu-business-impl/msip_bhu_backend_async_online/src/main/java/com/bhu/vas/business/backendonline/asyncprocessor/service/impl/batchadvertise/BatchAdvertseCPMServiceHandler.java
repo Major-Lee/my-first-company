@@ -2,6 +2,7 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchadve
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,24 +13,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.advertise.AdvertiseCPMDTO;
-import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
-import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
-import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.async.advertise.BatchAdvertiseCPMNotifyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.smartwork.msip.cores.helper.ArithHelper;
+import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
+import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
+import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -45,6 +46,10 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 	private UserWalletFacadeService userWalletFacadeService;
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
+	@Resource
+	private AdvertiseDataSearchService advertiseDataSearchService;
+	@Resource
+	private AdvertiseIndexIncrementService advertiseIndexIncrementService;
 	
 	private final Logger logger = LoggerFactory
 			.getLogger(BatchAdvertseCPMServiceHandler.class);
@@ -92,8 +97,14 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 				BatchAdvertiseCPMNotifyDTO.class);
 		AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(notify.getMessage(),AdvertiseCPMDTO.class);
 		Advertise entity = advertiseService.getById(cpmDto.getAdid());
+		AdvertiseDocument doc = advertiseDataSearchService.searchById(cpmDto.getAdid());
+
 		int uid = entity.getUid();
 		int result = 1;
+		
+		long oldScore = doc.getA_score();
+		long topScore = 100000000000000L;
+		
 		if(uid< 80000 && uid >80999){
 			Map<String, Long>outParam = new HashMap<String, Long>();
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
@@ -108,7 +119,14 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 					}
 				}
 				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
-				if(Double.valueOf(balance) < 1){
+				if(Double.valueOf(balance) < cpm_price){
+					entity.setTop(0);
+					advertiseService.update(entity);
+					List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
+					WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+							maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
+					advertiseIndexIncrementService.adScoreUpdIncrement(cpmDto.getAdid(), oldScore - topScore,0);
+					
 					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 				}else{
 					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -117,3 +135,5 @@ public class BatchAdvertseCPMServiceHandler implements IMsgHandlerService{
 		}
 	}
 }
+
+
