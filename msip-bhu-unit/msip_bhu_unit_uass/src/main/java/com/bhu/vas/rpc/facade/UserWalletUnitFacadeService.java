@@ -2105,9 +2105,9 @@ public class UserWalletUnitFacadeService {
 			    	totalBHUA +=Long.parseLong(bhuIcomeStr);
 			    	totalA += Long.parseLong(dayTotalA);
 			    	totalUserA += Long.parseLong(userIcomeStr);
-			    	bill.setBillDay(billDayList);
 				}
 			}
+			bill.setBillDay(billDayList);
 			bill.setAmountC(totalBHUA+"");
 			bill.setAmountT(totalA+"");
 			bill.setAmountU(totalUserA+"");

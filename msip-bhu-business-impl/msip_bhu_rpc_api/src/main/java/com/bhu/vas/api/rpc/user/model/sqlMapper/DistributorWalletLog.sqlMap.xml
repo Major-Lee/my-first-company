@@ -78,7 +78,7 @@
 	
 	<sql id="modelBHUAccountIncomeColumns">
 	    <![CDATA[
-	    	SUM(amount) income,
+	    	IFNULL(SUM(amount),0) income,
 	    	time
 	    ]]>
 	</sql>
