@@ -16,6 +16,7 @@ import com.bhu.vas.api.vto.bill.BillVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -47,8 +48,13 @@ public class ConsoleBillController extends BaseController {
             @RequestParam(required = false, defaultValue = "31", value = "ps") int pageSize
     		) {
     	System.out.println("sssssOK"+uid);
-		//RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid,utype,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
-    	BillVTO rpcResult = userWalletRpcService.pagebillPlan(uid,startTime,endTime,pageNo, pageSize);
+    	BillVTO rpcResult = null;
+    	try{
+    		rpcResult = userWalletRpcService.pagebillPlan(uid,startTime,endTime,pageNo, pageSize);
+    		System.out.println(JsonHelper.getJSONString(rpcResult));
+    	}catch(Exception e){
+    		System.out.println("eee:"+e.getCause()+e.getMessage());
+    	}
 		if(rpcResult != null)
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else

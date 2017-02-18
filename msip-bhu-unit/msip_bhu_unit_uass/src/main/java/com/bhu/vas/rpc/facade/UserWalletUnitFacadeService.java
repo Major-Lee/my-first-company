@@ -1968,6 +1968,7 @@ public class UserWalletUnitFacadeService {
 	}
 	
 	//拼装提现管理系统-财务对账页面查询页面信息数据
+	@SuppressWarnings("unused")
 	public BillVTO walletbillPlanPages(String startTime, String endTime, int pageNo,
 			int pageSize){
 		RpcResponseDTO<BillVTO> resp_result = new RpcResponseDTO<BillVTO>();
@@ -1989,8 +1990,12 @@ public class UserWalletUnitFacadeService {
 					Map<String,Object> paltformInfoVTO = statOrderIncomeList.get(i);
 					String income = paltformInfoVTO.get("income")+"";
 					String time = paltformInfoVTO.get("time")+"";
-					statOrderIncomeMap.put(time, income);
 					System.out.println("statOrderIncome = " + income + ", time = " + time);  
+					if(income != null){
+						statOrderIncomeMap.put(time, income);
+					}else{
+						statOrderIncomeMap.put(time, "0");
+					}
 				}
 			}
 			
@@ -2002,8 +2007,12 @@ public class UserWalletUnitFacadeService {
 					Map<String,Object> paltformInfoVTO = bhuIncomeList.get(i);
 					String income = paltformInfoVTO.get("income")+"";
 					String time = paltformInfoVTO.get("time")+"";
-					bhuIncomeMap.put(time, income);
 					System.out.println("bhuIncome = " + income + ", time = " + time);  
+					if(income != null){
+						bhuIncomeMap.put(time, income);
+					}else{
+						bhuIncomeMap.put(time, "0");
+					}
 				}
 			}
 			
@@ -2013,8 +2022,12 @@ public class UserWalletUnitFacadeService {
 			if(userIncomeList != null){
 				for (Object object : userIncomeList) {
 					UserIncome userIncome = (UserIncome) object;
-					userIncomeMap.put(userIncome.getTime(), userIncome.getIncome());
 					System.out.println("userIncome = " + userIncome.getIncome() + ", time = " + userIncome.getTime());
+					if(userIncome.getIncome() != null){
+						userIncomeMap.put(userIncome.getTime(), userIncome.getIncome());
+					}else{
+						userIncomeMap.put(userIncome.getTime(), "0");
+					}
 				}
 			}
 			
@@ -2180,7 +2193,9 @@ public class UserWalletUnitFacadeService {
 					String income = paltformInfoVTO.get("income")+"";
 					String time = paltformInfoVTO.get("time")+"";
 					System.out.println("bhuIncome = " + income + ", time = " + time); 
-					amountC += Long.parseLong(income);
+					if(income != null){
+						amountC += Long.parseLong(income);
+					}
 				}
 				billTotal.setAmountC(amountC);
 			}
@@ -2193,17 +2208,29 @@ public class UserWalletUnitFacadeService {
 					UserIncome userIncome = (UserIncome) object;
 					userIncomeMap.put(userIncome.getTime(), userIncome.getIncome());
 					System.out.println("userIncome = " + userIncome.getIncome() + ", time = " + userIncome.getTime());
-					amountU += Long.parseLong(userIncome.getIncome());
+					if(userIncome.getIncome() != null){
+						amountU += Long.parseLong(userIncome.getIncome());
+					}
 				}
 				billTotal.setAmountU(amountU);
 			}
 			//提现已完成
 			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(0);
-			billTotal.setAmountPaid(totalPaidCash);
+			if(totalPaidCash != null){
+				billTotal.setAmountPaid(totalPaidCash);
+			}else{
+				billTotal.setAmountPaid("0");
+			}
 			//提现未完成
 			String totalUnPaidCash = userWalletFacadeService.fetchUserWithdrawUnfinishedCashSumNew(0);
 			//当前钱包余额
 			String currentWalletBalance = userWalletFacadeService.fetchUserCurrentWalletBalanceUnfinishedCashSum();
+			if(totalUnPaidCash == null){
+				totalUnPaidCash = "0";
+			}
+			if(currentWalletBalance == null){
+				currentWalletBalance = "0";
+			}
 			amountUnPaid = (Long.parseLong(totalUnPaidCash) + Long.parseLong(currentWalletBalance))+"";
 			billTotal.setAmountUnPaid(amountUnPaid);
 			System.out.println("++billTotal result+++"+JsonHelper.getJSONString(billTotal));
