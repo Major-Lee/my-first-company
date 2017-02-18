@@ -9,17 +9,17 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
 public class ResponsePaymentInfoDetailDTO{
 	
 	private int count;
-	private long amount;
+	private double  amount;
 	public int getCount() {
 		return count;
 	}
 	public void setCount(int count) {
 		this.count = count;
 	}
-	public long getAmount() {
+	public double  getAmount() {
 		return amount;
 	}
-	public void setAmount(long amount) {
+	public void setAmount(double  amount) {
 		this.amount = amount;
 	}
 }

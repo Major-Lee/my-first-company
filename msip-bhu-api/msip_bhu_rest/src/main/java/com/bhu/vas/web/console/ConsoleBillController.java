@@ -47,13 +47,12 @@ public class ConsoleBillController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "31", value = "ps") int pageSize
     		) {
-    	System.out.println("sssssOK"+uid);
     	BillVTO rpcResult = null;
     	try{
     		rpcResult = userWalletRpcService.pagebillPlan(uid,startTime,endTime,pageNo, pageSize);
     		System.out.println(JsonHelper.getJSONString(rpcResult));
     	}catch(Exception e){
-    		System.out.println("eee:"+e.getCause()+e.getMessage());
+    		System.out.println("fetch_bill:"+e.getCause()+e.getMessage());
     	}
 		if(rpcResult != null)
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));

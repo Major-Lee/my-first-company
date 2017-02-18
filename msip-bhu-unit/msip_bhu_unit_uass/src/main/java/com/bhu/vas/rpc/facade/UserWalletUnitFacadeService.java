@@ -1971,8 +1971,8 @@ public class UserWalletUnitFacadeService {
 	@SuppressWarnings("unused")
 	public BillVTO walletbillPlanPages(String startTime, String endTime, int pageNo,
 			int pageSize){
-		RpcResponseDTO<BillVTO> resp_result = new RpcResponseDTO<BillVTO>();
 		
+		long billPlanBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		try {
 			if(StringUtils.isBlank(startTime)){
 				Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
@@ -1982,6 +1982,16 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isBlank(endTime)){
 				endTime = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 			}
+			
+			//获取该时间段内平台收益
+			long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
+			String param = "startTime="+startTime+"&endTime="+endTime;
+			Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+			long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
+			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+			
 			//2017-02-01 2017-02-17
 			Map<String,String> statOrderIncomeMap = new HashMap<String,String>();
 			List<Map<String,Object>> statOrderIncomeList = orderService.statOrderIncome(startTime,endTime);
@@ -2001,6 +2011,7 @@ public class UserWalletUnitFacadeService {
 			
 			//获取该时间段内公司收益
 			Map<String,String> bhuIncomeMap = new HashMap<String,String>();
+			long bhuIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			List<Map<String,Object>> bhuIncomeList = distributorWalletLogService.queryPlanInfo(startTime,endTime);
 			if(bhuIncomeList != null){
 				for (int i = 0; i < bhuIncomeList.size(); i++) {
@@ -2015,9 +2026,12 @@ public class UserWalletUnitFacadeService {
 					}
 				}
 			}
+			long bhuIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("bhuIncome elapsed" +(bhuIncomeEnd - bhuIncomeBegin));
 			
 			//获取该时间段内用户收益
 			Map<String,String> userIncomeMap = new HashMap<String,String>();
+			long userIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			List<Object> userIncomeList = userWalletLogService.userAccountIncome(startTime,endTime);
 			if(userIncomeList != null){
 				for (Object object : userIncomeList) {
@@ -2030,14 +2044,9 @@ public class UserWalletUnitFacadeService {
 					}
 				}
 			}
+			long userIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("userIncome elapsed" +(userIncomeEnd - userIncomeBegin));
 			
-			//获取该时间段内平台收益
-			
-			String param = "startTime="+startTime+"&endTime="+endTime;
-			Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
-			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
-			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
-				
 			BillVTO bill = new BillVTO();
 			bill.setStartTime(startTime);
 			bill.setEndTtime(endTime);
@@ -2113,7 +2122,9 @@ public class UserWalletUnitFacadeService {
 			bill.setAmountU(totalUserA+"");
 			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
 			logger.info("fetch bill rpc response："+JsonHelper.getJSONString(bill));
-			resp_result.setPayload(bill);
+			long end = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("paltformIncome total elapsed+" +(end - billPlanBegin));
+			
 			return bill;
 		} catch (BusinessI18nCodeException bex) {
 			return null;
@@ -2124,8 +2135,10 @@ public class UserWalletUnitFacadeService {
 	}
 	
 	public static void main(String[] args) {
-		String startTime ="";
-		String endTime ="";
+		BillVTO bill = new BillVTO();
+		
+		String startTime ="2017-02-17";
+		String endTime ="2017-02-17";
 		if(StringUtils.isBlank(startTime)){
 			Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
 			SimpleDateFormat sdf =DateTimeHelper.shortDateFormat;
@@ -2134,22 +2147,101 @@ public class UserWalletUnitFacadeService {
 		if(StringUtils.isBlank(endTime)){
 			endTime = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		}
+		bill.setStartTime(startTime);
+		bill.setEndTtime(endTime);
+		Map<String,String> bhuIncomeMap = new HashMap<String,String>();
+		Map<String,String> userIncomeMap = new HashMap<String,String>();
+		Map<String,String> statOrderIncomeMap = new HashMap<String,String>();
+		List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();
+		long totalA = 0l;
+		long totalBHUA =0l;
+		long totalUserA =0l;
+		//获取该时间段内平台收益
+		long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		String param = "startTime="+startTime+"&endTime="+endTime;
-		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest/channelStat/info", param);
+		System.out.println(param);
+		Object response = sendPost("http://upay.bhuwifi.com/msip_bhu_payment_rest/channelStat/info", param);
+//		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest/channelStat/info", param);
+		long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+		System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
+		
 		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
 		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+		System.out.println(paymentChannelList.get(0).getInfo());
 		if (paymentChannelList != null) {
 			for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
 				System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
+				String info =paymentChannelStatVTO.getInfo();
+				ResponsePaymentInfoDTO paymentInfo = JsonHelper.getDTO(info, ResponsePaymentInfoDTO.class);
+				ResponsePaymentInfoDetailDTO hee =  paymentInfo.getHee();
+				ResponsePaymentInfoDetailDTO now =  paymentInfo.getNow();
+				ResponsePaymentInfoDetailDTO paypal =  paymentInfo.getPaypal();
+				ResponsePaymentInfoDetailDTO wifiManage =  paymentInfo.getWifiManage();
+				ResponsePaymentInfoDetailDTO wifiHelper =  paymentInfo.getWifiHelper();
+				ResponsePaymentInfoDetailDTO weixin =  paymentInfo.getWeixin();
+				ResponsePaymentInfoDetailDTO alipay =  paymentInfo.getAlipay();
+				String dateT = paymentChannelStatVTO.getTimeD();
+				BillDayVTO billDay = new BillDayVTO();
+		    	billDay.setDate(dateT);
+		    	billDay.setAilpayA(alipay.getAmount()+"");
+		    	billDay.setAilpayN(PaymentThirdType.ALIPAY.getName_zh());
+		    	billDay.setHeeA(hee.getAmount()+"");
+		    	billDay.setHeeN(PaymentThirdType.HEE.getName_zh());
+		    	billDay.setPaypalA(paypal.getAmount()+"");
+		    	billDay.setPaypalN(PaymentThirdType.PAYPAL.getName_zh());
+		    	billDay.setWifiManageN(PaymentThirdType.WIFIMANAGE.getName_zh());
+		    	billDay.setWifiManageA(wifiManage.getAmount()+"");
+		    	System.out.println("weixin:"+weixin.getAmount());
+		    	billDay.setWeixinA(weixin.getAmount()+"");
+		    	billDay.setWeixinN(PaymentThirdType.WEIXIN.getName_zh());
+		    	billDay.setWifiHelperA(wifiHelper.getAmount()+"");
+		    	billDay.setWifiHelperN(PaymentThirdType.WIFIHELPER.getName_zh());
+		    	billDay.setNowA(now.getAmount()+"");
+		    	billDay.setNowN(PaymentThirdType.NOW.getName_zh());
+		    	String dayTotalBHUA = "0";
+		    	String dayTotalUserA = "0";
+		    	String dayTotalA = "0";
+		    	String userIcomeStr = userIncomeMap.get(dateT);
+		    	System.out.println("dateT"+dateT +"  userIcomeStr:"+userIcomeStr);
+		    	if(StringUtils.isNotBlank(userIcomeStr)){
+		    		dayTotalUserA = userIcomeStr;
+		    	}else{
+		    		userIcomeStr = "0";
+		    	}
+		    	
+		    	String bhuIcomeStr = bhuIncomeMap.get(dateT);
+		    	System.out.println("dateT"+dateT +"  bhuIcomeStr:"+bhuIcomeStr);
+		    	if(StringUtils.isNotBlank(bhuIcomeStr)){
+		    		dayTotalBHUA = bhuIcomeStr;
+		    	}else{
+		    		bhuIcomeStr = "0";
+		    	}
+		    	String statOrderIncomeStr = statOrderIncomeMap.get(dateT);
+		    	System.out.println("dateT"+dateT +"  statOrderIncomeStr:"+statOrderIncomeStr);
+		    	if(StringUtils.isNotBlank(statOrderIncomeStr)){
+		    		dayTotalA = statOrderIncomeStr;
+		    	}else{
+		    		statOrderIncomeStr = "0";
+		    	}
+		    	
+		    	//dayTotalA = Long.parseLong(bhuIcomeStr)+Long.parseLong(userIcomeStr)+"";
+		    	bhuIncomeMap.get(dateT);
+		    	billDay.setTotalBHUA(dayTotalBHUA);
+		    	billDay.setTotalUserA(dayTotalUserA);
+		    	billDay.setTotalA(dayTotalA);
+		    	billDayList.add(billDay);
+		    	
+		    	totalBHUA +=Long.parseLong(bhuIcomeStr);
+		    	totalA += Long.parseLong(dayTotalA);
+		    	totalUserA += Long.parseLong(userIcomeStr);
 			}
 		}
-//		long totalBHUA = 0l;
-//		for (int i = 1; i < 5; i++) {
-//			String bhuIcomeStr = "2"; 
-//			System.out.println("cur"+bhuIcomeStr);
-//			totalBHUA +=Long.parseLong(bhuIcomeStr);
-//		}
-//		System.out.println(totalBHUA);
+		
+		bill.setBillDay(billDayList);
+		bill.setAmountC(totalBHUA+"");
+		bill.setAmountT(totalA+"");
+		bill.setAmountU(totalUserA+"");
+		System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
 	}
 	
 	public BillTotalVTO billTotal() {
@@ -2184,6 +2276,8 @@ public class UserWalletUnitFacadeService {
 				amountT =  orderIncomeService.orderCountIncome();
 				billTotal.setAmountT(amountT);
 			}
+			
+			
 			
 			//获取该时间段内公司收益
 			List<Map<String,Object>> bhuIncomeList = distributorWalletLogService.queryPlanInfo(null,null);
@@ -2255,8 +2349,8 @@ public class UserWalletUnitFacadeService {
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("user-agent",
 					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-			conn.setConnectTimeout(9000);  
-			conn.setReadTimeout(10000);
+			conn.setConnectTimeout(400);  
+			conn.setReadTimeout(700);
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			out = new PrintWriter(conn.getOutputStream());
