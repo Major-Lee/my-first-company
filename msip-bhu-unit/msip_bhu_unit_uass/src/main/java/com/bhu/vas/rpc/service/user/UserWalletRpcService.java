@@ -199,14 +199,14 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<BillVTO> pagebillPlan(String startTime, String endTime, int pageNo, int pageSize) {
-		logger.info(String.format("pagebillPlanPages with startTime[%s] endTime[%s] pn[%s] ps[%s]",startTime,endTime,pageNo,pageSize));
+	public BillVTO pagebillPlan(int uid,String startTime, String endTime, int pageNo, int pageSize) {
+		logger.info(String.format("pagebillPlanPages with uid[%s] startTime[%s] endTime[%s] pn[%s] ps[%s]",uid,startTime,endTime,pageNo,pageSize));
 		return userWalletUnitFacadeService.walletbillPlanPages(startTime, endTime, pageNo, pageSize);
 	}
 
 	@Override
-	public RpcResponseDTO<BillTotalVTO> billTotal() {
-		logger.info(String.format("billTotal..."));
+	public BillTotalVTO billTotal(int uid) {
+		logger.info(String.format("billTotal uid[%s]",uid));
 		return userWalletUnitFacadeService.billTotal();
 	
 	}

@@ -1968,8 +1968,10 @@ public class UserWalletUnitFacadeService {
 	}
 	
 	//拼装提现管理系统-财务对账页面查询页面信息数据
-	public RpcResponseDTO<BillVTO> walletbillPlanPages(String startTime, String endTime, int pageNo,
+	public BillVTO walletbillPlanPages(String startTime, String endTime, int pageNo,
 			int pageSize){
+		RpcResponseDTO<BillVTO> resp_result = new RpcResponseDTO<BillVTO>();
+		
 		try {
 			if(StringUtils.isBlank(startTime)){
 				Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
@@ -2098,27 +2100,46 @@ public class UserWalletUnitFacadeService {
 			bill.setAmountU(totalUserA+"");
 			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
 			logger.info("fetch bill rpc response："+JsonHelper.getJSONString(bill));
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(bill);
+			resp_result.setPayload(bill);
+			return bill;
 		} catch (BusinessI18nCodeException bex) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(
-					bex.getErrorCode(), bex.getPayload());
+			return null;
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			return null;
 		}
 	}
 	
 	public static void main(String[] args) {
-		long totalBHUA = 0l;
-		for (int i = 1; i < 5; i++) {
-			String bhuIcomeStr = "2"; 
-			System.out.println("cur"+bhuIcomeStr);
-			totalBHUA +=Long.parseLong(bhuIcomeStr);
+		String startTime ="";
+		String endTime ="";
+		if(StringUtils.isBlank(startTime)){
+			Date dayOfMonth = DateTimeHelper.getFirstDateOfCurrentMonth();
+			SimpleDateFormat sdf =DateTimeHelper.shortDateFormat;
+			startTime = sdf.format(dayOfMonth);
 		}
-		System.out.println(totalBHUA);
+		if(StringUtils.isBlank(endTime)){
+			endTime = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
+		}
+		String param = "startTime="+startTime+"&endTime="+endTime;
+		Object response = sendPost("http://localhost:8080/msip_bhu_payment_rest/channelStat/info", param);
+		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+		if (paymentChannelList != null) {
+			for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
+				System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
+			}
+		}
+//		long totalBHUA = 0l;
+//		for (int i = 1; i < 5; i++) {
+//			String bhuIcomeStr = "2"; 
+//			System.out.println("cur"+bhuIcomeStr);
+//			totalBHUA +=Long.parseLong(bhuIcomeStr);
+//		}
+//		System.out.println(totalBHUA);
 	}
 	
-	public RpcResponseDTO<BillTotalVTO> billTotal() {
+	public BillTotalVTO billTotal() {
 		try{
 			BillTotalVTO billTotal = new BillTotalVTO();
 			String amountT = "0";
@@ -2187,10 +2208,10 @@ public class UserWalletUnitFacadeService {
 			billTotal.setAmountUnPaid(amountUnPaid);
 			System.out.println("++billTotal result+++"+JsonHelper.getJSONString(billTotal));
 			logger.info("billTotal rpc response："+JsonHelper.getJSONString(billTotal));
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(billTotal);
+			return billTotal;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			return null;
 		
 		}
 	}

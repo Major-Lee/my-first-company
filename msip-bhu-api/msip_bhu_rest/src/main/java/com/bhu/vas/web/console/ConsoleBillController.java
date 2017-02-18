@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
@@ -41,15 +40,15 @@ public class ConsoleBillController extends BaseController {
     public void fetch_bill(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = false) int uid,
+            @RequestParam(required = true) int uid,
             @RequestParam(required = false, defaultValue = "", value = "startTime") String startTime,
             @RequestParam(required = false, defaultValue = "", value = "endTime") String endTime,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "31", value = "ps") int pageSize
     		) {
-    	
+    	System.out.println("sssssOK"+uid);
 		//RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid,utype,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
-    	RpcResponseDTO<BillVTO> rpcResult = userWalletRpcService.pagebillPlan(startTime,endTime,pageNo, pageSize);
+    	BillVTO rpcResult = userWalletRpcService.pagebillPlan(uid,startTime,endTime,pageNo, pageSize);
 		if(rpcResult != null)
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else
@@ -63,8 +62,9 @@ public class ConsoleBillController extends BaseController {
     @RequestMapping(value = "/bill_total", method = {RequestMethod.POST})
     public void bill_total(
             HttpServletRequest request,
-            HttpServletResponse response) {
-    	RpcResponseDTO<BillTotalVTO> rpcResult =  userWalletRpcService.billTotal();
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid) {
+    	BillTotalVTO rpcResult =  userWalletRpcService.billTotal(uid);
     	if(rpcResult != null)
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		else
