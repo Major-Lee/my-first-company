@@ -1225,13 +1225,13 @@ public class BusinessEnumType {
 	 *
 	 */
 	public enum AdvertiseStateType{
-		UnPaid(0,"待支付","待付款"),
+		UnPaid(0,"待付款","待付款"),
 		UnVerified(1,"待审核","待审核"),
 		UnPublish(2,"待发布","待发布"),
 		OnPublish(3,"生效中","生效中"),
 		Published(4,"发布完成","发布完成"),
-		VerifyFailure(5,"审核驳回","审核驳回"),
-		EscapeOrder(6,"订单取消","订单取消"),
+		VerifyFailure(5,"停止发布","停止发布"),
+		EscapeOrder(6,"已删除","已删除"),
 		UnSharedeal(99,"未分成","参与热播的设备等待分成"),
 		SharedealCompleted(100,"完成分成","所有参与热播的设备完成分成"),
 		;
