@@ -169,6 +169,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		long topScore = 100000000000000L;
 		
 		if((uid< 80000 || uid >80999) && entity.getTop() == 1){
+			
+			logger.info(String.format("BatchAdvertseCPMServiceHandler cpm: uid[%s] adid[%s]", uid, cpmDto.getAdid()));
+			
 			Map<String, Object>outParam = new HashMap<String, Object>();
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
 					UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
