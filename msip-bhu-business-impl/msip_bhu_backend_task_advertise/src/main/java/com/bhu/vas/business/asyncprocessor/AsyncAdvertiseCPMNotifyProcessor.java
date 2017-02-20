@@ -197,6 +197,15 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 				}else{
 					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 				}
+			}else if(result == 1){
+				entity.setTop(0);
+				advertiseService.update(entity);
+				List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+						maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
+				advertiseIndexIncrementService.adScoreUpdIncrement(cpmDto.getAdid(), oldScore - topScore,0);
+				
+				throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 			}
 		}
 	}
