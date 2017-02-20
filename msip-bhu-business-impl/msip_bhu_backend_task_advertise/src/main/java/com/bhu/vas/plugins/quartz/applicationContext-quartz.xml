@@ -26,7 +26,7 @@
 				<!-- 每天中午十二点执行一次 -->
 				<ref bean="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" />	
 				<!-- 每天三十秒执行一次 -->
-				<ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" />
+				<!--  <ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" /> -->
 				<!-- 每天23点45分执行 -->
 				<!-- <ref bean="advertiseAllClearTaskLoaderCronTrigger" /> -->
 				<!-- 每小时执行一次分成 -->
