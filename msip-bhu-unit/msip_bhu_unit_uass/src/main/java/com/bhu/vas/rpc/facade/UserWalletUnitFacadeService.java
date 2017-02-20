@@ -1977,9 +1977,13 @@ public class UserWalletUnitFacadeService {
 			bill.setEndTtime(endTime);
 			
 			//获取该时间段内平台收益
+			String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
+			if(payDomain == null){
+				payDomain = "http://upay.bhuwifi.com";
+			}
 			long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			String param = "startTime="+startTime+"&endTime="+endTime;
-			Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+			Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
 			long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
 			System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
 			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
@@ -2188,7 +2192,22 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public static void main(String[] args) {}
+	public static void main(String[] args) {
+		String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
+		System.out.println(payDomain);
+		if(payDomain == null){
+			payDomain = "http://upay.bhuwifi.com";
+		}
+		String startTime ="2017-02-01";
+		String endTime ="2017-02-20";
+		long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		String param = "startTime="+startTime+"&endTime="+endTime;
+		Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+		System.out.println(response);
+		long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+		System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
+		
+	}
 	
 	public BillTotalVTO billTotal() {
 		long billTotalStart = System.currentTimeMillis();
