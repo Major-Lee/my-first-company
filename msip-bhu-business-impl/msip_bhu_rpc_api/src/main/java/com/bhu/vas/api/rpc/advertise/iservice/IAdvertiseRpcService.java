@@ -134,4 +134,6 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
 
+	public RpcResponseDTO<Boolean> destoryTips(int uid, String adid);
+
 }

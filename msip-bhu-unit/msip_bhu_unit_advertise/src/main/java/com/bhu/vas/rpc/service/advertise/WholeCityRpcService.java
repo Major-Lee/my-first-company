@@ -245,4 +245,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info(String.format("confirmPay uid[%s] adid[%s]",uid,adid));
 		return advertiseUnitFacadeService.confirmPay(uid,adid);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> destoryTips(int uid,String adid) {
+		logger.info(String.format("destoryTips uid[%s] adid[%s]",uid,adid));
+		return advertiseUnitFacadeService.destoryTips(uid,adid);
+	}
 }

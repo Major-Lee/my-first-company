@@ -1087,4 +1087,9 @@ public class AdvertiseUnitFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
+	
+	public RpcResponseDTO<Boolean> destoryTips(int uid,String adid){
+		AdvertiseTipsHashService.getInstance().destoryTips(uid, adid);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
 }

@@ -37,6 +37,10 @@ public class AdvertiseTipsHashService extends AbstractRelationHashCache{
     	return this.hgetall(generateKey(uid));
     }
     
+    public void destoryTips(int uid,String adid){
+    	this.hdel(generateKey(uid), adid);
+    }
+    
 	@Override
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
