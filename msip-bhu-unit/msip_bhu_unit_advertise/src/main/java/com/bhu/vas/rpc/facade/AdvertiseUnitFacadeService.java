@@ -896,8 +896,10 @@ public class AdvertiseUnitFacadeService {
 		String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 		if(isTop){//置顶
 			
-			if(Double.valueOf(balance) < 0.3){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+			if(!userFacadeService.isAdminByUid(uid)){
+				if(Double.valueOf(balance) < 0.3){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+				}	
 			}
 			
 			if(topState == 1)
