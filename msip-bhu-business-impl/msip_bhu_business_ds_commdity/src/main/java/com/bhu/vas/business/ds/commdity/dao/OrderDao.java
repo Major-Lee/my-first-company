@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.api.rpc.user.model.DistributorWalletLog;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCommdityDao;
 
 @Repository
