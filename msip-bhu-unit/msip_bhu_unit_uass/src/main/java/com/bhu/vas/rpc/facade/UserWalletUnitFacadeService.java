@@ -75,13 +75,11 @@ import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
-import com.bhu.vas.business.ds.statistics.service.OrderIncomeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeMonthRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.bhu.vas.business.ds.user.service.DistributorWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -126,9 +124,6 @@ public class UserWalletUnitFacadeService {
 
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
-	
-	@Resource
-	private OrderIncomeService orderIncomeService;
 
 	@Resource
 	private UserIncomeMonthRankService userIncomeMonthRankService;
@@ -138,9 +133,6 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private OrderService orderService;
-	
-	@Resource
-	private DistributorWalletLogService distributorWalletLogService;
 
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
