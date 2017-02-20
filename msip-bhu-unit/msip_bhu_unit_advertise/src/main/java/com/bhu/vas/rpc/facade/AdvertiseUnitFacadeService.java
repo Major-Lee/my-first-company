@@ -807,7 +807,10 @@ public class AdvertiseUnitFacadeService {
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
 								vto.setUid(doc.getU_id());
-								vto.setNick(userService.getById(Integer.valueOf(doc.getU_id())).getNick());
+								if(doc.getU_id() !=null){
+									User user = userService.getById(Integer.valueOf(doc.getU_id()));
+									vto.setNick(user.getNick());
+								}
 								vto.setType(doc.getA_type());
 								vto.setTitle(doc.getA_title());
 								vto.setState(doc.getA_state());
