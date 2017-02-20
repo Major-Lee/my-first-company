@@ -158,9 +158,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 	
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
-		final BatchAdvertiseCPMNotifyDTO notify = JsonHelper.getDTO(message,
-				BatchAdvertiseCPMNotifyDTO.class);
-		AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(notify.getMessage(),AdvertiseCPMDTO.class);
+		AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(message,AdvertiseCPMDTO.class);
 		Advertise entity = advertiseService.getById(cpmDto.getAdid());
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(cpmDto.getAdid());
 
