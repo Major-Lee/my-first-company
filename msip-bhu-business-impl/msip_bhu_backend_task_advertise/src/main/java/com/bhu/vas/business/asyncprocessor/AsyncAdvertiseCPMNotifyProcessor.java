@@ -194,8 +194,6 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 					advertiseIndexIncrementService.adScoreUpdIncrement(cpmDto.getAdid(), oldScore - topScore,0);
 					
 					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
-				}else{
-					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 				}
 			}else if(result == 1){
 				entity.setTop(0);
