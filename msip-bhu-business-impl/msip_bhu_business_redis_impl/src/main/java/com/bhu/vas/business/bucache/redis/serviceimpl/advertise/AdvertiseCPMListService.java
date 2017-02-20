@@ -9,6 +9,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class AdvertiseCPMListService  extends AbstractRelationListCache{
 
@@ -28,7 +29,7 @@ public class AdvertiseCPMListService  extends AbstractRelationListCache{
     	for(String adid : adids){
         	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
         	dto.setAdid(adid);
-        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, adid);
+        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, JsonHelper.getJSONString(dto));
     	}
     }
     
