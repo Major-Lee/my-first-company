@@ -875,8 +875,10 @@ public class AdvertiseUnitFacadeService {
 		
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(adid);
 		Advertise advertise = advertiseService.getById(adid);
-		if(advertise.getUid() !=uid){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+		if(!userFacadeService.isAdminByUid(uid)){
+			if(advertise.getUid() !=uid){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+			}
 		}
 		if(advertise == null || advertise.getState() != BusinessEnumType.AdvertiseStateType.OnPublish.getType()){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
