@@ -1039,6 +1039,7 @@ public class AdvertiseUnitFacadeService {
 					vtos = new ArrayList<AdvertiseVTO>();
 					AdvertiseVTO vto = null;
 					List<String> adids = new ArrayList<String>();
+					List<String> topAds = new ArrayList<String>();
 					for(AdvertiseDocument doc : searchDocuments){
 						vto = new AdvertiseVTO();
 						vto.setId(doc.getId());
@@ -1071,6 +1072,9 @@ public class AdvertiseUnitFacadeService {
 						vto.setExtparams(doc.getA_extparams());
 						vto.setReject_reason(doc.getA_reject_reason());
 						vto.setTop(doc.getA_top());
+						if(doc.getA_top() == 1){
+							topAds.add(doc.getId());
+						}
 						vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
 						adids.add(doc.getId());
 						vtos.add(vto);
@@ -1083,6 +1087,7 @@ public class AdvertiseUnitFacadeService {
 						 vto1.setPv(portalPv.get(index));
 						 index++;
 					}
+					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
 				}
 		}else{
 			vtos = Collections.emptyList();
