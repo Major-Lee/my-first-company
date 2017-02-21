@@ -164,11 +164,11 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 		dto.setCpmid(Long.valueOf(0));
 		switch(transMode){
 			case CashPayment://消费
-				dto.setPcash(String.valueOf(cashLong));
+				dto.setPcash(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(cashLong)));
 				break;
 			case RealMoneyPayment://充值
 				dto.setPrmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoneyLong)));
-				dto.setPcash(String.valueOf(cashLong));
+				dto.setPcash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cashLong)));
 				break;
 			default:
 				break;
