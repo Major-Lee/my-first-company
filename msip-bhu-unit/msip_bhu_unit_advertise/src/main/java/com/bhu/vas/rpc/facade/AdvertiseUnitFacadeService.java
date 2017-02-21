@@ -277,7 +277,7 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> confirmPay(int uid ,String adid){
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise !=null && advertise.getUid() == uid){
-			if(advertise.getState() != BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
+			if(advertise.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
