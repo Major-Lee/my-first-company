@@ -24,7 +24,6 @@ import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
-import com.bhu.vas.business.asyn.spring.model.async.advertise.BatchAdvertiseCPMNotifyDTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
