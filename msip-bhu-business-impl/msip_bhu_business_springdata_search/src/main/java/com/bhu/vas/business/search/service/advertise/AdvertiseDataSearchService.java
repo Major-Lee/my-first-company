@@ -58,6 +58,6 @@ public class AdvertiseDataSearchService extends AbstractDataSearchConditionServi
 	
 	public Page<AdvertiseDocument> searchPageByCreated(){
 		SearchConditionMessage scm = AdvertiseSearchMessageBuilder.builderSearchMessageByCreated();
-		return super.searchByConditionMessage(scm, 0, 2);
+		return super.searchByConditionMessage(scm, 0, 3);
 	}
 }
