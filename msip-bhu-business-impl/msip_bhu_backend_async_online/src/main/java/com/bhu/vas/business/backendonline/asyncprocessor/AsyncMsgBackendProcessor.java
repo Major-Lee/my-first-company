@@ -82,8 +82,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService orderDeliverRequestHandler;
 	
-	@Resource
-	private IMsgHandlerService batchAdvertseCPMServiceHandler;
+//	@Resource
+//	private IMsgHandlerService batchAdvertseCPMServiceHandler;
 
 	@PostConstruct
 	public void initialize() {
@@ -156,9 +156,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case BatchDeviceApplyAdvertise:
 							batchDeviceApplyAdvertseServiceHandler.process(message);
 							break;
-						case BatchAdvertiseCPMNotify:
-							batchAdvertseCPMServiceHandler.process(message);
-							break;
+//						case BatchAdvertiseCPMNotify:
+//							batchAdvertseCPMServiceHandler.process(message);
+//							break;
 						case BatchTimUserRegister:
 							batchTimUserRegisterServiceHandler.process(message);
 							break;
