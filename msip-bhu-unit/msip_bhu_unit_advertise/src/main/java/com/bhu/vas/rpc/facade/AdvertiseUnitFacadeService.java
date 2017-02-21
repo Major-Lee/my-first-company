@@ -277,16 +277,20 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> confirmPay(int uid ,String adid){
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise !=null && advertise.getUid() == uid){
-			final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
-					String.format("createNewAdvertise uid[%s]", uid), null, null);
-			if(executeRet != 0){
-				if(executeRet == 1){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+			if(advertise.getState() != BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
+						String.format("createNewAdvertise uid[%s]", uid), null, null);
+				if(executeRet != 0){
+					if(executeRet == 1){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+					}else{
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+					}
 				}else{
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+					asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
 				}
 			}else{
-				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			}
 		}else{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
