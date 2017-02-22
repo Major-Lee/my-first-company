@@ -228,7 +228,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
-			entity.setTop(isTop ? 1 : 0);
+			entity.setTop(isTop ? 1 : -1);
 			if(isAdmin){
 				entity.setUid(vuid);
 			}else{
