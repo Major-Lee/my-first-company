@@ -228,7 +228,7 @@ public class PayLogicService {
  			 if(channel_type.equals("3")){
  				channelType = "app_helper";
  			}else if(channel_type.equals("4")){
- 				channelType = "app_manger";
+ 				channelType = "app_manager";
  	 		}
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
@@ -524,8 +524,8 @@ public class PayLogicService {
      				reckonNo = env+"BHU"+curDate;
      			}else if(channel_type.equals("app_helper")){
      				reckonNo = env+"app_helper"+curDate;
-     			}else if(channel_type.equals("app_manger")){
-     				reckonNo = env+"app_manger"+curDate;
+     			}else if(channel_type.equals("app_manager")){
+     				reckonNo = env+"app_manager"+curDate;
      			}
      			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){

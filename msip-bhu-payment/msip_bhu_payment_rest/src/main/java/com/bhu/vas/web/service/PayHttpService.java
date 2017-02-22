@@ -106,10 +106,10 @@ public class PayHttpService {
    //证书地址
     public static String WITHDRAW_URL = "/home";
     //本地生成微信二维码支付，所需的公司logo地址
-//    public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
-//    public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
-    public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
-    public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
+    public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
+    public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
+//    public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
+//    public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
 
     private  Logger log = LoggerFactory.getLogger(PayHttpService.class);
 

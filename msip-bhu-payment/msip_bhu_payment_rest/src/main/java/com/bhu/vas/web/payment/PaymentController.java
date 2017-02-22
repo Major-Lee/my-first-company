@@ -1097,7 +1097,7 @@ public class PaymentController extends BaseController{
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
     				long PC_WEIXIN_begin = System.currentTimeMillis();
-    				result =  nativeWeixinService.doNativeWxPayment(request,response,"0",total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    				result =  nativeWeixinService.doNativeWxPayment(request,response,"BHU",total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     				long PC_WEIXIN_end = System.currentTimeMillis() - PC_WEIXIN_begin; 
     				logger.info(goods_no+"PC微信支付耗时：" + PC_WEIXIN_end + "毫秒");
     				break;
