@@ -3,8 +3,6 @@ package com.bhu.vas.api.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bhu.vas.api.helper.BusinessEnumType.PaymentSceneChannelType;
-
 public class BusinessEnumType {
 	/**
 	 * 申请验证码动作类别定义
@@ -1166,6 +1164,7 @@ public class BusinessEnumType {
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		WapWeixin("WapWeixin","微信","微信"),
 		WapAlipay("WapAlipay","支付宝","支付宝"),
+		WapPayPal("WapPayPal","贝宝支付","贝宝支付"),
 		AppWeixin("AppWeixin","微信","微信"),
 		AppAlipay("AppAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
@@ -1579,6 +1578,7 @@ public class BusinessEnumType {
 		UTOOL(3,"utool","utool"),
 		BHUWIFIAPP(4,"bhuwifiapp","必虎wifiApp"),
 		OPS(5,"ops","必虎联盟"),
+		BHUWIFIWEBF2P(10,"bhuwifiweb","必虎wifi网页版免费转付费"),
 		;
 		private Integer channel;
 		private String name;
@@ -1617,15 +1617,6 @@ public class BusinessEnumType {
 
 		public void setChannel(Integer channel) {
 			this.channel = channel;
-		}
-		
-		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
-			if(msgType == null || timPushMsgType == null) return false;
-			
-			if(msgType.equals(timPushMsgType.getMsgType())){
-				return true;
-			}
-			return false;
 		}
 		
 		public static PaymentChannelType fromKey(Integer channel){
@@ -1690,15 +1681,6 @@ public class BusinessEnumType {
 		public void setChannel(Integer channel) {
 			this.channel = channel;
 		}
-		
-		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
-			if(msgType == null || timPushMsgType == null) return false;
-			
-			if(msgType.equals(timPushMsgType.getMsgType())){
-				return true;
-			}
-			return false;
-		}
 	}
 	
 	public enum PaymentSceneChannelType{
@@ -1740,7 +1722,6 @@ public class BusinessEnumType {
 		public Integer getChannel() {
 			return channel;
 		}
-		
 		
 		public void setChannel(Integer channel) {
 			this.channel = channel;

@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bhu.vas.api.dto.commdity.PaymentSceneChannelDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -200,7 +201,10 @@ public class PaymentInternalHelper {
 			ex.printStackTrace(System.out);
 		}
 	}
-	
+	public static PaymentSceneChannelDTO formatPaymentTypeAndChannel(String payment_type, Integer channel){
+		
+		return PaymentSceneChannelDTO.builder(payment_type, channel);
+	}
 	public static void main(String[] args) throws Exception{
 		//String orderid = "10012016031700000000000000000244";
 		

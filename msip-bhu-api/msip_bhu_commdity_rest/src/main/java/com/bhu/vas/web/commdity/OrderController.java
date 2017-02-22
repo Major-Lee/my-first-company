@@ -23,6 +23,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.PaymentSceneChannelDTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
@@ -90,11 +91,13 @@ public class OrderController extends BaseController{
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
+		
 		
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 		
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, umac, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
@@ -252,6 +255,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) String payment_type,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
@@ -273,8 +277,9 @@ public class OrderController extends BaseController{
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,"0","0",null,null);
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, null, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),"0",null,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
@@ -508,18 +513,18 @@ public void physical_mini_paymenturl(
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}
-
+		
 		//2:请求支付系统返回支付url
 		RewardCreateMonthlyServiceVTO order_vto = rpcResult.getPayload();
 		String orderid = order_vto.getOrderid();
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
-		
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, umac, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
@@ -587,9 +592,9 @@ public void hot_play_paymenturl(
 		}
 		long restMin = order_vto.getRestMin();
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
-		
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,goods_name,restMin+"m");
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, null, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),version,goods_name,restMin+"m");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
@@ -654,9 +659,9 @@ public void hot_play_paymenturl(
 		Integer appid = order_vto.getAppid();
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 		String requestIp = WebHelper.getRemoteAddr(request);
-		
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,goods_name,"20m");
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, null, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),version,goods_name,"20m");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
@@ -712,9 +717,9 @@ public void hot_play_paymenturl(
 		Integer appid = order_vto.getAppid();
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 		String requestIp = WebHelper.getRemoteAddr(request);
-		
-		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,goods_name,"20m");
+		PaymentSceneChannelDTO paymentSceneChannelDTO = PaymentInternalHelper.formatPaymentTypeAndChannel(payment_type, channel);
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, paymentSceneChannelDTO.getPayment_type(), 
+				order_amount, requestIp, null, orderid, payment_completed_url,paymentSceneChannelDTO.getChannel(),version,goods_name,"20m");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
