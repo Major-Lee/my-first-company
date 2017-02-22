@@ -278,6 +278,10 @@ public class AdvertiseUnitFacadeService {
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise !=null && advertise.getUid() == uid){
 			if(advertise.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
+				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);	
+				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices + BusinessRuntimeConfiguration.AdvertiseHandbill){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+				}
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
