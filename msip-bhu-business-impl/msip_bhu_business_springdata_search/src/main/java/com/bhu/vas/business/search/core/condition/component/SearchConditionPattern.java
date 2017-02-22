@@ -2,6 +2,12 @@ package com.bhu.vas.business.search.core.condition.component;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.elasticsearch.search.sort.SortOrder;
+
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
+import com.smartwork.msip.cores.helper.JsonHelper;
 /**
  * 搜索多组合条件定义枚举类型
  * @author tangzichao
@@ -182,9 +188,21 @@ public enum SearchConditionPattern {
 		SearchConditionPattern.mapPatterns = mapPatterns;
 	}
 	public static void main(String[] argv){
-		SearchConditionPattern de = SearchConditionPattern.getByPattern("ctn");
-		System.out.println(de.name);
-//		System.out.println(DeviceEnum.HandSet_IOS_Type);
-		//System.out.println(DeviceEnum.isHandsetDevice("O"));
+		SearchConditionRangePayload rangeBetweenPayload = SearchConditionRangePayload.
+				buildRangBetweenPayload(String.valueOf(80000), String.valueOf(81000));
+		
+		SearchCondition sc_betweenAndLastRegedAt = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.U_ID.getName(), SearchConditionPattern.Between.getPattern(), 
+				JsonHelper.getJSONString(rangeBetweenPayload));
+
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_betweenAndLastRegedAt);
+		SearchConditionMessage searchConditionMessage = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		System.out.println(JsonHelper.getJSONString(searchConditionMessage));
+		
+		SearchConditionSort sc_sortDescByOrigswver = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
+				Field.A_CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(), SortOrder.DESC, null);
+		searchConditionMessage.addSorts(sc_sortDescByOrigswver);
+		
+		System.out.println(JsonHelper.getJSONString(searchConditionMessage));
 	}
 }

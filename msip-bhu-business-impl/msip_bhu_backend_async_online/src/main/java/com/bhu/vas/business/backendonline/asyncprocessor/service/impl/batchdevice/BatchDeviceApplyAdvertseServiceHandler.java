@@ -298,10 +298,13 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			if(ad.getTop() == 1){
 				score+=100000000000000L;
 			}
-			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-					maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+
 			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType(),score);
-			AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
+			if(maclist !=null && !maclist.isEmpty()){
+				AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+						maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+			}
 			
 		}else{
 			advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.UnVerified.getType(), null);
