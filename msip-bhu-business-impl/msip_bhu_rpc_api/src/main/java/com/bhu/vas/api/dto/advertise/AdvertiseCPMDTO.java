@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.advertise;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 @SuppressWarnings("serial")
 public class AdvertiseCPMDTO implements java.io.Serializable{
 	private String adid;
@@ -24,5 +26,4 @@ public class AdvertiseCPMDTO implements java.io.Serializable{
 	public void setUmac(String umac) {
 		this.umac = umac;
 	}
-	
 }

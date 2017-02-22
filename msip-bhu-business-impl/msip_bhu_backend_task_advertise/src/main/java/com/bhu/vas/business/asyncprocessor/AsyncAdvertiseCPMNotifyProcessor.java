@@ -34,6 +34,7 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -118,12 +119,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		}));
 	}
 	
-	
-	public static final double cpm_price = 0.3d;
-	
 	private void cpmSharedeal(final String mac, final String umac, String adid, Long cpmid){
 		try{
-		userWalletFacadeService.sharedealCashToUserWalletWithProcedure(mac, umac, cpm_price, adid, new Date(),
+		userWalletFacadeService.sharedealCashToUserWalletWithProcedure(mac, umac, BusinessRuntimeConfiguration.AdvertiseCPMPrices, adid, new Date(),
 				BusinessEnumType.templateCpmDesc,
 				UWalletTransMode.SharedealPayment, UWalletTransType.CPM2C,  cpmid,
 						new IWalletSharedealNotifyCallback(){
@@ -172,7 +170,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			logger.info(String.format("BatchAdvertseCPMServiceHandler cpm: uid[%s] adid[%s]", uid, cpmDto.getAdid()));
 			
 			Map<String, Object>outParam = new HashMap<String, Object>();
-			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
+			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), BusinessRuntimeConfiguration.AdvertiseCPMPrices, 
 					UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
@@ -184,7 +182,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 					}
 				}
 				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
-				if(Double.valueOf(balance) < cpm_price){
+				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices){
 					entity.setTop(0);
 					advertiseService.update(entity);
 					List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());

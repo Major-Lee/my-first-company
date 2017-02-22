@@ -177,6 +177,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	
         	AdvertiseOperatorDiscount = PropertiesHelper.getDouble("ad.op.discount", paramProperties, AdvertiseOperatorDiscount);
         	AdvertiseCommonDiscount = PropertiesHelper.getDouble("ad.common.discount", paramProperties, AdvertiseCommonDiscount);
+        	AdvertiseHandbill = PropertiesHelper.getDouble("ad.op.handbill", paramProperties, AdvertiseHandbill);
+        	AdvertiseCPMPrices = PropertiesHelper.getDouble("ad.op.cpm", paramProperties, AdvertiseCPMPrices);
         	
         	TimManager = PropertiesHelper.getString("message.tim.manager",paramProperties,TimManager);
         	TimSdkAppid = PropertiesHelper.getString("message.tim.sdkappid",paramProperties,TimSdkAppid);
@@ -496,10 +498,14 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
 	
+	//广告各种定价
 	public static final int Advertise_Unit_Price = 20;
 	public static double Advertise_Sm_Price = 0.2D;
 	public static double AdvertiseOperatorDiscount = 0.01D;
 	public static double AdvertiseCommonDiscount = 0.05D;
+	public static double AdvertiseHandbill = 1D;
+	public static double AdvertiseCPMPrices = 0.3D;
+	
 	//腾讯im 生产环境参数
 	public static String TimManager = "IMBHU";
 	public static String TimSdkAppid = "1400020930";

@@ -196,7 +196,7 @@ public class AdvertiseUnitFacadeService {
 					
 					long sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 					count = sum > 500 ? 500 : sum;
-					cash = 1;
+					cash = BusinessRuntimeConfiguration.AdvertiseHandbill;
 					entity.setCash(cash);
 					entity.setLat(lat);
 					entity.setLon(lon);
@@ -901,7 +901,7 @@ public class AdvertiseUnitFacadeService {
 		if(isTop){//置顶
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				if(Double.valueOf(balance) < 0.3){
+				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 				}	
 			}
@@ -918,10 +918,10 @@ public class AdvertiseUnitFacadeService {
 		}else if (isRefresh){//刷新
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, 
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, BusinessRuntimeConfiguration.AdvertiseHandbill, UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
-					if(Double.valueOf(balance) < 1){
+					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseHandbill){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 					}else{
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
