@@ -100,7 +100,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		List<Advertise> adlists = advertiseService.findByIds(adDTO.getIds());
 		int batch = 200;
 		for (final Advertise ad : adlists) {
-			List<String> macList = null;
+			List<String> macList = new ArrayList<String>();
 			
 			String start = null;
 			String end = null;
@@ -109,7 +109,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
 					
 					if(adDTO.isAdmin()){
 						final List<String> maclist1 = new ArrayList<String>();
@@ -120,7 +119,11 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 								maclist1.add(doc.getD_mac());
 							}
 						}});
-						macList.addAll(maclist1);
+						if(maclist1 !=null){
+							macList.addAll(maclist1);
+						}
+					}else{
+						macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
 					}
 					
 				}else{
