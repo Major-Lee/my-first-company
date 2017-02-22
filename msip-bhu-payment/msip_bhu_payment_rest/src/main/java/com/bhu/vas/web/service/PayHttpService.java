@@ -53,8 +53,6 @@ public class PayHttpService {
     //重定向地址
     public static String PAY_HOST_URL = "http://upay.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
-    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/payment/getMidas";
-    //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
     public static String WEIXIN_NOTIFY_URL = PAY_HOST_URL+"/wxPayNotifySuccess";
@@ -64,8 +62,6 @@ public class PayHttpService {
     public static String ALIPAY_NOTIFY_URL = PAY_HOST_URL+"/alipayNotifySuccess";
     
     public static String NOWIPAY_NOTIFY_URL = PAY_HOST_URL+"/nowpayNotifySuccess";
-    
-    public static String MIDAS_NOTIFY_URL = "/msip_bhu_payment_rest/payment/midasNotifySuccess";
     
 	//打赏页面跳转同步通知页面路径
     public static String ALIPAY_RETURN_URL = PAY_HOST_URL+"/alipayReturn";

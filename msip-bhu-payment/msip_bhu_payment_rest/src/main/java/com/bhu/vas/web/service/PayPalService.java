@@ -17,13 +17,22 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
-import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
+import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
+import com.bhu.vas.api.rpc.payment.model.PaymentOutimeErrorLog;
+import com.bhu.vas.api.vto.payment.PaymentTypeVTO;
+import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentOutimeErrorLogService;
+import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.helper.BusinessHelper;
+import com.bhu.vas.business.helper.PaymentChannelCode;
+import com.bhu.vas.business.qqmail.SendMailHelper;
 import com.bhu.vas.web.payments.servlet.PaymentWithPayPalServlet;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Details;
@@ -36,20 +45,138 @@ import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.localunit.RandomPicker;
 /**
  * Paypal消息处理流程逻辑类
  * @author pamchen-1
  *
  */
 @Service
-public class PaypalService {
+public class PayPalService {
+	private int paypalWarningCount;
+	private String paypalWarningTime = "";
+	private String paypalErrorTime = "";
 	
-	@Resource
+	@Autowired
 	PayLogicService payLogicService;
+	@Autowired
+    PayHttpService payHttpService;
+	@Resource
+	PaymentAlipaylocationService paymentAlipaylocationService;
+	@Resource
+	PaymentOutimeErrorLogService paymentOutimeErrorLogService;
+	@Resource
+	PaymentParameterService paymentParameterService;
 	
 	private static final Logger logger = Logger.getLogger(PaymentWithPayPalServlet.class);
-	public static final String WebhookId = "2ND47987AC600853R";
+//	public static final String WebhookId = "2ND47987AC600853R";
+	public static final String WebhookId = "8HC53929NS051904L";  ///live pays.bhuwifi.com
 	
+	
+	
+	public PaymentTypeVTO doPaypal(HttpServletResponse response,
+    		HttpServletRequest request,
+    		String version,
+    		String total_fee,
+    		String out_trade_no,
+    		String ip,
+    		String return_url,
+    		String usermac,
+    		String paymentName,
+    		String appid) {
+    	PaymentTypeVTO result = new PaymentTypeVTO();
+    	if(ip == "" || ip == null){
+    		ip = "213.42.3.24";
+    	}
+    	if(usermac.equals("")){
+    		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
+    	}
+    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	long get_midas_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+    	String reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_PAYPAL.i18n(),usermac,paymentName,appid);
+    	long get_midas_reckoning_end = System.currentTimeMillis() - get_midas_reckoning_begin; // 这段代码放在程序执行后
+    	logger.info(out_trade_no+"paypal支付获取支付流水号耗时：" + get_midas_reckoning_end + "毫秒");
+
+		if (StringUtils.isNotBlank(return_url)) {
+			logger.info(String.format("get paypal location [%s] ",return_url));
+			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+			orderLocation.setTid(reckoningId);
+			orderLocation.setLocation(return_url);
+			long insert_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+			paymentAlipaylocationService.insert(orderLocation);
+			long insert_midas_url_end = System.currentTimeMillis() - insert_midas_url_begin; // 这段代码放在程序执行后
+			logger.info(out_trade_no+"paypal插入支付完成URL耗时：" + insert_midas_url_end + "毫秒");
+			logger.info(String.format("apply paypal set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+			if(return_url.contains("payokurl=")){
+				String[] Str =return_url.split("payokurl=");
+				if( Str.length > 0){
+					return_url = Str[1];
+				}
+			}
+		}
+		
+		return_url = PayHttpService.PAYPAL_RETURN_URL;
+		long get_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		String results = createPayment(reckoningId,paymentName,total_fee, return_url);
+		long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"请求paypal获取支付URL耗时：" + get_midas_url_end + "毫秒");
+		int nowOutTimeLevel = payHttpService.getOt();
+		
+		try{
+			if(get_midas_url_end > nowOutTimeLevel){
+				
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+				if(get_midas_url_end > 7000){
+					paypalWarningCount++;
+				}
+				if(get_midas_url_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(2,smsg,paypalErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						paypalErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+				paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
+				paymentNowpayErrorLog.setC_type("Midas");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
+			
+			switch (paypalWarningCount) {
+			case 3:
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+				String resp = "ture";
+				String acc = PayHttpService.Internal_level2_warning_man;
+				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
+				if(!paypalWarningTime.equals(curDate)){
+					paypalWarningTime = curDate;
+					SendMailHelper.doSendMail(2,smsg);
+					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				}
+				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
+				paypalWarningCount = 0;
+				break;
+			default:
+				break;
+			}
+		}catch(Exception e){
+			logger.info(String.format("apply midas catch exception [%s]",e.getMessage()+e.getCause()));
+		}
+		
+		logger.info(String.format("apply paypal results [%s]",results));
+		if("error".equalsIgnoreCase(results)){
+			result.setType("FAIL");
+			result.setUrl("支付请求失败");
+			return result;
+		}else{
+			result.setType("http");
+			result.setUrl(results);
+			return result;
+		}
+    }
 	public String createPayment(String recokoningId ,String name,String pay_amount,String returnUrl) {
 		String result = "error";
 		

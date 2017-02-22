@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentSceneChannelType;
 import com.bhu.vas.api.rpc.payment.model.PaymentCallbackSum;
 import com.bhu.vas.api.rpc.payment.model.PaymentOrderRel;
 import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
@@ -109,9 +110,6 @@ public class PayLogicService {
 		default:
 			break;
 		}
-		System.out.println("result    "+result);
-    	
-//    	businessCacheService.storePaymentWapWeixinMerchantCacheResult(result);    	
     	return result;
     }
 
@@ -197,6 +195,16 @@ public class PayLogicService {
  		return reckoningId;
     }
     
+    public static void main(String[] args) {
+    	System.out.println(PaymentChannelCode.BHU_APP_WEIXIN.i18n());
+		if(PaymentChannelCode.BHU_APP_WEIXIN.i18n().equals("APWX") ){
+			System.out.println("True");
+		}else{
+			System.err.println("fase");
+		}
+		
+	}
+    
     /**
      * 第一次请求来的订单号，默认入库
      * @param out_trade_no 请求的订单号
@@ -217,8 +225,12 @@ public class PayLogicService {
  		}else if(type.equals(PaymentChannelCode.BHU_APP_ALIPAY.i18n())){
  			paymentType = PaymentChannelCode.BHU_APP_ALIPAY.code();
  		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
+ 			 if(channel_type.equals("3")){
+ 				channelType = "app_helper";
+ 			}else if(channel_type.equals("4")){
+ 				channelType = "app_manger";
+ 	 		}
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
- 			channelType = "BHU";
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
  			 if(channel_type == "1"){
   				channelType = PaymentChannelCode.BHU_QRCODE_WEIXIN.code();
@@ -262,6 +274,58 @@ public class PayLogicService {
 				+ "orderId [%s] payment_type [%s] total_fee [%s] Ip [%s] openId [%s] token [%s]", "打赏",reckoningId, out_trade_no, 
 				paymentType, total_fee, Ip, "BHUUSERMAC"+usermac,token));
  		return reckoningId;
+    }
+    
+    public String createPaymentId(String out_trade_no,String channelType,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
+    	
+    	//判断请求支付类型
+    	String paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
+    	if(type.equals(PaymentChannelCode.BHU_PC_WEIXIN.i18n())){
+    		paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
+    	}else if(type.equals(PaymentChannelCode.BHU_PC_ALIPAY.i18n())){
+    		paymentType = PaymentChannelCode.BHU_PC_ALIPAY.code();
+    	}else if(type.equals(PaymentChannelCode.BHU_APP_ALIPAY.i18n())){
+    		paymentType = PaymentChannelCode.BHU_APP_ALIPAY.code();
+    	}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
+    		paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
+    		
+    	}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
+    		if(channelType.equals(PaymentSceneChannelType.WAPQR.getName())){
+    			channelType = "BHU";
+    		}
+    		paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
+    	}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
+    		paymentType = PaymentChannelCode.BHU_WAP_ALIPAY.code();
+    	}else if(type.equals(PaymentChannelCode.BHU_WAP_PAYPAL.i18n())){
+    		paymentType = PaymentChannelCode.BHU_WAP_PAYPAL.code();
+    		channelType = "PayPal";
+    	}else{
+    		channelType = "BHU";
+    		paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
+    	}
+    	
+    	if(Ip == "" || Ip == null){
+    		Ip = "213.42.3.24";
+    	}
+    	
+    	PaymentReckoning order = new PaymentReckoning();
+    	String reckoningId = BusinessHelper.generatePaymentReckoningNoByType(payHttpService.getEnv().toUpperCase()+type);
+    	order.setId(reckoningId);
+    	order.setOrder_id(out_trade_no);
+    	order.setAmount(Integer.parseInt(total_fee));
+    	order.setPayment_type(paymentType);
+    	order.setChannel_type(channelType);
+    	order.setOpenid("BHUUSERMAC"+usermac);
+    	order.setSubject(paymentName);
+    	order.setExter_invoke_ip(Ip);
+    	order.setAppid(appId);
+    	String token = RandomPicker.randString(BusinessHelper.letters, 10);
+    	order.setToken(token);
+    	paymentReckoningService.insert(order);
+    	logger.info(String.format("create Payment subject [%s] reckoningId [%s] "
+    			+ "orderId [%s] payment_type [%s] total_fee [%s] Ip [%s] openId [%s] token [%s]", "打赏",reckoningId, out_trade_no, 
+    			paymentType, total_fee, Ip, "BHUUSERMAC"+usermac,token));
+    	return reckoningId;
     }
     
     public String updatePaymentParam(int agentNo,String smsg,String nowErrorTime) {
@@ -364,7 +428,9 @@ public class PayLogicService {
     		updatePayStatus.setThird_party_code(thirdPartCode);
     		updatePayStatus.setPay_status(1);
     		updatePayStatus.setPaid_at(payTime);
-    		if(thridType != null){
+    		if(thridType.equals("BHU")){
+    			updatePayStatus.setRemark(billo);
+    		}else{
     			updatePayStatus.setRemark(billo);
     			updatePayStatus.setChannel_type(thridType);
     		}
@@ -454,21 +520,25 @@ public class PayLogicService {
      		}else if(type.equals(PaymentChannelCode.BHU_APP_ALIPAY.i18n())){
      			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
+     			if(channel_type.equals("BHU")){
+     				reckonNo = env+"BHU"+curDate;
+     			}else if(channel_type.equals("app_helper")){
+     				reckonNo = env+"app_helper"+curDate;
+     			}else if(channel_type.equals("app_manger")){
+     				reckonNo = env+"app_manger"+curDate;
+     			}
      			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
      			 if(channel_type.equals(PaymentChannelCode.BHU_QRCODE_WEIXIN.code())){
      				reckonNo = env+PaymentChannelCode.BHU_QRCODE_WEIXIN.i18n()+curDate;
-     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
       			}else if(channel_type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.code())){
       				reckonNo = env+PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n()+curDate;
-     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      			}else if(channel_type.equals(PaymentChannelCode.BHU_HEEPAY_WEIXIN.code())){
      				reckonNo = env+PaymentChannelCode.BHU_HEEPAY_WEIXIN.i18n()+curDate;
-     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      			}else if(channel_type.equals(PaymentChannelCode.BHU_NOW_WEIXIN.code())){
      				reckonNo = env+PaymentChannelCode.BHU_NOW_WEIXIN.i18n()+curDate;
-     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      	 		}
+     			 paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
      			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
      		}
@@ -608,17 +678,17 @@ public class PayLogicService {
 		PaymentReckoningVTO getPayOrder = localEhcacheService.getLocalCache(tId);
 		return getPayOrder;
 	}*/
-    public static void main(String[] args) {
-    	ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
- 		rpcn_dto.setSuccess(true);
- 		rpcn_dto.setOrderid("10012016102700000001000000000701");
- 		rpcn_dto.setPayment_type("weixin");
- 		//String fmtDate = BusinessHelper.formatDate(payNotice.getWithdrawAt(), "yyyy-MM-dd HH:mm:ss");
- 		rpcn_dto.setPaymented_ds("2016-10-28 17:31:32");
- 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
-        
- 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
-	}
+//    public static void main(String[] args) {
+////    	ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
+//// 		rpcn_dto.setSuccess(true);
+//// 		rpcn_dto.setOrderid("10012016102700000001000000000701");
+//// 		rpcn_dto.setPayment_type("weixin");
+//// 		//String fmtDate = BusinessHelper.formatDate(payNotice.getWithdrawAt(), "yyyy-MM-dd HH:mm:ss");
+//// 		rpcn_dto.setPaymented_ds("2016-10-28 17:31:32");
+//// 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+////        
+//// 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+//	}
 
     public void updateReckoningByThirdInfos(String recokoningId, String paymentId, String accessToken) {
 		PaymentReckoning paymentReckoning = paymentReckoningService.getById(recokoningId);

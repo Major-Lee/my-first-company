@@ -71,10 +71,10 @@
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_heepay</artifactId>
 		</dependency>
-        <dependency>
+        <!-- <dependency>
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_midas</artifactId>
-		</dependency>	
+		</dependency> -->	
         <!-- 			
         <dependency>
             <groupId>com.alibaba</groupId>

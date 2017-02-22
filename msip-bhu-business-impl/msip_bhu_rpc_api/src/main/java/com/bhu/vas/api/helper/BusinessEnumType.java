@@ -3,6 +3,8 @@ package com.bhu.vas.api.helper;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentSceneChannelType;
+
 public class BusinessEnumType {
 	/**
 	 * 申请验证码动作类别定义
@@ -1751,7 +1753,7 @@ public class BusinessEnumType {
 		System.out.println(payment_type.getDesc());
 		System.out.println(OAuthType.fromType("腾讯微信"));
 		
-		String third = PaymentThirdType.NOW.name_zh;
+		String third = PaymentSceneChannelType.WAPH5.getName();
 		System.out.println(third);
 	}
 }
