@@ -1164,6 +1164,7 @@ public class BusinessEnumType {
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		WapWeixin("WapWeixin","微信","微信"),
 		WapAlipay("WapAlipay","支付宝","支付宝"),
+		WapPayPal("WapPayPal","贝宝支付","贝宝支付"),
 		AppWeixin("AppWeixin","微信","微信"),
 		AppAlipay("AppAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
@@ -1577,6 +1578,7 @@ public class BusinessEnumType {
 		UTOOL(3,"utool","utool"),
 		BHUWIFIAPP(4,"bhuwifiapp","必虎wifiApp"),
 		OPS(5,"ops","必虎联盟"),
+		BHUWIFIWEBF2P(10,"bhuwifiweb","必虎wifi网页版免费转付费"),
 		;
 		private Integer channel;
 		private String name;
@@ -1615,15 +1617,6 @@ public class BusinessEnumType {
 
 		public void setChannel(Integer channel) {
 			this.channel = channel;
-		}
-		
-		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
-			if(msgType == null || timPushMsgType == null) return false;
-			
-			if(msgType.equals(timPushMsgType.getMsgType())){
-				return true;
-			}
-			return false;
 		}
 		
 		public static PaymentChannelType fromKey(Integer channel){
@@ -1686,16 +1679,53 @@ public class BusinessEnumType {
 		public void setChannel(Integer channel) {
 			this.channel = channel;
 		}
+	}
+
+	public enum PaymentSceneChannelType{
+		WAPH5(0,"wap_h5","H5支付"),
+		WAPQR(1,"wap_qr","扫码支付"),
+		APPMANAGER(2,"app_manager","WiFi管家"),
+		APPHELPER(3,"app_helper","WiFi助手")
+		;
+		private Integer channel;
+		private String name;
+		private String name_zh;
 		
-		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
-			if(msgType == null || timPushMsgType == null) return false;
-			
-			if(msgType.equals(timPushMsgType.getMsgType())){
-				return true;
-			}
-			return false;
+		
+		private PaymentSceneChannelType(Integer channel,String name,String name_zh){
+			this.channel = channel;
+			this.name = name;
+			this.name_zh = name_zh;
+		}
+		
+		
+		public String getName() {
+			return name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getName_zh() {
+			return name_zh;
+		}
+		
+		
+		public void setName_zh(String name_zh) {
+			this.name_zh = name_zh;
+		}
+		
+		
+		public Integer getChannel() {
+			return channel;
+		}
+		
+		public void setChannel(Integer channel) {
+			this.channel = channel;
 		}
 	}
+	
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
