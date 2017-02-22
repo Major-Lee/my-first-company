@@ -907,7 +907,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			
 			if(topState == 1)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			
 			advertise.setTop(1);
 			advertiseService.update(advertise);
