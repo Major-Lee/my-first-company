@@ -1743,15 +1743,6 @@ public class BusinessEnumType {
 		public void setChannel(Integer channel) {
 			this.channel = channel;
 		}
-		
-		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
-			if(msgType == null || timPushMsgType == null) return false;
-			
-			if(msgType.equals(timPushMsgType.getMsgType())){
-				return true;
-			}
-			return false;
-		}
 	}
 	
 	
