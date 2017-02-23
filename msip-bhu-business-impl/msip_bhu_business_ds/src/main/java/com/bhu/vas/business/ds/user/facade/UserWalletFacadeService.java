@@ -410,7 +410,7 @@ public class UserWalletFacadeService{
 		procedureDTO.setDetail_id(detail_id);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
-			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s] outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
 			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal);
 			}

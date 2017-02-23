@@ -263,6 +263,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		dto.setManufacturercash(sharedeal.getManufacturer_cash());
 		dto.setDistributorcash(sharedeal.getDistributor_cash());
 		dto.setDistributorl2cash(sharedeal.getDistributor_l2_cash());
+		dto.setOutmsg("");
 		return dto;
 	}
 
