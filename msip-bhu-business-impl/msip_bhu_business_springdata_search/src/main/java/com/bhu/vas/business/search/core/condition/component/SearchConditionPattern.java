@@ -236,9 +236,11 @@ public enum SearchConditionPattern {
 		pack_must.addChildSearchCondtions(top);
 		pack_must.addChildSearchCondtions(state);
 
-
+		SearchConditionSort sc_sortDescByOrigswver = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
+				Field.A_CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(), SortOrder.DESC, null);
 		
 		SearchConditionMessage searchConditionMessage = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		searchConditionMessage.addSorts(sc_sortDescByOrigswver);
 		System.out.println(JsonHelper.getJSONString(searchConditionMessage));
 		
 	}

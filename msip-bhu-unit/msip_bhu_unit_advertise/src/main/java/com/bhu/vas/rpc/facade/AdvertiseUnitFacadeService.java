@@ -944,7 +944,7 @@ public class AdvertiseUnitFacadeService {
 			
 		}else if (!isTop){//取消置顶
 			if(topState  != 1)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			
 			advertise.setTop(0);
 			advertiseService.update(advertise);
@@ -953,7 +953,7 @@ public class AdvertiseUnitFacadeService {
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore - topScore,0);
 			
 		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 		}
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
