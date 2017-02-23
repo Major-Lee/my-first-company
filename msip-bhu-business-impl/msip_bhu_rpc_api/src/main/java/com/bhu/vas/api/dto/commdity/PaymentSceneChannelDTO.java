@@ -42,9 +42,11 @@ public class PaymentSceneChannelDTO implements java.io.Serializable{
 				break;
 			case UTOOL:
 				dto.setChannel(BusinessEnumType.PaymentSceneChannelType.APPHELPER.getName());
+				break;
 			case CARDREWARD:
 			case OTHERS:
 				dto.setChannel(BusinessEnumType.PaymentSceneChannelType.WAPQR.getName());
+				break;
 			case BHUWIFIWEB:
 			case BHUWIFIWEBF2P:
 			case OPS:
