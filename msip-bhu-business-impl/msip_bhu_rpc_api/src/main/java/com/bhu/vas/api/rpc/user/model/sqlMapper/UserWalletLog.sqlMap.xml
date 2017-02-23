@@ -223,7 +223,8 @@
 	</select>
 	
 	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
-	    select truncate(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    select truncate(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog LEFT JOIN msip_bhu_commdity.t_commdity_orders t_orders
+	    ON t_walletlog.orderid = t_orders.id
 	    <where>
 	    	t_walletlog.uid = #{uid}
 	    	<if test="transmode != null">
@@ -235,7 +236,6 @@
 	    	<if test="end_time != null">
 	    		AND t_walletlog.updated_at &lt;= #{end_time}
 	    	</if>
-	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
 	    		AND	t_walletlog.mac = #{mac}
 	    	</if>
@@ -280,6 +280,8 @@
 		t_walletlog.updated_at as paymented_at,
 		t_orders.created_at as created_at 
 	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    from <include refid="modelTableName" /> t_walletlog LEFT JOIN msip_bhu_commdity.t_commdity_orders t_orders
+	    ON t_walletlog.orderid = t_orders.id
 	    <where>
 	    	t_walletlog.uid = #{uid}
 	    	<if test="transmode != null">
@@ -291,7 +293,6 @@
 	    	<if test="end_created_ts != null">
 	    		AND  t_walletlog.updated_at &lt;= #{end_created_ts}
 	    	</if>
-	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
 	    		AND	t_walletlog.mac = #{mac}
 	    	</if>
