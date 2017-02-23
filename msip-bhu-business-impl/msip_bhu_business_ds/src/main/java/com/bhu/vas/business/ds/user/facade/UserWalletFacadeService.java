@@ -415,7 +415,7 @@ public class UserWalletFacadeService{
 				callback.notifyCashSharedealOper(sharedeal);
 			}
 		}else
-			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s], outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		//uwallet = userWalletService.update(uwallet);
 		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
