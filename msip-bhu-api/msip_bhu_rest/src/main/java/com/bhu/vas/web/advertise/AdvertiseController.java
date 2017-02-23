@@ -370,10 +370,10 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) Integer vuid,
+            @RequestParam(required = false) Integer vuid,
             @RequestParam(required = true) String adid,
             @RequestParam(required = true) String message,
-            @RequestParam(required = false, defaultValue = "1") int type,
+            @RequestParam(required = false, defaultValue = "0") int type,
             @RequestParam(required = false) Double score) {
 
 		try{

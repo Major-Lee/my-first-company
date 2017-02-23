@@ -969,7 +969,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param score
 	 * @return 
 	 */
-	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score){
+	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid, String adid,String message,int type,Double score){
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
