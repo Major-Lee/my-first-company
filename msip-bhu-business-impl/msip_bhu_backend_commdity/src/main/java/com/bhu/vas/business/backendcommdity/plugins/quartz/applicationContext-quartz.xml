@@ -6,7 +6,7 @@
 	<description>Quartz的本地Cron式执行任务配置</description>
 	
 	<!-- spring的属性加载器，加载properties文件中的属性 -->  
-	<bean id="commdityPropertyConfigurer"  
+<!--	<bean id="commdityPropertyConfigurer"  
 	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
 		<property name="ignoreUnresolvablePlaceholders" value="true" /> 
 	    <property name="location">
@@ -14,23 +14,21 @@
 	    </property>  
 	    <property name="fileEncoding" value="utf-8" />  
 	</bean>
+-->
 
 	<!-- Quartz本地Schduler -->
-	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
-		<!-- Triggers集成 -->
+<!--	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
 		<property name="triggers">
 			<list>
-				<!-- 每小时执行一次分成 -->
 				<ref bean="qualityGoodsSharedealTaskLoaderCronTrigger" />
 			</list>
 		</property>
-		<!-- Quartz配置 -->
 		<property name="quartzProperties">
 			<props><prop key="org.quartz.threadPool.threadCount">5</prop></props>
 		</property>
-		<!-- 启动时延期3秒开始任务 -->
 		<property name="startupDelay" value="3" />
 	</bean>
+-->
 	
 
 	<!-- 每小时执行一次广告分成 -->
