@@ -848,6 +848,7 @@ public class AdvertiseUnitFacadeService {
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
+								vto.setTag(doc.getA_tag());
 								vto.setTop(doc.getA_top());
 								if(doc.getA_top() == 1){
 									topAds.add(doc.getId());
@@ -969,7 +970,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param score
 	 * @return 
 	 */
-	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score){
+	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid, String adid,String message,int type,Double score){
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
@@ -1079,6 +1080,7 @@ public class AdvertiseUnitFacadeService {
 						vto.setImage(doc.getA_image());
 						vto.setExtparams(doc.getA_extparams());
 						vto.setReject_reason(doc.getA_reject_reason());
+						vto.setTag(doc.getA_tag());
 						vto.setTop(doc.getA_top());
 						if(doc.getA_top() == 1){
 							topAds.add(doc.getId());
