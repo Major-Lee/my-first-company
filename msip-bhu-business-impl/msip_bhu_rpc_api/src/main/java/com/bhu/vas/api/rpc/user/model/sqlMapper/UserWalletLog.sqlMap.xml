@@ -248,9 +248,11 @@
 	    	<if test="type != null">
 	    		AND t_orders.type = #{type}
 	    	</if>
+	    <!--  	
 	    	<if test="status != null">
 	    		AND t_orders.status = #{status}
 	    	</if>
+	    -->
 	    	<if test="role != null">
 	    		AND t_walletlog.role = #{role}
 	    	</if>
@@ -304,9 +306,11 @@
 	    	<if test="type != null">
 	    		AND t_orders.type = #{type}
 	    	</if>
+	    <!-- 
 	    	<if test="status != null">
 	    		AND t_orders.status = #{status}
 	    	</if>
+	    -->
 	    	<if test="role != null">
 	    		AND t_walletlog.role = #{role}
 	    	</if>
