@@ -494,21 +494,19 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-//			advertiseVTO.setCount(advertiseVTO.getCount());
-			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
-				Date date=new Date();
-				if(advertise.getStart().getTime()>date.getTime()){
-					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-					if(between_daysNow>2){
-						advertiseVTO.setEscapeFlag(true);
-					}
-				}
+			if(userFacadeService.isAdminByUid(uid)){
+				advertiseVTO.setUid(advertise.getUid()+"");
 			}
-			if(uid!=null){
-				if(uid!=advertise.getUid()){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
-				}
-			}
+			advertiseVTO.setCount(advertiseVTO.getCount());
+//			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
+//				Date date=new Date();
+//				if(advertise.getStart().getTime()>date.getTime()){
+//					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
+//					if(between_daysNow>2){
+//						advertiseVTO.setEscapeFlag(true);
+//					}
+//				}
+//			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 	}
 
