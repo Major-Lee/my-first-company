@@ -410,12 +410,12 @@ public class UserWalletFacadeService{
 		procedureDTO.setDetail_id(detail_id);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
-			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s] outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
 			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal);
 			}
 		}else
-			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s], outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		//uwallet = userWalletService.update(uwallet);
 		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));

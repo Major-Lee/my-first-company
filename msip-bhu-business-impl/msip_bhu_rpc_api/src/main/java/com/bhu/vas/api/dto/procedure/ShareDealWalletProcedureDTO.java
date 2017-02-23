@@ -2,6 +2,7 @@ package com.bhu.vas.api.dto.procedure;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
@@ -62,6 +63,8 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private long detail_id=-1;	//广告分成时为广告分成明细id
 	@IN(jdbcType = JdbcType.DOUBLE)
 	private double sharedeal_amount;	//分润总金额
+	@IN(jdbcType = JdbcType.VARCHAR)
+	private String outmsg;	//需要存储过程输出的调试信息
 
 	
 	public long getDetail_id() {
@@ -260,6 +263,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		dto.setManufacturercash(sharedeal.getManufacturer_cash());
 		dto.setDistributorcash(sharedeal.getDistributor_cash());
 		dto.setDistributorl2cash(sharedeal.getDistributor_l2_cash());
+		dto.setOutmsg("");
 		return dto;
 	}
 
@@ -294,6 +298,14 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 
 	public void setUmac(String umac) {
 		this.umac = umac;
+	}
+
+	public String getOutmsg() {
+		return outmsg;
+	}
+
+	public void setOutmsg(String outmsg) {
+		this.outmsg = outmsg;
 	}
 
 }
