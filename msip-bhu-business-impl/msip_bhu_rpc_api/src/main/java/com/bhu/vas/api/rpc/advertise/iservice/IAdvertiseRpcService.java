@@ -117,8 +117,8 @@ public interface IAdvertiseRpcService{
 			String province, String city, String district, double lat,
 			double lon, String distances);
 
-	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(
-			int pageNo, int pageSize,boolean customize, String...messages);
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(String mac,
+		   String umac,int pageNo, int pageSize,boolean customize, String...messages);
 
 	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid,
 			boolean isTop, boolean isRefresh);
@@ -130,7 +130,7 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails();
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac ,String umac);
 
 	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
 

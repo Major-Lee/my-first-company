@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
@@ -27,7 +26,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -201,10 +199,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages) {
-		logger.info(String.format("fetchBySearchConditionMessages pageNo[%s] pageSize[%s] customize[%s] messages[%s]",pageNo,
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(String mac,String umac ,int pageNo,int pageSize,boolean customize,String ... messages) {
+		logger.info(String.format("fetchBySearchConditionMessages mac[%s] umac[%s] pageNo[%s] pageSize[%s] customize[%s] messages[%s]",mac,umac,pageNo,
 				pageSize,customize,messages));
-		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(pageNo,pageSize,customize,messages);
+		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(mac,umac,pageNo,pageSize,customize,messages);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
@@ -235,9 +233,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails() {
-		logger.info("queryRandomAdvertiseDetails ...");
-		return advertiseUnitFacadeService.queryRandomAdvertiseDetails();
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac) {
+		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s]",mac,umac));
+		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac);
 	}
 	
 	@Override

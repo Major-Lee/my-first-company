@@ -188,21 +188,58 @@ public enum SearchConditionPattern {
 		SearchConditionPattern.mapPatterns = mapPatterns;
 	}
 	public static void main(String[] argv){
+		
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions();
+
+		
 		SearchConditionRangePayload rangeBetweenPayload = SearchConditionRangePayload.
-				buildRangBetweenPayload(String.valueOf(80000), String.valueOf(81000));
+				buildRangBetweenPayload("2017-02-22 00:00:00", "2018-02-22 24:00:00");
 		
 		SearchCondition sc_betweenAndLastRegedAt = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
-				Field.U_ID.getName(), SearchConditionPattern.Between.getPattern(), 
+				Field.A_CREATED_AT.getName(), SearchConditionPattern.Between.getPattern(), 
 				JsonHelper.getJSONString(rangeBetweenPayload));
+		
+		SearchCondition type = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"2");
+		
+		SearchCondition uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"80007");
 
-		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_betweenAndLastRegedAt);
+		SearchCondition province = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"浙江");
+		
+		SearchCondition city = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"杭州");
+		
+		SearchCondition district = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"西湖区");
+		
+		SearchCondition top = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_TOP.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"1");
+		
+		SearchCondition state = SearchCondition.builderSearchCondition(BusinessIndexDefine.Advertise.
+				Field.A_STATE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				"3");
+		
+		pack_must.addChildSearchCondtions(sc_betweenAndLastRegedAt);
+		pack_must.addChildSearchCondtions(type);
+		pack_must.addChildSearchCondtions(uid);
+		pack_must.addChildSearchCondtions(province);
+		pack_must.addChildSearchCondtions(city);
+		pack_must.addChildSearchCondtions(district);
+		pack_must.addChildSearchCondtions(top);
+		pack_must.addChildSearchCondtions(state);
+
+
+		
 		SearchConditionMessage searchConditionMessage = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		System.out.println(JsonHelper.getJSONString(searchConditionMessage));
 		
-		SearchConditionSort sc_sortDescByOrigswver = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
-				Field.A_CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(), SortOrder.DESC, null);
-		searchConditionMessage.addSorts(sc_sortDescByOrigswver);
-		
-		System.out.println(JsonHelper.getJSONString(searchConditionMessage));
 	}
 }

@@ -294,7 +294,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 
-        RpcResponseDTO<List<TailPage<AdvertiseVTO>>> rpcResult = advertiseRpcService.fetchBySearchConditionMessages(
+        RpcResponseDTO<List<TailPage<AdvertiseVTO>>> rpcResult = advertiseRpcService.fetchBySearchConditionMessages(null,null,
         		pageNo, pageSize,false, message);
 		if(!rpcResult.hasError()){
 			//兼容老的界面和接口
@@ -317,11 +317,13 @@ public class AdvertiseController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = false) Integer uid,
             @RequestParam(required = false) String message,
+            @RequestParam(required = false) String mac,
+            @RequestParam(required = false) String umac,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 
         RpcResponseDTO<List<TailPage<AdvertiseVTO>>> rpcResult = advertiseRpcService.fetchBySearchConditionMessages(
-        		pageNo, pageSize,true, message);
+        	mac,umac,pageNo, pageSize,true, message);
 		if(!rpcResult.hasError()){
 			//兼容老的界面和接口
 			List<TailPage<AdvertiseVTO>> rpcResultPayload = rpcResult.getPayload();
@@ -439,9 +441,11 @@ public class AdvertiseController extends BaseController{
     @RequestMapping(value = "/random", method = {RequestMethod.POST})
     public void queryRandomAdvertiseDetails(
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            @RequestParam(required = false) String mac,
+            @RequestParam(required = false) String umac) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails();
+	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

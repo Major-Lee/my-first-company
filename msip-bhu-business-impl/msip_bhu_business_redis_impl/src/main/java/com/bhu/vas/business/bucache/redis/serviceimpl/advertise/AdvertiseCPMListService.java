@@ -10,6 +10,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 public class AdvertiseCPMListService  extends AbstractRelationListCache{
 
@@ -29,6 +30,18 @@ public class AdvertiseCPMListService  extends AbstractRelationListCache{
     	for(String adid : adids){
         	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
         	dto.setAdid(adid);
+        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, JsonHelper.getJSONString(dto));
+    	}
+    }
+    
+    public void AdCPMPosh(List<String> adids,String mac ,String umac){
+    	for(String adid : adids){
+        	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
+        	dto.setAdid(adid);
+        	if(StringHelper.isNotEmpty(mac))
+            	dto.setMac(mac);
+        	if(StringHelper.isNotEmpty(umac))
+        		dto.setUmac(umac);
         	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, JsonHelper.getJSONString(dto));
     	}
     }

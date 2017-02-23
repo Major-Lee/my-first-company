@@ -785,7 +785,7 @@ public class AdvertiseUnitFacadeService {
 		return positionVto;
 	}
 	
-	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages){
+	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(String mac,String umac,int pageNo,int pageSize,boolean customize,String ... messages){
 		List<TailPage<AdvertiseVTO>> resultList = null;
 		if(messages == null || messages.length == 0){
 			resultList = Collections.emptyList();
@@ -865,7 +865,7 @@ public class AdvertiseUnitFacadeService {
 								index++;
 							}
 							if(customize)
-								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
+								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
 						}
 					}
 				}else{
@@ -1036,7 +1036,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(){
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac){
 		List<AdvertiseVTO> vtos = null;
 		Page<AdvertiseDocument> search_result = advertiseDataSearchService.searchPageByCreated();
 		if(search_result != null){
@@ -1095,7 +1095,7 @@ public class AdvertiseUnitFacadeService {
 						 vto1.setPv(portalPv.get(index));
 						 index++;
 					}
-					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
+					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
 				}
 		}else{
 			vtos = Collections.emptyList();
