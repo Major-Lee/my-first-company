@@ -654,7 +654,11 @@ public class OrderUnitFacadeService {
 				orderRewardVto.setShare_amount((String)log.get("cash"));
 				long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
 				orderRewardVto.setPaymented_ts(paymented_ts);
-				long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+				String logCreatedTs = (String)log.get("created_at");
+				long created_ts = paymented_ts;
+				if (logCreatedTs != null){
+					created_ts = DateTimeHelper.parseDate(logCreatedTs, DateTimeHelper.DefalutFormatPattern).getTime();
+				}
 				orderRewardVto.setCreated_ts(created_ts);
 				orderRewardVto.setUmactype((Integer)log.get("umactype"));
 				retDtos.add(orderRewardVto);
