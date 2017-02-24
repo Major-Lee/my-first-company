@@ -819,6 +819,7 @@ public class AdvertiseUnitFacadeService {
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
+								vto.setTag(doc.getA_tag());
 								vto.setUid(doc.getU_id());
 								if(doc.getU_id() !=null){
 									User user = userService.getById(Integer.valueOf(doc.getU_id()));
@@ -853,7 +854,6 @@ public class AdvertiseUnitFacadeService {
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
-								vto.setTag(doc.getA_tag());
 								vto.setTop(doc.getA_top());
 								if(doc.getA_top() == 1){
 									topAds.add(doc.getId());
