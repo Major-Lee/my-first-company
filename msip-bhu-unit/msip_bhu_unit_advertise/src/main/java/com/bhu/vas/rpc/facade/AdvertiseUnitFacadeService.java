@@ -928,7 +928,7 @@ public class AdvertiseUnitFacadeService {
 		}else if (isRefresh){//刷新
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, BusinessRuntimeConfiguration.AdvertiseHandbill, UConsumptiveWalletTransType.AdsPublish, 
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, BusinessRuntimeConfiguration.AdvertiseHandbill, UConsumptiveWalletTransType.AdsRefresh, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
 					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseHandbill){
