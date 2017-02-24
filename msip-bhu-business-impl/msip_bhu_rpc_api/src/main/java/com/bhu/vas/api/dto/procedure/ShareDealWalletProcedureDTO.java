@@ -2,12 +2,12 @@ package com.bhu.vas.api.dto.procedure;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
+import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 
 @SuppressWarnings("serial")
 public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
@@ -63,7 +63,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private long detail_id=-1;	//广告分成时为广告分成明细id
 	@IN(jdbcType = JdbcType.DOUBLE)
 	private double sharedeal_amount;	//分润总金额
-	@IN(jdbcType = JdbcType.VARCHAR)
+	@OUT(jdbcType = JdbcType.VARCHAR)
 	private String outmsg;	//需要存储过程输出的调试信息
 
 	
