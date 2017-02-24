@@ -23,6 +23,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
@@ -220,7 +221,8 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
 					Long cpmid = (Long)outParam.get("cpmid");
 					if(cpmid != null && cpmid.longValue() > 0){
-						onCpmProcessor(cpmDto.getMac(), cpmDto.getUmac(), entity.getId(), cpmid);
+						if(!WifiDeviceSharedealConfigs.Default_ConfigsWifiID.equals(cpmDto.getMac()))
+							onCpmProcessor(cpmDto.getMac(), cpmDto.getUmac(), entity.getId(), cpmid);
 					} else {
 						logger.info("cpm id error");
 					}
