@@ -120,7 +120,7 @@
             var goods_no = Date.parse(new Date());
             var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
                 async: false,
                 data: datas,
@@ -141,7 +141,7 @@
             var goods_no = Date.parse(new Date());
             var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
                 async: false,
                 data: datas,
@@ -162,8 +162,8 @@
             
             var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
             $.ajax({
-              // url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
-               url:'http://localhost:8080/msip_bhu_payment_rest/pay',
+              url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+           //  url:'http://localhost:8080/msip_bhu_payment_rest/pay',
                 type:'get',
                 async: false,
                 data: datas,

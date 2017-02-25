@@ -219,6 +219,7 @@ public class PayLogicService {
     	//判断请求支付类型
     	String paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
     	if(type.equals(PaymentChannelCode.BHU_PC_WEIXIN.i18n())){
+    		channelType = "BHU";
  			paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_PC_ALIPAY.i18n())){
  			paymentType = PaymentChannelCode.BHU_PC_ALIPAY.code();
@@ -232,14 +233,12 @@ public class PayLogicService {
  	 		}
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
- 			 if(channel_type == "1"){
-  				channelType = PaymentChannelCode.BHU_QRCODE_WEIXIN.code();
-  			}else if(channel_type == "2"){
- 				channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
- 			}else if(channel_type == "3"){
+ 			if(channel_type.equals("3")){
  				channelType = PaymentChannelCode.BHU_HEEPAY_WEIXIN.code();
- 			}else if(channel_type == "4"){
+ 			}else if(channel_type.equals("4")){
  				channelType = PaymentChannelCode.BHU_NOW_WEIXIN.code();
+ 	 		}else{
+ 	 			channelType = "BHU";
  	 		}
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
@@ -422,8 +421,6 @@ public class PayLogicService {
 						    		String thridType,
 						    		String billo){
     	try{
-
-        	
         	Date payTime = new Date();
     		updatePayStatus.setThird_party_code(thirdPartCode);
     		updatePayStatus.setPay_status(1);

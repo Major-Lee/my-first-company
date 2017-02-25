@@ -101,6 +101,7 @@ import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
+import com.smartwork.msip.localunit.RandomPicker;
 
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
@@ -115,6 +116,9 @@ import eu.bitwalker.useragentutils.Version;
 @Controller
 public class PaymentController extends BaseController{
 	private final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+	private int paypalWarningCount;
+	private String paypalWarningTime = "";
+	private String paypalErrorTime = "";
 	private int weixinWithdrawWarningCount;
     private String weixinWithdrawWarningTime = "";
     private String weixinWithdrawErrorTime = "";    
@@ -712,11 +716,11 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = true) String umac,
     		@RequestParam(required = true) String total_fee,
     		@RequestParam(required = true) String payment_type,
+    		@RequestParam(required = true, value = "") String paymentName,
     		@RequestParam(required = false, value = "") String exter_invoke_ip,
     		@RequestParam(required = false, value = "") String payment_completed_url,
     		@RequestParam(required = false, value = "") String channel,
-    		@RequestParam(required = false, value = "") String version,
-    		@RequestParam(required = false, value = "") String paymentName,
+    		@RequestParam(required = false, value = "") String version,    		
     		@RequestParam(required = false, value = "") String ot){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
@@ -857,7 +861,7 @@ public class PaymentController extends BaseController{
     			case BHU_WAP_PAYPAL: //Wap Paypal
     				long WAP_PAYPAL_begin = System.currentTimeMillis();
     				//result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
-    				result =  payPalService.doPaypal(response,request,version, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				result =  doPaypal(response,request,version, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
     				long WAP_PAYPAL_end = System.currentTimeMillis() - WAP_PAYPAL_begin; 
     				logger.info(goods_no+"Wap Paypal耗时：" + WAP_PAYPAL_end + "毫秒");
     				break;
@@ -1207,6 +1211,109 @@ public class PaymentController extends BaseController{
 		logger.info(goods_no+"请求总耗时：" + end + "毫秒！！！！！！");
     }
 	
+	
+	private PaymentTypeVTO doPaypal(HttpServletResponse response,
+    		HttpServletRequest request,
+    		String version,
+    		String total_fee,
+    		String out_trade_no,
+    		String ip,
+    		String return_url,
+    		String usermac,
+    		String paymentName,
+    		String appid) {
+    	PaymentTypeVTO result = new PaymentTypeVTO();
+    	if(ip == "" || ip == null){
+    		ip = "213.42.3.24";
+    	}
+    	if(usermac.equals("")){
+    		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
+    	}
+    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	long get_midas_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+    	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_PAYPAL.i18n(),usermac,paymentName,appid);
+    	long get_midas_reckoning_end = System.currentTimeMillis() - get_midas_reckoning_begin; // 这段代码放在程序执行后
+    	logger.info(out_trade_no+"paypal支付获取支付流水号耗时：" + get_midas_reckoning_end + "毫秒");
+
+		if (StringUtils.isNotBlank(return_url)) {
+			logger.info(String.format("get paypal location [%s] ",return_url));
+			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+			orderLocation.setTid(reckoningId);
+			orderLocation.setLocation(return_url);
+			long insert_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+			paymentAlipaylocationService.insert(orderLocation);
+			long insert_midas_url_end = System.currentTimeMillis() - insert_midas_url_begin; // 这段代码放在程序执行后
+			logger.info(out_trade_no+"paypal插入支付完成URL耗时：" + insert_midas_url_end + "毫秒");
+			logger.info(String.format("apply paypal set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+			if(return_url.contains("payokurl=")){
+				String[] Str =return_url.split("payokurl=");
+				if( Str.length > 0){
+					return_url = Str[1];
+				}
+			}
+		}
+		
+		return_url = PayHttpService.PAYPAL_RETURN_URL;
+		long get_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		String results = paypalService.createPayment(reckoningId,paymentName,total_fee, return_url);
+		long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"请求paypal获取支付URL耗时：" + get_midas_url_end + "毫秒");
+		int nowOutTimeLevel = payHttpService.getOt();
+		
+		try{
+			if(get_midas_url_end > nowOutTimeLevel){
+				
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+				if(get_midas_url_end > 7000){
+					paypalWarningCount++;
+				}
+				if(get_midas_url_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(2,smsg,paypalErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						paypalErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+				paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
+				paymentNowpayErrorLog.setC_type("Midas");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
+			
+			switch (paypalWarningCount) {
+			case 3:
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+				String resp = "ture";
+				String acc = PayHttpService.Internal_level2_warning_man;
+				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
+				if(!paypalWarningTime.equals(curDate)){
+					paypalWarningTime = curDate;
+					SendMailHelper.doSendMail(2,smsg);
+					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				}
+				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
+				paypalWarningCount = 0;
+				break;
+			default:
+				break;
+			}
+		}catch(Exception e){
+			logger.info(String.format("apply midas catch exception [%s]",e.getMessage()+e.getCause()));
+		}
+		
+		logger.info(String.format("apply paypal results [%s]",results));
+		if("error".equalsIgnoreCase(results)){
+			result.setType("FAIL");
+			result.setUrl("支付请求失败");
+			return result;
+		}else{
+			result.setType("http");
+			result.setUrl(results);
+			return result;
+		}
+    }
+	
 	/**
 	 * 处理微信提现
 	 * @param request
@@ -1428,6 +1535,7 @@ public class PaymentController extends BaseController{
 		try {
 			long base64Code_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
+//			base64CodeUrl = BusinessHelperBK.GetBase64ImageStr(codeUrl,QR_CODE_URL);
 			long base64Code_end = System.currentTimeMillis() - base64Code_begin; // 这段代码放在程序执行后
 			logger.info(out_trade_no+"生成二维码64位code耗时：" + base64Code_end + "毫秒");
 		} catch (WriterException | IOException e) {

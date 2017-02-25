@@ -200,7 +200,7 @@ public class PayPalService {
 		transaction.setInvoiceNumber(recokoningId);
 		// ### Items
 		Item item = new Item();
-		item.setName("BHU Reward").setQuantity("1").setCurrency("SGD").setPrice(pay_amount);
+		item.setName(name).setQuantity("1").setCurrency("SGD").setPrice(pay_amount);
 		ItemList itemList = new ItemList();
 		List<Item> items = new ArrayList<Item>();
 		items.add(item);
