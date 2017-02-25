@@ -109,8 +109,8 @@ public class OrderController extends BaseController{
 			return;
 		}
 		
-		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, channel, commdityid, requestIp, mac, umac,
 				(System.currentTimeMillis() - start)+"ms"));
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
@@ -291,8 +291,8 @@ public class OrderController extends BaseController{
 			return;
 		}
 		
-		logger.info(String.format("Rest VCurrency Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp,
+		logger.info(String.format("Rest VCurrency Paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s]", orderid, payment_type, channel, commdityid, requestIp,
 				(System.currentTimeMillis() - start)+"ms"));
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
@@ -536,8 +536,8 @@ public void physical_mini_paymenturl(
 			return;
 		}
 		
-		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] mac[%s] umac[%s] goods_name[%s]rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac, goods_name,
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] mac[%s] umac[%s] goods_name[%s]rep_time[%s]", orderid, payment_type, channel, commdityid, requestIp, mac, umac, goods_name,
 				(System.currentTimeMillis() - start)+"ms"));
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
@@ -605,8 +605,8 @@ public void hot_play_paymenturl(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
-		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, commdityid, requestIp,
+		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, channel, commdityid, requestIp,
 				(System.currentTimeMillis() - start)+"ms",goods_name));
 		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
@@ -672,8 +672,8 @@ public void hot_play_paymenturl(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
-		logger.info(String.format("saas_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, commdityid, requestIp,
+		logger.info(String.format("saas_paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, channel, commdityid, requestIp,
 				(System.currentTimeMillis() - start)+"ms",goods_name));
 		logger.info(String.format("saas_paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
@@ -730,8 +730,8 @@ public void hot_play_paymenturl(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
-		logger.info(String.format("query_balance_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, commdityid, requestIp,
+		logger.info(String.format("query_balance_paymenturl Response Success orderid[%s] payment_type[%s] channel[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s] goods_name[%s]", orderid, payment_type, channel, commdityid, requestIp,
 				(System.currentTimeMillis() - start)+"ms",goods_name));
 		logger.info(String.format("query_balance_paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
