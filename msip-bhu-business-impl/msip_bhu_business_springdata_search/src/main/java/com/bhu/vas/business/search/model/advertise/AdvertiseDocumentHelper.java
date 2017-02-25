@@ -19,6 +19,7 @@ public class AdvertiseDocumentHelper {
 		doc.setA_province(advertise.getProvince());
 		doc.setA_city(advertise.getCity());
 		doc.setA_district(advertise.getDistrict());
+		doc.setA_adcode(advertise.getAdcode());
 		doc.setA_geopoint(new double[]{advertise.getLon(), 
 				advertise.getLat()});
 		doc.setA_distance(advertise.getDistance());

@@ -281,24 +281,27 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @param d_distrcy 区
 	 * @return
 	 */
-	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions, String d_province,String d_city,String d_distrcy,boolean snkTurnOn){
+	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions, String d_province,String d_city,String d_district,String adcode,boolean snkTurnOn){
 		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
 		
-		if(StringUtils.isNotEmpty(d_province)){
-			SearchCondition sc_d_province = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_province);
-			pack.addChildSearchCondtions(sc_d_province);
-		}
-		if(StringUtils.isNotEmpty(d_city)){
-			SearchCondition sc_d_city = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), d_city);
-			pack.addChildSearchCondtions(sc_d_city);
-		}
-		if(StringUtils.isNotEmpty(d_distrcy)){
-			SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
-			pack.addChildSearchCondtions(sc_d_distrcy);
-		}
+//		if(StringUtils.isNotEmpty(d_province)){
+//			SearchCondition sc_d_province = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//					Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_province);
+//			pack.addChildSearchCondtions(sc_d_province);
+//		}
+//		if(StringUtils.isNotEmpty(d_city)){
+//			SearchCondition sc_d_city = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//					Field.D_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), d_city);
+//			pack.addChildSearchCondtions(sc_d_city);
+//		}
+//		if(StringUtils.isNotEmpty(d_district)){
+//			SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
+//			pack.addChildSearchCondtions(sc_d_distrcy);
+//		}
+		SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_ADCODE.getName(), SearchConditionPattern.PrefixContain.getPattern(), StringHelper.split(adcode,"00")[0]);
+		pack.addChildSearchCondtions(sc_d_distrcy);
 		
 		if(must_not_positions != null && !must_not_positions.isEmpty()){
 			for(AdvertiseTrashPositionVTO dto: must_not_positions){
@@ -379,19 +382,25 @@ public class WifiDeviceSearchMessageBuilder {
 	}
 	public static void main(String[] args) {
 		
-		SearchConditionGeopointDistancePayload geopointDistancePayload = SearchConditionGeopointDistancePayload.buildPayload(
-				"222", 1231, 1231, "20m");
+//		SearchConditionGeopointDistancePayload geopointDistancePayload = SearchConditionGeopointDistancePayload.buildPayload(
+//				"222", 1231, 1231, "20m");
+//		
+//		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
+//		SearchCondition sc_d_ms_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
+//				Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), "海淀");
+//		SearchCondition sc_geopointDistance = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
+//				Field.D_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
+//				JsonHelper.getJSONString(geopointDistancePayload));
+//		
+//		pack.addChildSearchCondtions(sc_d_ms_distrcy);
+//		pack.addChildSearchCondtions(sc_geopointDistance);
+//		System.out.println(JsonHelper.getJSONString(pack));
 		
-		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
-		SearchCondition sc_d_ms_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
-				Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), "海淀");
-		SearchCondition sc_geopointDistance = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.WifiDevice.
-				Field.D_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
-				JsonHelper.getJSONString(geopointDistancePayload));
-		
-		pack.addChildSearchCondtions(sc_d_ms_distrcy);
-		pack.addChildSearchCondtions(sc_geopointDistance);
-		System.out.println(JsonHelper.getJSONString(pack));
-
+		String str = "12312310";
+		String [] source = StringHelper.split(str,"00");
+		System.out.println(source[0]);
+		for(String str1 : source){
+			System.out.println(str1);
+		}
 	}
 }
