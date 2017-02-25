@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
@@ -27,7 +26,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -57,14 +55,14 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 
 	@Override
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid ,int tag, int type,String image,
-			String url,String domain, String province, String city, String district,double lat,double lon,String distance,String description,String title,
+			String url,String domain, String province, String city, String district,String adcode,double lat,double lon,String distance,String description,String title,
 			long start, long end,boolean isTop,String extparams) throws ParseException {
-		logger.info(String.format("createNewAdvertise with uid[%s] vuid[%s] adid[%s] tag [%s] type[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] lat[%s] lon[%s] distance[%s] title[%s] description[%s] start[%s] start[%s] isTop[%s] extparams[%s]",
-				uid,vuid,adid,tag, type,image, url,domain,province, city, district,lat,lon,distance,title,description, start, end,isTop,extparams));
+		logger.info(String.format("createNewAdvertise with uid[%s] vuid[%s] adid[%s] tag [%s] type[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] adcode[%s] lat[%s] lon[%s] distance[%s] title[%s] description[%s] start[%s] start[%s] isTop[%s] extparams[%s]",
+				uid,vuid,adid,tag, type,image, url,domain,province, city, district,adcode,lat,lon,distance,title,description, start, end,isTop,extparams));
 		if(start>end){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 		}
-		return advertiseUnitFacadeService.createNewAdvertise(uid,vuid,adid,tag,type, image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,isTop,extparams);
+		return advertiseUnitFacadeService.createNewAdvertise(uid,vuid,adid,tag,type, image, url,domain, province, city, district,adcode,lat,lon,distance,description,title, start, end,isTop,extparams);
 	}
 
 	@Override
@@ -201,10 +199,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages) {
-		logger.info(String.format("fetchBySearchConditionMessages pageNo[%s] pageSize[%s] customize[%s] messages[%s]",pageNo,
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(String mac,String umac ,int pageNo,int pageSize,boolean customize,String ... messages) {
+		logger.info(String.format("fetchBySearchConditionMessages mac[%s] umac[%s] pageNo[%s] pageSize[%s] customize[%s] messages[%s]",mac,umac,pageNo,
 				pageSize,customize,messages));
-		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(pageNo,pageSize,customize,messages);
+		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(mac,umac,pageNo,pageSize,customize,messages);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
@@ -235,9 +233,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails() {
-		logger.info("queryRandomAdvertiseDetails ...");
-		return advertiseUnitFacadeService.queryRandomAdvertiseDetails();
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac) {
+		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s]",mac,umac));
+		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac);
 	}
 	
 	@Override

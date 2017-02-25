@@ -1335,9 +1335,9 @@ public class AsyncMsgHandleService {
 			// 3:增量索引
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
-					Double.parseDouble(entity.getLon()), entity.getFormatted_address(),entity.getProvince(),entity.getCity(),entity.getDistrict());
-			//4:设备位置分布redis修复
-			WifiDevicePositionListService.getInstance().wifiDeviceLocationChanged(entity.getProvince(),entity.getCity(),entity.getDistrict());
+					Double.parseDouble(entity.getLon()), entity.getFormatted_address(),entity.getProvince(),entity.getCity(),entity.getDistrict(), entity.getAdcode());
+//			//4:设备位置分布redis修复
+//			WifiDevicePositionListService.getInstance().wifiDeviceLocationChanged(entity.getProvince(),entity.getCity(),entity.getDistrict());
 		}
 		logger.info(
 				String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));

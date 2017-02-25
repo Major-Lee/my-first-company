@@ -42,6 +42,7 @@
     <result property="formatted_address" column="formatted_address"/>
     <result property="carrier" column="carrier"/>
     <result property="bdid" column="bdid"/>
+    <result property="adcode" column="adcode"/>
     <result property="loc_method" column="loc_method"/>
     <result property="uptime" column="uptime"/>
     <result property="tfcard_usage" column="tfcard_usage"/>
@@ -100,6 +101,7 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
+	    	adcode,
 	    	loc_method,
 	    	uptime,
 	    	tfcard_usage,
@@ -150,6 +152,7 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
+	    	adcode,
 	    	loc_method,
 	    	uptime,
 	    	tfcard_usage,
@@ -201,6 +204,7 @@
 	    	#{formatted_address},
 	    	#{carrier},
 	    	#{bdid},
+	    	#{adcode},
 	    	#{loc_method},
 	    	#{uptime},
 	    	#{tfcard_usage},
@@ -250,6 +254,7 @@
 	    	formatted_address = #{formatted_address},
 	    	carrier = #{carrier},
 	    	bdid = #{bdid},
+	    	adcode = #{adcode},
 	    	loc_method = #{loc_method},
 	    	uptime = #{uptime},
 	    	tfcard_usage = #{tfcard_usage},

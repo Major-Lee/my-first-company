@@ -144,6 +144,8 @@ public class VapEnumType {
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
 		uRouterTU_841("TU_H841","AP841","*","M41",DUT_uRouter,"MYB mini pro","uRouter 841","蚂蚁帮A6 MT7628AN+MT7612E","蚂蚁帮A6 MT7628AN+MT7612E",
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-18\"}]}"),
+		uRouterTU_899("TU_H899","AP899","*","M99",DUT_uRouter,"UrouterTest","uRouter 899","Urouter test","Urouter test",
+				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
 
 		
 		
@@ -448,6 +450,7 @@ public class VapEnumType {
 					|| prefix.equals(uRouterTU_830.getPrefix())
 					|| prefix.equals(uRouterTU_840.getPrefix())
 					|| prefix.equals(uRouterTU_841.getPrefix())
+					|| prefix.equals(uRouterTU_899.getPrefix())
 					|| prefix.equals(uRouterMiniTU_NSL_901.getPrefix())) && type.equals(uRouterRoot.getIndex())){
 				return true;
 			}

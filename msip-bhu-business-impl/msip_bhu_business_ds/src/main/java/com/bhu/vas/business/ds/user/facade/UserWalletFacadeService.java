@@ -394,6 +394,7 @@ public class UserWalletFacadeService{
 	 */
 	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double sharedealCash, String orderid, Date pay_time, String description, 
 			UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
+		try{
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,sharedealCash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, sharedealCash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
@@ -410,17 +411,22 @@ public class UserWalletFacadeService{
 		procedureDTO.setDetail_id(detail_id);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
-			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s] outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
 			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal);
 			}
-		}else
-			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		}else {
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s], outmsg[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(), procedureDTO.getOutmsg()));
+		}
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		//uwallet = userWalletService.update(uwallet);
 		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		//this.doWalletLog(sharedeal.getManufacturer(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getManufacturer_cash(), sharedeal.getManufacturer_cash(),0d, String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
-		return executeRet;
+			return executeRet;
+		}catch(Exception e){
+			e.printStackTrace();
+			return 1;
+		}
 	}
 	
 	public ShareDealWalletSummaryProcedureVTO sharedealSummaryWithProcedure(Integer uid){

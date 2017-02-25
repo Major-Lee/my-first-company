@@ -100,7 +100,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		List<Advertise> adlists = advertiseService.findByIds(adDTO.getIds());
 		int batch = 200;
 		for (final Advertise ad : adlists) {
-			List<String> macList = null;
+			List<String> macList = new ArrayList<String>();
 			
 			String start = null;
 			String end = null;
@@ -109,18 +109,21 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
 					
 					if(adDTO.isAdmin()){
 						final List<String> maclist1 = new ArrayList<String>();
-						wifiDeviceDataSearchService.iteratorWithPosition(null, ad.getProvince(), ad.getCity(), ad.getDistrict(), false, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+						wifiDeviceDataSearchService.iteratorWithPosition(null, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getAdcode(), false, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 						@Override
 						public void notifyComming(Page<WifiDeviceDocument> pages) {
 							for(WifiDeviceDocument doc: pages){
 								maclist1.add(doc.getD_mac());
 							}
 						}});
-						macList.addAll(maclist1);
+						if(maclist1 !=null){
+							macList.addAll(maclist1);
+						}
+					}else{
+						macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
 					}
 					
 				}else{
@@ -247,7 +250,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		}
 		
 		wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
-				ad.getCity(), ad.getDistrict(),false,batch,
+				ad.getCity(), ad.getDistrict(),ad.getAdcode(),false,batch,
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 
 					@Override
@@ -295,10 +298,13 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			if(ad.getTop() == 1){
 				score+=100000000000000L;
 			}
-			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-					maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+
 			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType(),score);
-			AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
+			if(maclist !=null && !maclist.isEmpty()){
+				AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+						maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+			}
 			
 		}else{
 			advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.UnVerified.getType(), null);

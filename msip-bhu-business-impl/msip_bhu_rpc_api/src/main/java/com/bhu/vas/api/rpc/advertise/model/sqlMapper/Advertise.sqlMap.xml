@@ -19,6 +19,7 @@
     <result property="province" column="province"/>
     <result property="city" column="city"/>
     <result property="district" column="district"/>
+    <result property="adcode" column="adcode"/>
     <result property="lat" column="lat"/>
     <result property="lon" column="lon"/>
     <result property="distance" column="distance"/>
@@ -59,6 +60,7 @@
 	    	province,
 	    	city,
 	    	district,
+	    	adcode,
 	    	lat,
 	    	lon,
 	    	distance,
@@ -93,6 +95,7 @@
 	    	province,
 	    	city,
 	    	district,
+	    	adcode,
 	    	lat,
 	    	lon,
 	    	distance,
@@ -128,6 +131,7 @@
 	    	#{province},
 	    	#{city},
 	    	#{district},
+	    	#{adcode},
 	    	#{lat},
 	    	#{lon},
 	    	#{distance},
@@ -161,6 +165,7 @@
 	    	province = #{province},
 	    	city = #{city},
 	    	district = #{district},
+	    	adcode = #{adcode},
 	    	lat = #{lat},
 	    	lon = #{lon},
 	    	distance = #{distance},

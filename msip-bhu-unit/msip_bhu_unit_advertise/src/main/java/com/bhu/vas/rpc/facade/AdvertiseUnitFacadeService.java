@@ -135,7 +135,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid,int tag,
 			int type,String image, String url,String domain, String province, String city,
-			String district,double lat,double lon,String distance,String description,String title, long start, long end,boolean isTop,String extparams) throws ParseException {
+			String district,String adcode,double lat,double lon,String distance,String description,String title, long start, long end,boolean isTop,String extparams) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -196,7 +196,7 @@ public class AdvertiseUnitFacadeService {
 					
 					long sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 					count = sum > 500 ? 500 : sum;
-					cash = 1;
+					cash = BusinessRuntimeConfiguration.AdvertiseHandbill;
 					entity.setCash(cash);
 					entity.setLat(lat);
 					entity.setLon(lon);
@@ -219,6 +219,7 @@ public class AdvertiseUnitFacadeService {
 				entity.setStart(startDate);
 			}
 			entity.setId(adid);
+			entity.setAdcode(adcode);
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
@@ -228,7 +229,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
-			entity.setTop(isTop ? 1 : 0);
+			entity.setTop(isTop ? 1 : -1);
 			if(isAdmin){
 				entity.setUid(vuid);
 			}else{
@@ -278,6 +279,17 @@ public class AdvertiseUnitFacadeService {
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise !=null && advertise.getUid() == uid){
 			if(advertise.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
+				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);	
+				if(advertise.getTop() == 1){
+					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices + BusinessRuntimeConfiguration.AdvertiseHandbill){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+					}
+				}else{
+					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseHandbill){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+					}
+				}
+				
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
@@ -490,21 +502,19 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-//			advertiseVTO.setCount(advertiseVTO.getCount());
-			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
-				Date date=new Date();
-				if(advertise.getStart().getTime()>date.getTime()){
-					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-					if(between_daysNow>2){
-						advertiseVTO.setEscapeFlag(true);
-					}
-				}
+			if(userFacadeService.isAdminByUid(uid)){
+				advertiseVTO.setUid(advertise.getUid()+"");
 			}
-			if(uid!=null){
-				if(uid!=advertise.getUid()){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
-				}
-			}
+			advertiseVTO.setCount(advertiseVTO.getCount());
+//			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
+//				Date date=new Date();
+//				if(advertise.getStart().getTime()>date.getTime()){
+//					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
+//					if(between_daysNow>2){
+//						advertiseVTO.setEscapeFlag(true);
+//					}
+//				}
+//			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 	}
 
@@ -546,7 +556,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			
 			entity.setCity(city);
-			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district,null);
 			entity.setCount(count);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
@@ -765,7 +775,7 @@ public class AdvertiseUnitFacadeService {
 			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
-			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
+			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district,null));
 			
 			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 			if(userFacadeService.checkOperatorByUid(uid)){
@@ -781,7 +791,7 @@ public class AdvertiseUnitFacadeService {
 		return positionVto;
 	}
 	
-	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,boolean customize,String ... messages){
+	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(String mac,String umac,int pageNo,int pageSize,boolean customize,String ... messages){
 		List<TailPage<AdvertiseVTO>> resultList = null;
 		if(messages == null || messages.length == 0){
 			resultList = Collections.emptyList();
@@ -810,6 +820,7 @@ public class AdvertiseUnitFacadeService {
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
+								vto.setTag(doc.getA_tag());
 								vto.setUid(doc.getU_id());
 								if(doc.getU_id() !=null){
 									User user = userService.getById(Integer.valueOf(doc.getU_id()));
@@ -861,7 +872,7 @@ public class AdvertiseUnitFacadeService {
 								index++;
 							}
 							if(customize)
-								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
+								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
 						}
 					}
 				}else{
@@ -901,13 +912,13 @@ public class AdvertiseUnitFacadeService {
 		if(isTop){//置顶
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				if(Double.valueOf(balance) < 0.3){
+				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 				}	
 			}
 			
 			if(topState == 1)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			
 			advertise.setTop(1);
 			advertiseService.update(advertise);
@@ -918,10 +929,10 @@ public class AdvertiseUnitFacadeService {
 		}else if (isRefresh){//刷新
 			
 			if(!userFacadeService.isAdminByUid(uid)){
-				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, 1, UConsumptiveWalletTransType.AdsPublish, 
+				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, BusinessRuntimeConfiguration.AdvertiseHandbill, UConsumptiveWalletTransType.AdsRefresh, 
 						String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
-					if(Double.valueOf(balance) < 1){
+					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseHandbill){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
 					}else{
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -941,7 +952,7 @@ public class AdvertiseUnitFacadeService {
 			
 		}else if (!isTop){//取消置顶
 			if(topState  != 1)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			
 			advertise.setTop(0);
 			advertiseService.update(advertise);
@@ -950,7 +961,7 @@ public class AdvertiseUnitFacadeService {
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore - topScore,0);
 			
 		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 		}
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
@@ -965,7 +976,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param score
 	 * @return 
 	 */
-	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score){
+	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid, String adid,String message,int type,Double score){
 		Advertise advertise = advertiseService.getById(adid);
 		if(advertise == null){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
@@ -1032,7 +1043,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
 	
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(){
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac){
 		List<AdvertiseVTO> vtos = null;
 		Page<AdvertiseDocument> search_result = advertiseDataSearchService.searchPageByCreated();
 		if(search_result != null){
@@ -1075,6 +1086,7 @@ public class AdvertiseUnitFacadeService {
 						vto.setImage(doc.getA_image());
 						vto.setExtparams(doc.getA_extparams());
 						vto.setReject_reason(doc.getA_reject_reason());
+						vto.setTag(doc.getA_tag());
 						vto.setTop(doc.getA_top());
 						if(doc.getA_top() == 1){
 							topAds.add(doc.getId());
@@ -1091,7 +1103,7 @@ public class AdvertiseUnitFacadeService {
 						 vto1.setPv(portalPv.get(index));
 						 index++;
 					}
-					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds);
+					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
 				}
 		}else{
 			vtos = Collections.emptyList();

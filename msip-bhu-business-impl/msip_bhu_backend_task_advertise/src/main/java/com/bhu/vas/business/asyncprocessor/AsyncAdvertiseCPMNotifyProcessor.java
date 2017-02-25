@@ -1,5 +1,6 @@
 package com.bhu.vas.business.asyncprocessor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
@@ -34,6 +36,8 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -41,11 +45,15 @@ import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 @Service
 public class AsyncAdvertiseCPMNotifyProcessor {
-	public static final int ProcessesThreadCount = 10;
+	public static final int ProcessesThreadCount = 5;
 	private final Logger logger = LoggerFactory.getLogger(AsyncAdvertiseCPMNotifyProcessor.class);
-	private ThreadPoolExecutor exec_processes = null;
+	private List<ExecutorService> exec_processes = null;
 	private ExecutorService exec_dispatcher = null;
+	private ThreadPoolExecutor dispatch_processes = null;
 	
+	private List<ExecutorService> sharedeal_exec_processes = null;
+	private int hash_prime = 10;
+
 	@Resource
 	private AdvertiseService advertiseService;
 	@Resource
@@ -63,8 +71,22 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncAdvertiseCPMNotifyProcessor initialize...");
-		exec_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncAdvertiseCPMNotify processes消息处理",ProcessesThreadCount);
-		exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncAdvertiseCPMNotify dispatcher消息处理",1);
+//		exec_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncAdvertiseCPMNotify processes消息处理",ProcessesThreadCount);
+		dispatch_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncAdvertiseCPMNotify processes消息处理",ProcessesThreadCount);
+        exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncAdvertiseCPMNotify dispatcher消息处理",1);
+	
+		exec_processes = new ArrayList<ExecutorService>();
+		sharedeal_exec_processes = new ArrayList<ExecutorService>();
+
+		for(int i=0;i<hash_prime;i++){
+			ExecutorService exec_process = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"CPMS process消息处理".concat(String.valueOf(i)));
+			exec_processes.add(exec_process);
+			
+			ExecutorService sharedeal_exec_process = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"CPMSharedeal process消息处理".concat(String.valueOf(i)));
+			sharedeal_exec_processes.add(sharedeal_exec_process);
+
+		}
+
 		runDispatcherExecutor();
 	}
 	
@@ -78,10 +100,10 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			public void run() {
 				while(true){
 					try{
-						if(ProcessesThreadCount > exec_processes.getActiveCount()){
+						if(ProcessesThreadCount > dispatch_processes.getActiveCount()){
 							String message = AdvertiseCPMListService.getInstance().AdCPMNotify();
 							if (StringUtils.isNotEmpty(message)){
-								onProcessor(message);
+								onDispatch(message);
 							}else{
 								Thread.sleep(10);
 							}
@@ -97,33 +119,55 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		}));
 	}
 	
-	/**
-	 * 执行线程处理消息
-	 * @param message
-	 */
-	public void onProcessor(final String message){
-		if(StringUtils.isEmpty(message)) return;
-		
-		exec_processes.submit((new Runnable() {
+	
+	public void onCpmProcessor(final String mac, final String umac, final String adid, final Long cpmid){
+		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
+		sharedeal_exec_processes.get(hash).submit((new Runnable() {
 			@Override
-			public void run() {
-				try{
-//					asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
-					process(message);
-				}catch(Exception ex){
-					ex.printStackTrace(System.out);
-					logger.error("AsyncAdvertiseCPMNotify onProcessor", ex);
-				}
+			public void run(){
+				cpmSharedeal(mac, umac, adid, cpmid);
+			}
+		}));
+	}
+	
+	private void dispatch(String message){
+		final AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(message,AdvertiseCPMDTO.class);
+		final Advertise entity = advertiseService.getById(cpmDto.getAdid());
+		int hash = HashAlgorithmsHelper.rotatingHash(String.valueOf(entity.getUid()), hash_prime);
+		exec_processes.get(hash).submit((new Runnable(){
+			@Override
+			public void run(){
+//				asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
+				process(cpmDto, entity);
 			}
 		}));
 	}
 	
 	
-	public static final double cpm_price = 0.3d;
+	/**
+	 * 执行线程处理消息
+	 * @param message
+	 */
+	public void onDispatch(final String message){
+		if(StringUtils.isEmpty(message)) return;
+		
+		dispatch_processes.submit((new Runnable() {
+			@Override
+			public void run() {
+				try{
+					logger.info(String.format("dispatch message[%s]", message));
+					dispatch(message);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+					logger.error("AsyncAdvertiseCPMNotify onDispatch", ex);
+				}
+			}
+		}));
+	}
 	
-	private void cpmSharedeal(final String mac, final String umac, String adid, Long cpmid){
+	private void cpmSharedeal(final String mac, final String umac, final String adid, final Long cpmid){
 		try{
-		userWalletFacadeService.sharedealCashToUserWalletWithProcedure(mac, umac, cpm_price, adid, new Date(),
+		userWalletFacadeService.sharedealCashToUserWalletWithProcedure(mac, umac, BusinessRuntimeConfiguration.AdvertiseCPMPrices, adid, new Date(),
 				BusinessEnumType.templateCpmDesc,
 				UWalletTransMode.SharedealPayment, UWalletTransType.CPM2C,  cpmid,
 						new IWalletSharedealNotifyCallback(){
@@ -155,10 +199,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		}
 	}
 	
-	public void process(String message) {
-		logger.info(String.format("process message[%s]", message));
-		AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(message,AdvertiseCPMDTO.class);
-		Advertise entity = advertiseService.getById(cpmDto.getAdid());
+	public void process(AdvertiseCPMDTO cpmDto, Advertise entity) {
+//		logger.info(String.format("process message[%s]", message));
+//		AdvertiseCPMDTO cpmDto = JsonHelper.getDTO(message,AdvertiseCPMDTO.class);
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(cpmDto.getAdid());
 
 		int uid = entity.getUid();
@@ -172,19 +215,20 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			logger.info(String.format("BatchAdvertseCPMServiceHandler cpm: uid[%s] adid[%s]", uid, cpmDto.getAdid()));
 			
 			Map<String, Object>outParam = new HashMap<String, Object>();
-			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), cpm_price, 
+			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), BusinessRuntimeConfiguration.AdvertiseCPMPrices, 
 					UConsumptiveWalletTransType.AdsCPM, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
 					Long cpmid = (Long)outParam.get("cpmid");
 					if(cpmid != null && cpmid.longValue() > 0){
-						cpmSharedeal(cpmDto.getMac(), cpmDto.getUmac(), entity.getId(), cpmid);
+						if(!WifiDeviceSharedealConfigs.Default_ConfigsWifiID.equals(cpmDto.getMac()))
+							onCpmProcessor(cpmDto.getMac(), cpmDto.getUmac(), entity.getId(), cpmid);
 					} else {
 						logger.info("cpm id error");
 					}
 				}
 				String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
-				if(Double.valueOf(balance) < cpm_price){
+				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices){
 					entity.setTop(0);
 					advertiseService.update(entity);
 					List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());

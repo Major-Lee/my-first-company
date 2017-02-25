@@ -130,6 +130,7 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_province(wifiDevice.getProvince());
 			doc.setD_city(wifiDevice.getCity());
 			doc.setD_district(wifiDevice.getDistrict());
+			doc.setD_adcode(wifiDevice.getAdcode());
 			
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 			if(parser != null){

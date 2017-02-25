@@ -38,9 +38,19 @@ public class PaymentSceneChannelDTO implements java.io.Serializable{
 		case WapPayPal:
 			switch (channelType) {
 			case BHUWIFIAPP:
+				if(payment_type.contains(BusinessEnumType.OrderPaymentType.Alipay.getKey())){
+					dto.setPayment_type(BusinessEnumType.OrderPaymentType.AppAlipay.getKey());
+				}else if(payment_type.contains(BusinessEnumType.OrderPaymentType.Weixin.getKey())){
+					dto.setPayment_type(BusinessEnumType.OrderPaymentType.AppWeixin.getKey());
+				}
 				dto.setChannel(BusinessEnumType.PaymentSceneChannelType.APPMANAGER.getName());
 				break;
 			case UTOOL:
+				if(payment_type.contains(BusinessEnumType.OrderPaymentType.Alipay.getKey())){
+					dto.setPayment_type(BusinessEnumType.OrderPaymentType.AppAlipay.getKey());
+				}else if(payment_type.contains(BusinessEnumType.OrderPaymentType.Weixin.getKey())){
+					dto.setPayment_type(BusinessEnumType.OrderPaymentType.AppWeixin.getKey());
+				}
 				dto.setChannel(BusinessEnumType.PaymentSceneChannelType.APPHELPER.getName());
 				break;
 			case CARDREWARD:

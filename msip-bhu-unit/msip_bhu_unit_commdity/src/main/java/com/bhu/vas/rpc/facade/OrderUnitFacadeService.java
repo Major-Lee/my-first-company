@@ -92,6 +92,7 @@ import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -634,13 +635,16 @@ public class OrderUnitFacadeService {
 					orderRewardVto.setMac((String)log.get("mac"));
 				else
 					orderRewardVto.setMac(StringHelper.MINUS_STRING_GAP);
-				
-				if (StringHelper.isValidMac((String)log.get("umac")))
-					orderRewardVto.setUmac((String)log.get("umac"));
+				String logUmac = (String)log.get("umac");
+				if (StringHelper.isValidMac(logUmac))
+					orderRewardVto.setUmac(logUmac);
 				else
 					orderRewardVto.setUmac(StringHelper.MINUS_STRING_GAP);
-				
-				orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
+				if (logUmac != null){
+					orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
+				}else{
+					orderRewardVto.setUmac_mf(DevicesSet.Unknown.getScn());
+				}
 				orderRewardVto.setPayment_type((String)log.get("payment_type"));
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
 				if(orderPaymentType != null){
@@ -650,7 +654,11 @@ public class OrderUnitFacadeService {
 				orderRewardVto.setShare_amount((String)log.get("cash"));
 				long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
 				orderRewardVto.setPaymented_ts(paymented_ts);
-				long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+				String logCreatedTs = (String)log.get("created_at");
+				long created_ts = paymented_ts;
+				if (logCreatedTs != null){
+					created_ts = DateTimeHelper.parseDate(logCreatedTs, DateTimeHelper.DefalutFormatPattern).getTime();
+				}
 				orderRewardVto.setCreated_ts(created_ts);
 				orderRewardVto.setUmactype((Integer)log.get("umactype"));
 				retDtos.add(orderRewardVto);
@@ -745,7 +753,11 @@ public class OrderUnitFacadeService {
 			String cash = (String)order.get("cash");
 			String payment_type = (String)order.get("payment_type");
 			//厂家
-			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(umac,true,false)));
+			if (umac != null){
+				bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(umac,true,false)));
+			}else{
+				bw.append(formatStr(DevicesSet.Unknown.getScn()));
+			}
 			//打赏时间
 			if (paymented_at != null) {
 				Date parseDate = DateTimeHelper.parseDate(paymented_at, DateTimeHelper.DefalutFormatPattern);
