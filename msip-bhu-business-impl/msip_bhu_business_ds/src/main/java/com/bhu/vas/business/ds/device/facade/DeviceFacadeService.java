@@ -47,6 +47,7 @@ import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.geo.GPSUtil;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -166,11 +167,13 @@ public class DeviceFacadeService{
 	public boolean wifiDeiviceGeocoding(WifiDevice entity){
 		if(entity == null) return false;
 		if(StringUtils.isEmpty(entity.getLat()) || StringUtils.isEmpty(entity.getLon())) return false;
-		
+
+		//数据库中使用的是高德坐标系，从百度接口查询时，转换为百度坐标系
+		double[] gpsbd = GPSUtil.gcj02_To_Bd09(Double.valueOf(entity.getLat()), Double.valueOf(entity.getLon()));
+
 		try{
 			//2:根据坐标提取地理位置详细信息 (backend)
-			GeocodingDTO geocodingDto = GeocodingHelper.geocodingGet(String.valueOf(entity.getLat()), 
-					String.valueOf(entity.getLon()));
+			GeocodingDTO geocodingDto = GeocodingHelper.geocodingGet(String.valueOf(gpsbd[0]), String.valueOf(gpsbd[1]));
 			if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
 				GeocodingResultDTO resultDto = geocodingDto.getResult();
 				if(resultDto != null){
