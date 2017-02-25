@@ -182,6 +182,7 @@ public class DeviceFacadeService{
 						entity.setCity(addressDto.getCity());
 						entity.setDistrict(addressDto.getDistrict());
 						entity.setStreet(addressDto.getStreet());
+						entity.setAdcode(addressDto.getAdcode());
 						
 						StringBuffer formatted_address_buffer = new StringBuffer();
 						if(StringUtils.isNotEmpty(addressDto.getCountry())){
