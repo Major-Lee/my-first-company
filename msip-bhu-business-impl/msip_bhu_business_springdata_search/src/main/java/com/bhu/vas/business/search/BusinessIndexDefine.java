@@ -14,7 +14,7 @@ public interface BusinessIndexDefine {
 	interface WifiDevice{
 		//public static final String IndexName	= "wifi_device_index3";
 		public static final String IndexNameNew	= "wifi_device_index_new";
-		public static final String IndexName	= "wifi_device_index_v6";
+		public static final String IndexName	= "wifi_device_index_v7";
 		public static final String Type 		= "wifiDevice";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
@@ -77,6 +77,7 @@ public interface BusinessIndexDefine {
 			D_PROVINCE("d_province", null),//设备的地址位置-省
 			D_CITY("d_city", null),//设备的地址位置-市
 			D_DISTRICT("d_district",null),//设备的地址位置-区
+			D_ADCODE("d_adcode", null), //行政区划代码
 			D_CHANNEL_LV1("d_channel_lv1", null), //设备的以及出货渠道
 			D_CHANNEL_LV2("d_channel_lv2", null), //设备的以及出货渠道
 			D_DISTRIBUTOR_TYPE("d_distributor_type", null),//城市运营商 or 渠道商类型
