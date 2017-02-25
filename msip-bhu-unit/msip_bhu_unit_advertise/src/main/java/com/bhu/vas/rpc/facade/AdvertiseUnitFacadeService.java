@@ -135,7 +135,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid,int tag,
 			int type,String image, String url,String domain, String province, String city,
-			String district,double lat,double lon,String distance,String description,String title, long start, long end,boolean isTop,String extparams) throws ParseException {
+			String district,String adcode,double lat,double lon,String distance,String description,String title, long start, long end,boolean isTop,String extparams) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -219,6 +219,7 @@ public class AdvertiseUnitFacadeService {
 				entity.setStart(startDate);
 			}
 			entity.setId(adid);
+			entity.setAdcode(adcode);
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
@@ -555,7 +556,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			
 			entity.setCity(city);
-			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district,null);
 			entity.setCount(count);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
@@ -774,7 +775,7 @@ public class AdvertiseUnitFacadeService {
 			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
-			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
+			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district,null));
 			
 			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 			if(userFacadeService.checkOperatorByUid(uid)){

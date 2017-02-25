@@ -71,14 +71,14 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param province 
 	 */
 	@Override
-	public void locaitionUpdIncrement(final String id, final double lat, final double lon, final String d_address, final String province, final String city, final String district){
+	public void locaitionUpdIncrement(final String id, final double lat, final double lon, final String d_address, final String province, final String city, final String district, final String adcode){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
 				@Override
 				public void run() {
 					try{
-						wifiDeviceIndexIncrement.locaitionUpdIncrement(id, lat, lon, d_address, province, city, district);
+						wifiDeviceIndexIncrement.locaitionUpdIncrement(id, lat, lon, d_address, province, city, district, adcode);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}

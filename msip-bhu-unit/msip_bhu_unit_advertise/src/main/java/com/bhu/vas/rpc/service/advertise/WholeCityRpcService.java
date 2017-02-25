@@ -55,14 +55,14 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 
 	@Override
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid ,int tag, int type,String image,
-			String url,String domain, String province, String city, String district,double lat,double lon,String distance,String description,String title,
+			String url,String domain, String province, String city, String district,String adcode,double lat,double lon,String distance,String description,String title,
 			long start, long end,boolean isTop,String extparams) throws ParseException {
-		logger.info(String.format("createNewAdvertise with uid[%s] vuid[%s] adid[%s] tag [%s] type[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] lat[%s] lon[%s] distance[%s] title[%s] description[%s] start[%s] start[%s] isTop[%s] extparams[%s]",
-				uid,vuid,adid,tag, type,image, url,domain,province, city, district,lat,lon,distance,title,description, start, end,isTop,extparams));
+		logger.info(String.format("createNewAdvertise with uid[%s] vuid[%s] adid[%s] tag [%s] type[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] adcode[%s] lat[%s] lon[%s] distance[%s] title[%s] description[%s] start[%s] start[%s] isTop[%s] extparams[%s]",
+				uid,vuid,adid,tag, type,image, url,domain,province, city, district,adcode,lat,lon,distance,title,description, start, end,isTop,extparams));
 		if(start>end){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 		}
-		return advertiseUnitFacadeService.createNewAdvertise(uid,vuid,adid,tag,type, image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,isTop,extparams);
+		return advertiseUnitFacadeService.createNewAdvertise(uid,vuid,adid,tag,type, image, url,domain, province, city, district,adcode,lat,lon,distance,description,title, start, end,isTop,extparams);
 	}
 
 	@Override

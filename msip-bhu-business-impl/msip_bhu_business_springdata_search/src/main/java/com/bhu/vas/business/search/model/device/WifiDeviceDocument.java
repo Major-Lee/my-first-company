@@ -338,7 +338,15 @@ public class WifiDeviceDocument extends AbstractDocument{
 			store = true
 	)
 	private String d_district;//区
-	
+
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.analyzed,
+			indexAnalyzer = "ngram_1_to_20_analyzer",
+			store = true
+	)
+	private String d_adcode;//行政区划代码
+
 	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
@@ -913,6 +921,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_distributor_id(String d_distributor_id) {
 		this.d_distributor_id = d_distributor_id;
+	}
+
+	public String getD_adcode() {
+		return d_adcode;
+	}
+
+	public void setD_adcode(String d_adcode) {
+		this.d_adcode = d_adcode;
 	}
 
 }

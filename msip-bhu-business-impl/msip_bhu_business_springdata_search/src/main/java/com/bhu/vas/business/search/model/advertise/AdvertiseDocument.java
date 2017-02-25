@@ -103,6 +103,14 @@ public class AdvertiseDocument extends AbstractDocument{
 	)
 	private String a_district;
 	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.analyzed,
+			indexAnalyzer = "ngram_1_to_20_analyzer",
+			store = true
+	)
+	private String a_adcode;
+	
 	@GeoPointField
 	private double[] a_geopoint;
 	
@@ -436,6 +444,14 @@ public class AdvertiseDocument extends AbstractDocument{
 		this.a_updated_at = a_updated_at;
 	}
 	
+	public String getA_adcode() {
+		return a_adcode;
+	}
+
+	public void setA_adcode(String a_adcode) {
+		this.a_adcode = a_adcode;
+	}
+
 	public long getA_score() {
 		return a_score;
 	}

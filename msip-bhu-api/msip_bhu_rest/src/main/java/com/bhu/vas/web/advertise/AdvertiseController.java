@@ -58,6 +58,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
+            @RequestParam(required = false) String adcode,
             @RequestParam(required = false,defaultValue = "0.0") double lat,
             @RequestParam(required = false,defaultValue = "0.0") double lon,
             @RequestParam(required = false) String distance,
@@ -70,7 +71,7 @@ public class AdvertiseController extends BaseController{
             ) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid,vuid,adid,tag,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,isTop,extparams);
+					    (uid,vuid,adid,tag,type,image, url,domain, province, city, district,adcode,lat,lon,distance,description,title, start, end,isTop,extparams);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{

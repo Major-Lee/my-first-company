@@ -65,7 +65,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param d_address 详细地址
 	 */
 	@Override
-	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address, String province, String city, String district){
+	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address, String province, String city, String district, String adcode){
 		logger.info(String.format("LocaitionUpdIncrement Request id [%s] d_address [%s]", id, d_address));
 		if(StringUtils.isEmpty(id)) return;
 		
@@ -75,6 +75,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_PROVINCE.getName(), province);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_CITY.getName(), city);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DISTRICT.getName(), district);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ADCODE.getName(), adcode);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
