@@ -69,7 +69,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 				trashs.add(trashVto);
 			}
 			
-			wifiDeviceDataSearchService.iteratorWithPosition(trashs, ad.getProvince(), ad.getCity(), ad.getDistrict(), true, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+			wifiDeviceDataSearchService.iteratorWithPosition(trashs, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getAdcode(), true, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 						@Override
 						public void notifyComming(Page<WifiDeviceDocument> pages) {
 							for(WifiDeviceDocument doc: pages){
