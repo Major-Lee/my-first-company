@@ -299,9 +299,9 @@ public class WifiDeviceSearchMessageBuilder {
 //					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
 //			pack.addChildSearchCondtions(sc_d_distrcy);
 //		}
-		SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+		SearchCondition sc_d_adcode = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_ADCODE.getName(), SearchConditionPattern.PrefixContain.getPattern(), StringHelper.split(adcode,"00")[0]);
-		pack.addChildSearchCondtions(sc_d_distrcy);
+		pack.addChildSearchCondtions(sc_d_adcode);
 		
 		if(must_not_positions != null && !must_not_positions.isEmpty()){
 			for(AdvertiseTrashPositionVTO dto: must_not_positions){
