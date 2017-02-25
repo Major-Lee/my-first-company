@@ -105,8 +105,7 @@ public class AdvertiseDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.analyzed,
-			indexAnalyzer = "ngram_1_to_20_analyzer",
+			index = FieldIndex.not_analyzed,
 			store = true
 	)
 	private String a_adcode;
