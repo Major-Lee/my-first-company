@@ -341,6 +341,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	@Field(
 			type = FieldType.String,
+			index = FieldIndex.analyzed,
 			indexAnalyzer = "ngram_1_to_20_analyzer",
 			store = true
 	)
