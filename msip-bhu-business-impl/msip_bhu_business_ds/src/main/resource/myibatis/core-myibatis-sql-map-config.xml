@@ -180,6 +180,9 @@
 		<typeAlias alias="advertiseDetails" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails" />
 		<typeAlias alias="advertiseSharedealDetail" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseSharedealDetail" />
 		
+		
+		<typeAlias alias="ssidInfo" 	type="com.bhu.vas.api.rpc.wifi.model.SsidInfo" />
+		
 		<!-- messageSystem -->
 		<typeAlias alias="messageUser" 	type="com.bhu.vas.api.rpc.message.model.MessageUser" />
 	</typeAliases>
@@ -326,6 +329,8 @@
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseDetails.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseSharedealDetail.sqlMap.xml" />
 		
+		<mapper resource="com/bhu/vas/api/rpc/wifi/model/sqlMapper/SsidInfo.sqlMap.xml" />
+
 		<!-- messageUser -->
 		<mapper resource="com/bhu/vas/api/rpc/message/model/sqlMapper/MessageUser.sqlMap.xml" />
 	</mappers>
