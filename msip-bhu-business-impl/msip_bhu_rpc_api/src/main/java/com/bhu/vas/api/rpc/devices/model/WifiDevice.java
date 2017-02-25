@@ -74,6 +74,8 @@ public class WifiDevice extends BaseStringModel{
 	private String carrier;
 	//百度geocoding create result id
 	private String bdid;
+	//国家行政区划代码
+	private String adcode;
 	//通过ip得到的坐标和地址
 	private int loc_method = 0;// = false;
 	//设备运行时长
@@ -518,6 +520,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setMerchant_name(String merchant_name) {
 		this.merchant_name = merchant_name;
+	}
+
+	public String getAdcode() {
+		return adcode;
+	}
+
+	public void setAdcode(String adcode) {
+		this.adcode = adcode;
 	}
 	
 	
