@@ -30,6 +30,8 @@ public class Advertise extends BaseStringModel{
 	private String city;
 	//区
 	private String district;
+	//地区码
+	private String adcode;
 	private double lat;
 	private double lon;
 	private String distance;
@@ -263,6 +265,14 @@ public class Advertise extends BaseStringModel{
 
 	public void setDistance(String distance) {
 		this.distance = distance;
+	}
+	
+	public String getAdcode() {
+		return adcode;
+	}
+
+	public void setAdcode(String adcode) {
+		this.adcode = adcode;
 	}
 
 	@Override

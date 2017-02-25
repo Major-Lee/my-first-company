@@ -112,7 +112,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					
 					if(adDTO.isAdmin()){
 						final List<String> maclist1 = new ArrayList<String>();
-						wifiDeviceDataSearchService.iteratorWithPosition(null, ad.getProvince(), ad.getCity(), ad.getDistrict(), false, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+						wifiDeviceDataSearchService.iteratorWithPosition(null, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getAdcode(), false, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 						@Override
 						public void notifyComming(Page<WifiDeviceDocument> pages) {
 							for(WifiDeviceDocument doc: pages){
@@ -250,7 +250,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		}
 		
 		wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
-				ad.getCity(), ad.getDistrict(),false,batch,
+				ad.getCity(), ad.getDistrict(),ad.getAdcode(),false,batch,
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 
 					@Override

@@ -177,6 +177,7 @@ public interface BusinessIndexDefine {
 			A_DOMAIN("a_domain",null),
 			A_PROVINCE("a_province",null),
 			A_CITY("a_city",null),
+			A_ADCODE("a_adcode",null),
 			A_DISTRICT("a_district",null),
 			A_GEOPOINT("a_geopoint", null),
 			A_DISTANCE("a_distance",null),

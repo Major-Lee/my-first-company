@@ -127,9 +127,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @return
 	 */
-	public long searchCountByPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city,String d_distrcy){
+	public long searchCountByPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city,String d_distrcy,String d_adcode){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,false);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,d_adcode,false);
 		if(scm == null || scm.equals(null)){
 			return 0L;
 		}
@@ -214,10 +214,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @param notify
 	 */
-	public void iteratorWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city, String d_distrcy, 
+	public void iteratorWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city, String d_distrcy,String d_adcode,
 			boolean snkTurnOn, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,snkTurnOn);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,d_adcode,snkTurnOn);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
