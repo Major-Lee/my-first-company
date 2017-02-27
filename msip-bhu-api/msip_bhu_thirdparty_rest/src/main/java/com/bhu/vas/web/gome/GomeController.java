@@ -92,7 +92,7 @@ public class GomeController extends BaseController{
 	 * 
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/device/status/control",method={RequestMethod.POST})
+	@RequestMapping(value="/device/control",method={RequestMethod.POST})
 	public void deviceControl(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestBody String requestBody) {
