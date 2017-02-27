@@ -262,20 +262,23 @@ public class ThirdPartyUnitFacadeService {
 	}
 	
 	private static String getBlockList(List<String> list){
-		StringBuffer stas = new StringBuffer();
-		if (!list.isEmpty()){
-			for(int i = 0; i< list.size(); i++){
-				stas.append(list.get(i));
-				if (i != list.size() - 1){
-					stas.append(StringHelper.COMMA_STRING_GAP);
-				}
-			}
-		}
-		logger.info(String.format("gomeDeviceStatusGet getBlockList[%s]", stas.toString()));
-		return stas.toString();
+		return JsonHelper.getJSONString(list);
+
+//		StringBuffer stas = new StringBuffer();
+//		if (!list.isEmpty()){
+//			for(int i = 0; i< list.size(); i++){
+//				stas.append(list.get(i));
+//				if (i != list.size() - 1){
+//					stas.append(StringHelper.COMMA_STRING_GAP);
+//				}
+//			}
+//		}
+//		logger.info(String.format("gomeDeviceStatusGet getBlockList[%s]", stas.toString()));
+//		return stas.toString();
 	}
 	private static String getStaList(List<GomeDeviceStaDTO> list){
-		StringBuffer stas = new StringBuffer();
+		return JsonHelper.getJSONString(list);
+/*		StringBuffer stas = new StringBuffer();
 		if (!list.isEmpty()){
 			for(int i = 0; i< list.size(); i++){
 				stas.append(JsonHelper.getJSONString(list.get(i)));
@@ -286,5 +289,5 @@ public class ThirdPartyUnitFacadeService {
 		}
 		logger.info(String.format("gomeDeviceStatusGet getStaList[%s]", stas.toString()));
 		return stas.toString();
-	}
+*/	}
 }
