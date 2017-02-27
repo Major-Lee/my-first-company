@@ -516,11 +516,11 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 			+ "Yb8ardTii58PCsENvCDCIz3wthOyNgEXAQEXI-O19Wv9AZr5XCQ_";
 	
 	//国美appid和appkey
-	public static String GomeToBhuAppId = "111";
-	public static String GomeToBhuAppKey = "22";
+	public static String GomeToBhuAppId = "bhu-gome-0001";
+	public static String GomeToBhuAppKey = "055a8f416acb40d3b3d6e38070e8a9e0";
 	
-	public static String BhuToGomeAppId = "111";
-	public static String BhuToGomeAppKey = "22";
+	public static String BhuToGomeAppId = "bhuID";
+	public static String BhuToGomeAppKey = "d0853b29591f4a07b2abdd92259ff26a";
 	
 	public static byte[] GomeToBhuDataKey = null;
 	public static byte[] BhuToGomeDataKey = null;

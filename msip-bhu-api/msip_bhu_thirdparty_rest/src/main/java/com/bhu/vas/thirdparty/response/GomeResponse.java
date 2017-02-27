@@ -17,7 +17,7 @@ public class GomeResponse {
 	private String desc;
 	
     @JsonInclude(Include.NON_NULL)
-	private String result;
+	private Object result;
 
 	public int getCode() {
 		return code;
@@ -35,11 +35,11 @@ public class GomeResponse {
 		this.desc = desc;
 	}
 
-	public String getResult() {
+	public Object getResult() {
 		return result;
 	}
 
-	public void setResult(String result) {
+	public void setResult(Object result) {
 		this.result = result;
 	}
 	
@@ -48,7 +48,7 @@ public class GomeResponse {
 		ret.setCode(0);
 		ret.setDesc(GomeResponse.SUCCESS_DESC);
 		if(!(o instanceof Boolean)){
-			ret.setResult(JsonHelper.getJSONString(o));
+			ret.setResult(o);//JsonHelper.getJSONString(o));
 		}
 		return ret;
 	}
