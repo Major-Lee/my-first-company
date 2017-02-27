@@ -28,7 +28,9 @@ public class AdvertiseDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.not_analyzed,
+			index = FieldIndex.analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "ngram_2_to_20_analyzer",
 			store = true
 	)
 	private String a_title;
