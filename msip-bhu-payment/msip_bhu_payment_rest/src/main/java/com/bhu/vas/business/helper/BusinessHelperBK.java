@@ -811,7 +811,7 @@ public class BusinessHelperBK extends PropertyEditorSupport {
 				//EncodeImgQrcode.writeToFile(content, format, img);
 				//GenerateQRCode.encode2(content, arg1, arg2, rqCodeLogoPath);
 				//bufferImgage = EncodeImgZingLogo.encodeImgLogo(img, logoImg);
-				bufferImgage = encode2(content, 177, 177,logoPath);
+				bufferImgage = encode2(content, 140, 140,logoPath);
 				output = new ByteArrayOutputStream();
 				ImageIO.write(bufferImgage, "png", output);
 				result = output.toByteArray();

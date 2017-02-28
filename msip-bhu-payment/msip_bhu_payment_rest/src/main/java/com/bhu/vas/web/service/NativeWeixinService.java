@@ -20,6 +20,7 @@ import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
 import com.bhu.vas.business.ds.payment.service.PaymentOutimeErrorLogService;
 import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.helper.BusinessHelper;
+import com.bhu.vas.business.helper.BusinessHelperBK;
 import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.business.qqmail.SendMailHelper;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
@@ -157,7 +158,8 @@ public class NativeWeixinService{
     	String base64CodeUrl = "";
 		try {
 			long base64Code_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
+//			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
+			base64CodeUrl = BusinessHelperBK.GetBase64ImageStr(codeUrl,PRUE_LOGO_URL);
 			long base64Code_end = System.currentTimeMillis() - base64Code_begin; // 这段代码放在程序执行后
 			logger.info(out_trade_no+"生成二维码64位code耗时：" + base64Code_end + "毫秒");
 		} catch (WriterException | IOException e) {

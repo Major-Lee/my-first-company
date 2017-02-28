@@ -51,7 +51,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://upay.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -86,12 +86,12 @@ public class PayHttpService {
     
     //打赏失败web回调地址
 //    public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
-    public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-//    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+//    public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //充值失败web回调地址
 //     public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
-    public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-//    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+//    public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
+    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
   
    //短信预警通知联系人list
    public static String Internal_level1_error_man = "18515465766,13911210204,18601267579,18910735595,13911716572,15910526881,15901090128";
