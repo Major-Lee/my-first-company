@@ -144,10 +144,6 @@ public class ThirdPartyUnitFacadeService {
 		
 		if(StringUtils.isNotEmpty(dto.getSsid()) && !vap.getSsid().equals(dto.getSsid())){
 			vap.setSsid(dto.getSsid());
-			change = true;
-		}
-		//修改ssid和密码
-		if(dto.getPassword() != null && dto.getPassword().equals(vap.getAuth_key())){
 			if(StringUtils.isEmpty(dto.getPassword())){
 				vap.setAuth(WifiDeviceSetting.AUTH_MODE_OPEN);
 			} else {
@@ -157,6 +153,17 @@ public class ThirdPartyUnitFacadeService {
 			vap.setAuth_key_rsa("");
 			change = true;
 		}
+//		//修改ssid和密码
+//		if(dto.getPassword() != null && !dto.getPassword().equals(vap.getAuth_key())){
+//			if(StringUtils.isEmpty(dto.getPassword())){
+//				vap.setAuth(WifiDeviceSetting.AUTH_MODE_OPEN);
+//			} else {
+//				vap.setAuth(WifiDeviceSetting.AUTH_MODE_WPA2);
+//			}
+//			vap.setAuth_key(dto.getPassword());
+//			vap.setAuth_key_rsa("");
+//			change = true;
+//		}
 		if(change)
 			_callTaskCreate(mac, OperationDS.DS_VapPassword.getNo(), vap);
 		

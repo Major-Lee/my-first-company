@@ -105,7 +105,7 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 
 	@Override
 	public RpcResponseDTO<Boolean> gomeDeviceStatusNotify(final String mac, final int online) {
-		logger.info(String.format("gomeDeviceStatusGet mac:%s",mac));
+		logger.info(String.format("gomeDeviceStatusNotify mac:%s",mac));
 		try{
 			exec_remote_notify.submit((new Runnable() {
 				@Override
