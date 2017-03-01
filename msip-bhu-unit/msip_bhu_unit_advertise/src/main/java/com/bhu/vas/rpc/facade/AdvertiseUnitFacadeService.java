@@ -193,8 +193,11 @@ public class AdvertiseUnitFacadeService {
 					if(sb != null){
 						context = sb.toString();
 					}
+					long sum = 0;
+					if(context !=null && distance!=null ){
+						 sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
+					}
 					
-					long sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 					count = sum > 500 ? 500 : sum;
 					cash = BusinessRuntimeConfiguration.AdvertiseHandbill;
 					entity.setCash(cash);
