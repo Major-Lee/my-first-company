@@ -1,12 +1,12 @@
-package helper;
+package com.bhu.vas.rpc.helper;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeReportDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeResponseDTO;
 import com.bhu.vas.api.rpc.thirdparty.helper.GomeParam;
@@ -21,6 +21,8 @@ public class GomeCallbackHelper {
 	private final static Logger logger = LoggerFactory.getLogger(GomeCallbackHelper.class);
 
 	public static Boolean notify(String mac, int online){
+    	logger.debug(String.format("GomeCallbackHelper mac[%s], online[%s]", mac, online));
+
     	Map<String, String> pm = new HashMap<String, String>();
     	String tm = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern16);
     	String nonce = NonceHelper.randomString(10);
@@ -40,10 +42,11 @@ public class GomeCallbackHelper {
     	dto.setOnline(String.valueOf(online));
     	String body = JsonHelper.getJSONString(dto);
     	
-		String mysign = GomeParam.getSign(null, tm, nonce, BusinessRuntimeConfiguration.GomeToBhuAppKey, body);
+		String mysign = GomeParam.getSign(null, tm, nonce, BusinessRuntimeConfiguration.BhuToGomeAppKey, body);
     	pm.put(GomeParam.GomeRequestParam_Sign, mysign);
     	
-    	logger.debug(String.format("tm[%s], nonce[%s], key[%s], body[%s]", tm, nonce, BusinessRuntimeConfiguration.GomeToBhuAppKey, body));
+    	logger.debug(String.format("appId[%s], tm[%s], nonce[%s], key[%s], sign[%s], body[%s]", BusinessRuntimeConfiguration.BhuToGomeAppId,
+    			tm, nonce, BusinessRuntimeConfiguration.GomeToBhuAppKey, mysign, body));
     	
     	String result = HttpHelper.postWithBody(BusinessRuntimeConfiguration.GomeApiUrl, pm, null, body);
     	if(StringUtils.isEmpty(result)){

@@ -4,22 +4,21 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.rpc.facade.ThirdPartyUnitFacadeService;
+import com.bhu.vas.rpc.helper.GomeCallbackHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
-
-import helper.GomeCallbackHelper;
 
 /**
  * 第三方业务的组件服务service 对外暴露接口
@@ -111,6 +110,7 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 				@Override
 				public void run() {
 					try{
+						logger.debug("starting notify for:" + mac);
 						for(int i = 0; i < 5; i ++){
 							try{
 								if(GomeCallbackHelper.notify(mac, online) != null)
