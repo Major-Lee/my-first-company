@@ -430,6 +430,7 @@ public class BusinessEnumType {
 		AdsRefresh("ADR","刷新小传单"),
 		AdsStick("ADS","置顶小传单"),
 		AdsCPM("ADCPM","CPM计费"),
+		PurchaseInternetService("PIS","购买上网服务"),
 		;
 		
 		private String key;
@@ -1169,6 +1170,7 @@ public class BusinessEnumType {
 		AppAlipay("AppAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
 		Hee("Hee","汇元宝","汇元宝"),
+		BalancePay("BalancePay","消费者钱包余额支付","消费者钱包余额支付"),
 		Unknown("unknown","未知支付方式", "未知支付方式"),
 		;
 		private String key;

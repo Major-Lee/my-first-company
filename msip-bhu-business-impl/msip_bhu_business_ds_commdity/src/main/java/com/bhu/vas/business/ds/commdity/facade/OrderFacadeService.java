@@ -25,6 +25,7 @@ import com.bhu.vas.api.dto.commdity.internal.portal.WhiteListPermissionThroughNo
 import com.bhu.vas.api.dto.procedure.DeviceOrderStatisticsProduceDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderNewlyDataProcedureDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
@@ -1409,6 +1410,39 @@ public class OrderFacadeService {
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(commdity.getPrice());
+		orderService.insert(order);
+		return order;
+	}
+
+	public Order spendBalanceOrder(Commdity commdity, Integer uid, String mac, String mac_dut,
+			String umac, Integer umactype, String payment_type, String context, String user_agent,
+			Integer channel) {
+		String amount = null;
+		if (BusinessEnumType.CommdityCategory.isRewardInternetLimit(commdity.getCategory())){
+			amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdity.getId(), umactype);
+		}
+		if(StringUtils.isEmpty(amount)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(BusinessEnumType.CommdityApplication.DEFAULT.getKey());
+		order.setUid(uid);
+		order.setChannel(channel);
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setContext(context);
+		order.setUser_agent(user_agent);
+		order.setPayment_proxy_type("BHU");
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(amount);
 		orderService.insert(order);
 		return order;
 	}

@@ -1,6 +1,10 @@
 package com.bhu.vas.api.dto.commdity.internal.pay;
 
+import java.util.Date;
+
 import com.bhu.vas.api.helper.PaymentNotifyType;
+import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 
 /**
@@ -42,6 +46,15 @@ public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO implem
 	}
 	public void setPayment_proxy_type(String payment_proxy_type) {
 		this.payment_proxy_type = payment_proxy_type;
+	}
+	
+	public static ResponsePaymentCompletedNotifyDTO builder(Order order){
+		ResponsePaymentCompletedNotifyDTO dto = new ResponsePaymentCompletedNotifyDTO();
+		dto.setOrderid(order.getId());
+		dto.setPayment_type(order.getPayment_type());
+		dto.setPayment_proxy_type(order.getPayment_proxy_type());
+		dto.setPaymented_ds(DateTimeHelper.formatDate(new Date(), DateTimeHelper.DefalutFormatPattern));
+		return dto;
 	}
 	@Override
 	public String getPaymentNotifyType() {

@@ -89,4 +89,8 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<CommdityOrderCommonVTO> createRechargeCashOrder(Integer commdityid, Integer uid,
 			String payment_type, String amount, Integer channel, String context, String user_agent);
+
+	public RpcResponseDTO<CommdityOrderCommonVTO> spendBalanceOrder(Integer commdityid, Integer uid, String mac, String umac,
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel);
+	
 }

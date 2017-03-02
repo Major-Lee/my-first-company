@@ -37,6 +37,7 @@ import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.TechServiceDataDTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
@@ -75,6 +76,7 @@ import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
@@ -148,6 +150,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource 
 	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
+	
+	@Resource
+	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -1339,6 +1344,55 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
 		}catch(Exception ex){
 			logger.error("createRechargeCashOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<CommdityOrderCommonVTO> spendBalanceOrder(Integer commdityid, Integer uid, String mac, String umac,
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel) {
+		try{
+			if(!BusinessEnumType.OrderPaymentType.BalancePay.equals(payment_type)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
+			}
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			//检查设备是否接入过
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
+			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+			Order order = orderFacadeService.spendBalanceOrder(commdity, uid, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
+			int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, order.getId(), 
+					Double.parseDouble(order.getAmount()), BusinessEnumType.UConsumptiveWalletTransType.PurchaseInternetService, "spend balance:"+order.getAmount(), "", null);
+			if(result == 0){
+				CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
+				vto.setAmount(order.getAmount());
+				vto.setAppid(order.getAppid());
+				vto.setOrderid(order.getId());
+				vto.setGoods_name(commdity.getName());
+				vto.setName_key(commdity.getName_key());
+				String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponsePaymentCompletedNotifyDTO.
+						builder(order));
+				CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+			}else if(result == 1){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
+			}else{
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			}
+		}catch(BusinessI18nCodeException be){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
+		}catch(Exception ex){
+			logger.error("spendBalanceOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

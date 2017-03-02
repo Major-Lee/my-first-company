@@ -740,4 +740,31 @@ public void hot_play_paymenturl(
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/spend/balance",method={RequestMethod.GET,RequestMethod.POST})
+	public void spend_balance(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) Integer commdityid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
+			@RequestParam(required = true) String payment_type,
+			@RequestParam(required = false, defaultValue = "3") Integer channel,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "0") String version,
+			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
+			) {
+		String user_agent = request.getHeader("User-Agent");
+		//1:生成订单
+		RpcResponseDTO<CommdityOrderCommonVTO> rpcResult = orderRpcService.spendBalanceOrder(commdityid, uid, mac, umac, umactype,
+				payment_type, context, user_agent, channel);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+		}
+	}
 }

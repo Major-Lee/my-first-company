@@ -235,5 +235,13 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.createRechargeCashOrder(commdityid, 
 				uid, payment_type, amount, channel, context, user_agent);
 	}
+
+	@Override
+	public RpcResponseDTO<CommdityOrderCommonVTO> spendBalanceOrder(Integer commdityid, Integer uid, String mac, String umac,
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel) {
+		logger.info(String.format("spendBalanceOrder with commdityid[%s] uid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s] channel[%s]",
+				commdityid, uid, mac, umac, umactype, payment_type, context, user_agent, channel));
+		return orderUnitFacadeService.spendBalanceOrder(commdityid, uid, mac, umac, umactype, payment_type, context, user_agent, channel);
+	}
 	
 }
