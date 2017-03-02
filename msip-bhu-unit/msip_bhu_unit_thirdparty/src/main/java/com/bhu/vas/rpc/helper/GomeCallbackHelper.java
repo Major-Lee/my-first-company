@@ -32,12 +32,13 @@ public class GomeCallbackHelper {
     	
     	GomeReportDTO dto = new GomeReportDTO();
     	dto.setGid(BusinessRuntimeConfiguration.BhuToGomeReportGid);
-    	try{
-    		dto.setDeviceId(CryptoHelper.aesEncryptToHex(mac, BusinessRuntimeConfiguration.BhuToGomeDataKey));
-    	}catch(Exception e){
-    		e.printStackTrace();
-    		return Boolean.FALSE;
-    	}
+    	dto.setDeviceId(mac);
+//    	try{
+//    		dto.setDeviceId(CryptoHelper.aesEncryptToHex(mac, BusinessRuntimeConfiguration.BhuToGomeDataKey));
+//    	}catch(Exception e){
+//    		e.printStackTrace();
+//    		return Boolean.FALSE;
+//    	}
     	dto.setTime(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
     	dto.setOnline(String.valueOf(online));
     	String body = JsonHelper.getJSONString(dto);
