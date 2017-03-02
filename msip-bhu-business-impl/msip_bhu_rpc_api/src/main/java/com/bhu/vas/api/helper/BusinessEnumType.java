@@ -1627,6 +1627,10 @@ public class BusinessEnumType {
 			if(channel == null) return null;
 			return allPaymentChannelTypes.get(channel);
 		}
+		
+		public static boolean supported(Integer key){
+			return allPaymentChannelTypes.containsKey(key);
+		}
 		static {
 			allPaymentChannelTypes = new HashMap<Integer, PaymentChannelType>();
 			PaymentChannelType[] types = values();

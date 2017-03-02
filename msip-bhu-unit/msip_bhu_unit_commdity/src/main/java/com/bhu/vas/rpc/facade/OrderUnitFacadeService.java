@@ -1354,6 +1354,9 @@ public class OrderUnitFacadeService {
 			if(!BusinessEnumType.OrderPaymentType.BalancePay.getKey().equals(payment_type)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
 			}
+			if(!BusinessEnumType.PaymentChannelType.supported(channel)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"channel"});
+			}
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 			//验证mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
