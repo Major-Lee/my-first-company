@@ -50,6 +50,7 @@ public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO implem
 	
 	public static ResponsePaymentCompletedNotifyDTO builder(Order order){
 		ResponsePaymentCompletedNotifyDTO dto = new ResponsePaymentCompletedNotifyDTO();
+		dto.setSuccess(true);
 		dto.setOrderid(order.getId());
 		dto.setPayment_type(order.getPayment_type());
 		dto.setPayment_proxy_type(order.getPayment_proxy_type());

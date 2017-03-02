@@ -754,8 +754,7 @@ public void hot_play_paymenturl(
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, defaultValue = "3") Integer channel,
 			@RequestParam(required = false) String context,
-			@RequestParam(required = false, defaultValue = "0") String version,
-			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
+			@RequestParam(required = false, defaultValue = "0") String version
 			) {
 		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
