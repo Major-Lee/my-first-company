@@ -144,10 +144,6 @@ public class ThirdPartyUnitFacadeService {
 		
 		if(StringUtils.isNotEmpty(dto.getSsid()) && !vap.getSsid().equals(dto.getSsid())){
 			vap.setSsid(dto.getSsid());
-			change = true;
-		}
-		//修改ssid和密码
-		if(dto.getPassword() != null && dto.getPassword().equals(vap.getAuth_key())){
 			if(StringUtils.isEmpty(dto.getPassword())){
 				vap.setAuth(WifiDeviceSetting.AUTH_MODE_OPEN);
 			} else {
@@ -157,6 +153,17 @@ public class ThirdPartyUnitFacadeService {
 			vap.setAuth_key_rsa("");
 			change = true;
 		}
+//		//修改ssid和密码
+//		if(dto.getPassword() != null && !dto.getPassword().equals(vap.getAuth_key())){
+//			if(StringUtils.isEmpty(dto.getPassword())){
+//				vap.setAuth(WifiDeviceSetting.AUTH_MODE_OPEN);
+//			} else {
+//				vap.setAuth(WifiDeviceSetting.AUTH_MODE_WPA2);
+//			}
+//			vap.setAuth_key(dto.getPassword());
+//			vap.setAuth_key_rsa("");
+//			change = true;
+//		}
 		if(change)
 			_callTaskCreate(mac, OperationDS.DS_VapPassword.getNo(), vap);
 		
@@ -262,20 +269,23 @@ public class ThirdPartyUnitFacadeService {
 	}
 	
 	private static String getBlockList(List<String> list){
-		StringBuffer stas = new StringBuffer();
-		if (!list.isEmpty()){
-			for(int i = 0; i< list.size(); i++){
-				stas.append(list.get(i));
-				if (i != list.size() - 1){
-					stas.append(StringHelper.COMMA_STRING_GAP);
-				}
-			}
-		}
-		logger.info(String.format("gomeDeviceStatusGet getBlockList[%s]", stas.toString()));
-		return stas.toString();
+		return JsonHelper.getJSONString(list);
+
+//		StringBuffer stas = new StringBuffer();
+//		if (!list.isEmpty()){
+//			for(int i = 0; i< list.size(); i++){
+//				stas.append(list.get(i));
+//				if (i != list.size() - 1){
+//					stas.append(StringHelper.COMMA_STRING_GAP);
+//				}
+//			}
+//		}
+//		logger.info(String.format("gomeDeviceStatusGet getBlockList[%s]", stas.toString()));
+//		return stas.toString();
 	}
 	private static String getStaList(List<GomeDeviceStaDTO> list){
-		StringBuffer stas = new StringBuffer();
+		return JsonHelper.getJSONString(list);
+/*		StringBuffer stas = new StringBuffer();
 		if (!list.isEmpty()){
 			for(int i = 0; i< list.size(); i++){
 				stas.append(JsonHelper.getJSONString(list.get(i)));
@@ -286,5 +296,5 @@ public class ThirdPartyUnitFacadeService {
 		}
 		logger.info(String.format("gomeDeviceStatusGet getStaList[%s]", stas.toString()));
 		return stas.toString();
-	}
+*/	}
 }

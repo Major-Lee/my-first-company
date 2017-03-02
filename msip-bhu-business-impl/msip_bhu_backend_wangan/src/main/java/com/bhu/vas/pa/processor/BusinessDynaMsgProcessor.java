@@ -93,7 +93,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 						if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 7){ //7://3.4.16	WLAN用户上下线消息
 							String payload = message.substring(ParserHeader.Cmd_Header_Length);
 							onProcessor(payload, headers);
-						} else if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 1){//device join
+						} else if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt() == 1){//device join
 							mac = message.substring(8, 20);
 							thirdPartyNotify(mac, 1);
 						} else {
