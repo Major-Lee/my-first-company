@@ -34,7 +34,7 @@ public class UserConsumptiveWalletFacadeService{
 	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,
 			double rmoney,double cash,String desc,String memo, Map<String, Object>outParam){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
-				transMode, transType,
+				transMode, transType,null,null,
 				rmoney, cash, desc, memo);
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
 		if(executeRet == 0){

@@ -30,6 +30,10 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String ptranstype_desc;
 	@IN(jdbcType = JdbcType.VARCHAR)
+	private String psourcetype;
+	@IN(jdbcType = JdbcType.VARCHAR)
+	private String psystype;
+	@IN(jdbcType = JdbcType.VARCHAR)
 	private String prmoney;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String pcash;
@@ -97,6 +101,22 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	public void setPtranstype_desc(String ptranstype_desc) {
 		this.ptranstype_desc = ptranstype_desc;
 	}
+	
+	public String getPsourcetype() {
+		return psourcetype;
+	}
+
+	public void setPsourcetype(String psourcetype) {
+		this.psourcetype = psourcetype;
+	}
+
+	public String getPsystype() {
+		return psystype;
+	}
+
+	public void setPsystype(String psystype) {
+		this.psystype = psystype;
+	}
 
 	public String getPrmoney() {
 		return prmoney;
@@ -146,7 +166,8 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	public static ConsumptiveWalletInOrOutProcedureDTO build(int userid,String orderid,
 			BusinessEnumType.UConsumptiveWalletTransMode transMode,
 			BusinessEnumType.UConsumptiveWalletTransType transType,
-			double rmoney,double cash,String description,String memo){
+			String sourcetype, String systype, double rmoney,double cash,
+			String description,String memo){
 		long cashLong = ArithHelper.doubleCurrencyToLong(cash, 
 				BusinessRuntimeConfiguration.WalletDataBaseDegree);
 		long rmoneyLong = ArithHelper.doubleCurrencyToLong(rmoney, 
@@ -158,6 +179,8 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 		dto.setPtransmode_desc(transMode.getName());		
 		dto.setPtranstype(transType.getKey());
 		dto.setPtranstype_desc(transType.getName());
+		dto.setPsourcetype(sourcetype);
+		dto.setPsystype(systype);
 		dto.setPrmoney("0");
 		dto.setPcash("0");
 		dto.setPdescription(description);
