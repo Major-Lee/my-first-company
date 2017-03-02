@@ -64,6 +64,7 @@ import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -984,5 +985,15 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> destoryTips(int uid,String adid){
 		AdvertiseTipsHashService.getInstance().destoryTips(uid, adid);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdvertise(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo){
+		
+		return null;
+	}
+	
+	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype){
+		AdvertiseCPMListService.getInstance().AdCPMPosh(ArrayHelper.toList(adids),null,null,userid,sourcetype,systype);
+		return null;
 	}
 }

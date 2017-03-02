@@ -10,10 +10,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -88,5 +86,6 @@ public class AdvertiseHelper {
 		vto.setExtparams(doc.getA_extparams());
 		vto.setReject_reason(doc.getA_reject_reason());
 		vto.setTop(doc.getA_top());
+		return vto;
 	}
 }
