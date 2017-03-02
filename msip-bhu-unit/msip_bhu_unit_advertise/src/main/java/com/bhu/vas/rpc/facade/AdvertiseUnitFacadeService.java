@@ -47,7 +47,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
+//import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
@@ -909,7 +909,7 @@ public class AdvertiseUnitFacadeService {
 		long oldScore = doc.getA_score();
 		long topScore = 100000000000000L;
 		int topState = doc.getA_top();
-		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
+//		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
 		String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 		if(isTop){//置顶
 			
