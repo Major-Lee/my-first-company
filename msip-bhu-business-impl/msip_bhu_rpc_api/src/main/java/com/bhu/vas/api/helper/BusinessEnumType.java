@@ -808,6 +808,12 @@ public class BusinessEnumType {
 			return false;
 		}
 		
+		public static boolean isRewardMonthlyInternetLimit(Integer category){
+			if(category == null) return false;
+			if(RewardMonthlyInternetLimit.getCategory().equals(category)) return true;
+			return false;
+		}
+		
 		static {
 			allCommdityCategoryTypes = new HashMap<Integer, CommdityCategory>();
 			CommdityCategory[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
