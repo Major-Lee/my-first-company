@@ -58,7 +58,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
-            @RequestParam(required = false) String adcode,
+            @RequestParam(required = true) String adcode,
             @RequestParam(required = false,defaultValue = "0.0") double lat,
             @RequestParam(required = false,defaultValue = "0.0") double lon,
             @RequestParam(required = false) String distance,

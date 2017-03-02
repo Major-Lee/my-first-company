@@ -341,8 +341,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.analyzed,
-			indexAnalyzer = "ngram_1_to_20_analyzer",
+			index = FieldIndex.not_analyzed,
 			store = true
 	)
 	private String d_adcode;//行政区划代码

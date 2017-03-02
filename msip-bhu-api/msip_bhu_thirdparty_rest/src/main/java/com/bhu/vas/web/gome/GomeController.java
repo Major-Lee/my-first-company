@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.thirdparty.response.GomeResponse;
 import com.bhu.vas.validate.ValidateService;
@@ -91,7 +92,7 @@ public class GomeController extends BaseController{
 	 * 
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/device/status/control",method={RequestMethod.POST})
+	@RequestMapping(value="/device/control",method={RequestMethod.POST})
 	public void deviceControl(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestBody String requestBody) {
@@ -129,7 +130,7 @@ public class GomeController extends BaseController{
 			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
 			String deviceId = (String)params.get("deviceId");
 			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
-			RpcResponseDTO<GomeConfigDTO> rpcResult = thirdPartyRpcService.gomeDeviceStatusGet(mac);
+			RpcResponseDTO<GomeDeviceDTO> rpcResult = thirdPartyRpcService.gomeDeviceOnlineGet(mac);// .gomeDeviceStatusGet(mac);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
 			}else{

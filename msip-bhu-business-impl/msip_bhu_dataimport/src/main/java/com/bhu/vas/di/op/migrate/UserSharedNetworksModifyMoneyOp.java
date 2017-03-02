@@ -30,8 +30,8 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  *
  */
 public class UserSharedNetworksModifyMoneyOp {
-	public final static String OLD_PC_DEFAULT = "1.5-3.5";
-	public final static String OLD_MOBILE_DEFAULT = "0.1-0.9";
+	public final static String OLD_PC_DEFAULT = "0.8-0.9";
+	public final static String OLD_MOBILE_DEFAULT = "0.4-0.5";
 	
 	public static boolean modifyMoney(ParamSharedNetworkDTO dto){
 		if(dto == null)
@@ -103,21 +103,21 @@ public class UserSharedNetworksModifyMoneyOp {
 				System.out.println(String.format("modifed for dev:[%s]", snk.getId()));
 				snk.putInnerModel(snkDTO);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(snk);
-				{
-					if(!snkDTO.isOn()) continue;
-					WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
-					if(wifiDevice != null && wifiDevice.isOnline()){
-						String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,
-								OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), CMDBuilder.AutoGen,
-								JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO
-										.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
-								deviceCMDGenFacadeService);
-						daemonRpcService.wifiDeviceCmdDown(null, snk.getId(), sharedNetworkCMD);
-						System.out.println(String.format("mac[%s] CMD[%s]", snk.getId(),sharedNetworkCMD));
-					}else{
-						System.out.println(String.format("mac[%s] not online", snk.getId()));
-					}
-				}
+//				{
+//					if(!snkDTO.isOn()) continue;
+//					WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
+//					if(wifiDevice != null && wifiDevice.isOnline()){
+//						String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,
+//								OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), CMDBuilder.AutoGen,
+//								JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO
+//										.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
+//								deviceCMDGenFacadeService);
+//						daemonRpcService.wifiDeviceCmdDown(null, snk.getId(), sharedNetworkCMD);
+//						System.out.println(String.format("mac[%s] CMD[%s]", snk.getId(),sharedNetworkCMD));
+//					}else{
+//						System.out.println(String.format("mac[%s] not online", snk.getId()));
+//					}
+//				}
 			}
 		}
 		ctx.stop();

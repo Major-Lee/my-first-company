@@ -313,6 +313,7 @@ public class BusinessEnumType {
 		Advertise2O("A2O",	 "全城热播(退费)"),
 		QualityGoods2C("Q2C",	 "良品分成"),
 		CPM2C("CPM",	 "小传单分成"),
+		Adjust("ADJ",	 "调整"),
 		;
 		
 		private String key;
@@ -369,6 +370,7 @@ public class BusinessEnumType {
 		VCurrencyPayment("VCP","虎钻支付"),
 		SharedealPayment("SDP","收益分成"),
 		Refund("RFD","退费"),
+		Adjust("ADJ","调整"),
 
 		/*Recharge2V("R2V","充值购买虎钻"),
 		Recharge2C("R2C","充值现金"),
