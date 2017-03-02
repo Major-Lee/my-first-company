@@ -1351,7 +1351,7 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<CommdityOrderCommonVTO> spendBalanceOrder(Integer commdityid, Integer uid, String mac, String umac,
 			Integer umactype, String payment_type, String context, String user_agent, Integer channel) {
 		try{
-			if(!BusinessEnumType.OrderPaymentType.BalancePay.equals(payment_type)){
+			if(!BusinessEnumType.OrderPaymentType.BalancePay.getKey().equals(payment_type)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
 			}
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
