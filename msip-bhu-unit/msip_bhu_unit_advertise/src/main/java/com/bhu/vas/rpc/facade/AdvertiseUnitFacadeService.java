@@ -58,8 +58,8 @@ import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.helper.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
-import com.bhu.vas.business.search.model.advertise.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
@@ -757,7 +757,7 @@ public class AdvertiseUnitFacadeService {
 							List<String> adids = new ArrayList<String>();
 							List<String> topAds = new ArrayList<String>();
 							for(AdvertiseDocument doc : searchDocuments){
-								vto = AdvertiseHelper.advertiseDocToVto(doc);
+								vto = AdvertiseDocumentHelper.advertiseDocToVto(doc);
 								if(doc.getU_id() !=null){
 									User user = userService.getById(Integer.valueOf(doc.getU_id()));
 									if(user != null && user.getNick() !=null){
@@ -958,7 +958,7 @@ public class AdvertiseUnitFacadeService {
 					List<String> adids = new ArrayList<String>();
 					List<String> topAds = new ArrayList<String>();
 					for(AdvertiseDocument doc : searchDocuments){
-						vto = AdvertiseHelper.advertiseDocToVto(doc);
+						vto = AdvertiseDocumentHelper.advertiseDocToVto(doc);
 						if(doc.getA_top() == 1){
 							topAds.add(doc.getId());
 						}
@@ -995,5 +995,14 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype){
 		AdvertiseCPMListService.getInstance().AdCPMPosh(ArrayHelper.toList(adids),null,null,userid,sourcetype,systype);
 		return null;
+	}
+	
+	private void advertiseCPMNotify(List<String> adids,String mac ,String umac,String userid,String sourcetype,String systype){
+		List<String> cpmAdids = new ArrayList<String>();
+		for(String adid : adids){
+			//TODO 检测是否需要进行CPM计费
+			cpmAdids.add(adid);
+		}
+		AdvertiseCPMListService.getInstance().AdCPMPosh(cpmAdids,mac,umac,userid,sourcetype,systype);
 	}
 }
