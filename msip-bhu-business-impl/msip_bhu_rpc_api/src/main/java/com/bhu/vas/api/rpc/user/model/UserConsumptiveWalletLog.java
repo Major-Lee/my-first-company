@@ -19,6 +19,10 @@ public class UserConsumptiveWalletLog extends BaseLongModel{// implements IRedis
 	private String transmode_desc;
 	//transtype_desc 描述 用于查看方便的冗余字段 
 	private String transtype_desc;
+	//消费来源 portal utool  bhuwifi
+	private String sourcetype;
+	//系统类型 ios android pc mobile
+	private String systype;
 	//交易现金相关 
 	private String rmoney;
 	//交易零钱相关
@@ -86,6 +90,22 @@ public class UserConsumptiveWalletLog extends BaseLongModel{// implements IRedis
 
 	public void setTranstype_desc(String transtype_desc) {
 		this.transtype_desc = transtype_desc;
+	}
+
+	public String getSourcetype() {
+		return sourcetype;
+	}
+
+	public void setSourcetype(String sourcetype) {
+		this.sourcetype = sourcetype;
+	}
+
+	public String getSystype() {
+		return systype;
+	}
+
+	public void setSystype(String systype) {
+		this.systype = systype;
 	}
 
 	public String getRmoney() {

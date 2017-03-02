@@ -47,7 +47,6 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
-//import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
@@ -243,20 +242,6 @@ public class AdvertiseUnitFacadeService {
 			entity.setDuration(duration);
 			entity.setExtparams(extparams);
 
-			/*不限制发布次数
-			ModelCriteria mc=new ModelCriteria();
-			List<Integer> stateList=new ArrayList<Integer>();
-			stateList.add(AdvertiseType.UnPaid.getType());
-			stateList.add(AdvertiseType.UnPublish.getType());
-			stateList.add(AdvertiseType.UnVerified.getType());
-			stateList.add(AdvertiseType.OnPublish.getType());
-			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
-			
-			int num=advertiseService.countByModelCriteria(mc);
-			if(num>=2){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
-			}*/
-			
 			Advertise smAd= advertiseService.insert(entity);
 			
 			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
@@ -459,20 +444,12 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 			Advertise advertise=advertiseService.getById(advertiseId);
-//			AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
-
 			advertise.setVerify_uid(verify_uid);
 			if(advertise.getState()==AdvertiseStateType.UnVerified.getType() || (advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType() && advertise.getState() == BusinessEnumType.AdvertiseStateType.OnPublish.getType())){
 				if(state==0){
 					advertise.setState(AdvertiseStateType.UnPublish.getType());
 					advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.UnPublish.getType(),null);
 				}else{
-//					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-//						List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
-//						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
-//						AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
-//					}
-					
 					advertise.setState(AdvertiseStateType.VerifyFailure.getType());
 					advertise.setReject_reason(msg);
 					AdvertiseTipsHashService.getInstance().adComment(advertise.getUid(), advertiseId, AdvertiseStateType.VerifyFailure.getDesc());
@@ -480,10 +457,6 @@ public class AdvertiseUnitFacadeService {
 					AdvertisePortalHashService.getInstance().advertiseVerifyFailure(advertiseId, msg);
 				}
 				advertiseService.update(advertise);
-//				if(state!=0 && advertise.getType() != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){//退费（个人热播暂不退费）
-//					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
-//							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));
-//				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_VERIFY_TYPESUPPORT);
@@ -508,15 +481,6 @@ public class AdvertiseUnitFacadeService {
 				advertiseVTO.setUid(advertise.getUid()+"");
 			}
 			advertiseVTO.setCount(advertiseVTO.getCount());
-//			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
-//				Date date=new Date();
-//				if(advertise.getStart().getTime()>date.getTime()){
-//					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-//					if(between_daysNow>2){
-//						advertiseVTO.setEscapeFlag(true);
-//					}
-//				}
-//			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 	}
 
@@ -611,33 +575,10 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
 		}
 		
-//		if(advertise.getState() == AdvertiseStateType.OnPublish.getType()){
-//			List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
-//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
-//			AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
-//		}
 		advertise.setState(AdvertiseStateType.EscapeOrder.getType());
 		advertiseService.update(advertise);
 		advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.EscapeOrder.getType(),null);
 
-//		if(advertise==null){
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
-//		}
-//		if(advertise.getUid()!=uid){
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
-//		}
-//		Date date=new Date();
-//		double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-//		if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
-//			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
-//				advertise.setState(AdvertiseStateType.EscapeOrder.getType());
-//				advertiseService.update(advertise);
-//			}else{
-//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TIMEERROR);
-//			}
-//		}else{
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
-//		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
@@ -753,11 +694,6 @@ public class AdvertiseUnitFacadeService {
 	
 	private AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
-//		String start = null;
-//		String end = null;
-//		
-//		start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-//		end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
 		SimpleDateFormat  format= new SimpleDateFormat(pattern);  
 	    Date startDate = format.parse(start);
 	    Date endDate = format.parse(end);
@@ -820,44 +756,13 @@ public class AdvertiseUnitFacadeService {
 							List<String> adids = new ArrayList<String>();
 							List<String> topAds = new ArrayList<String>();
 							for(AdvertiseDocument doc : searchDocuments){
-								vto = new AdvertiseVTO();
-								vto.setId(doc.getId());
-								vto.setTag(doc.getA_tag());
-								vto.setUid(doc.getU_id());
+								vto = AdvertiseHelper.advertiseDocToVto(doc);
 								if(doc.getU_id() !=null){
 									User user = userService.getById(Integer.valueOf(doc.getU_id()));
 									if(user != null && user.getNick() !=null){
 										vto.setNick(user.getNick());
 									}
 								}
-								vto.setType(doc.getA_type());
-								vto.setTitle(doc.getA_title());
-								vto.setState(doc.getA_state());
-								vto.setDescription(doc.getA_desc());
-								vto.setProvince(doc.getA_province());
-								vto.setCity(doc.getA_city());
-								vto.setDistrict(doc.getA_district());
-								if(doc.getA_geopoint() !=null){
-									vto.setLat(doc.getA_geopoint()[0]);
-									vto.setLon(doc.getA_geopoint()[1]);
-								}
-								vto.setDistance(doc.getA_distance());
-								vto.setUrl(doc.getA_url());
-								vto.setCount(doc.getA_count());
-								vto.setCash(doc.getA_cash());
-								SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
-								try {
-									if(doc.getA_start() !=null)
-										vto.setStart(sdf.parse(doc.getA_start()));
-									if(doc.getA_end() != null)
-										vto.setEnd(sdf.parse(doc.getA_end()));
-								} catch (ParseException e) {
-								}
-								vto.setDomain(doc.getA_domain());
-								vto.setImage(doc.getA_image());
-								vto.setExtparams(doc.getA_extparams());
-								vto.setReject_reason(doc.getA_reject_reason());
-								vto.setTop(doc.getA_top());
 								if(doc.getA_top() == 1){
 									topAds.add(doc.getId());
 								}
@@ -873,8 +778,6 @@ public class AdvertiseUnitFacadeService {
 								vto1.setPv(portalPv.get(index));
 								index++;
 							}
-							if(customize)
-								AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
 						}
 					}
 				}else{
@@ -909,7 +812,6 @@ public class AdvertiseUnitFacadeService {
 		long oldScore = doc.getA_score();
 		long topScore = 100000000000000L;
 		int topState = doc.getA_top();
-//		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
 		String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 		if(isTop){//置顶
 			
@@ -924,8 +826,6 @@ public class AdvertiseUnitFacadeService {
 			
 			advertise.setTop(1);
 			advertiseService.update(advertise);
-//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-//					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore + topScore);
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore + topScore,1);
 			
 		}else if (isRefresh){//刷新
@@ -943,12 +843,8 @@ public class AdvertiseUnitFacadeService {
 			}
 
 			if(topState == 1){
-//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-//						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
 				advertiseIndexIncrementService.adScoreUpdIncrement(adid, topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)),1);
 			}else{
-//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-//						maclist, JsonHelper.getJSONString(advertise.toRedis()), Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
 				advertiseIndexIncrementService.adScoreUpdIncrement(adid,  Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)), topState);
 			}
 			
@@ -958,8 +854,6 @@ public class AdvertiseUnitFacadeService {
 			
 			advertise.setTop(0);
 			advertiseService.update(advertise);
-//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-//					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore - topScore);
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore - topScore,0);
 			
 		}else{
@@ -1044,7 +938,12 @@ public class AdvertiseUnitFacadeService {
 		vto.setBalance(userConsumptiveWalletFacadeService.getUserCash(uid));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 	}
-	
+	/**
+	 * 返回三个推荐小传单
+	 * @param mac
+	 * @param umac
+	 * @return
+	 */
 	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac){
 		List<AdvertiseVTO> vtos = null;
 		Page<AdvertiseDocument> search_result = advertiseDataSearchService.searchPageByCreated();
@@ -1058,38 +957,7 @@ public class AdvertiseUnitFacadeService {
 					List<String> adids = new ArrayList<String>();
 					List<String> topAds = new ArrayList<String>();
 					for(AdvertiseDocument doc : searchDocuments){
-						vto = new AdvertiseVTO();
-						vto.setId(doc.getId());
-						vto.setUid(doc.getU_id());
-						vto.setType(doc.getA_type());
-						vto.setTitle(doc.getA_title());
-						vto.setState(doc.getA_state());
-						vto.setDescription(doc.getA_desc());
-						vto.setProvince(doc.getA_province());
-						vto.setCity(doc.getA_city());
-						vto.setDistrict(doc.getA_district());
-						if(doc.getA_geopoint() !=null){
-							vto.setLat(doc.getA_geopoint()[0]);
-							vto.setLon(doc.getA_geopoint()[1]);
-						}
-						vto.setDistance(doc.getA_distance());
-						vto.setUrl(doc.getA_url());
-						vto.setCount(doc.getA_count());
-						vto.setCash(doc.getA_cash());
-						SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
-						try {
-							if(doc.getA_start() !=null)
-								vto.setStart(sdf.parse(doc.getA_start()));
-							if(doc.getA_end() != null)
-								vto.setEnd(sdf.parse(doc.getA_end()));
-						} catch (ParseException e) {
-						}
-						vto.setDomain(doc.getA_domain());
-						vto.setImage(doc.getA_image());
-						vto.setExtparams(doc.getA_extparams());
-						vto.setReject_reason(doc.getA_reject_reason());
-						vto.setTag(doc.getA_tag());
-						vto.setTop(doc.getA_top());
+						vto = AdvertiseHelper.advertiseDocToVto(doc);
 						if(doc.getA_top() == 1){
 							topAds.add(doc.getId());
 						}

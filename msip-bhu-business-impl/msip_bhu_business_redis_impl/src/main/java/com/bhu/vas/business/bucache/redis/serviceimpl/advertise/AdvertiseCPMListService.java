@@ -26,18 +26,26 @@ public class AdvertiseCPMListService  extends AbstractRelationListCache{
         return ServiceHolder.instance;
     }
     
-    public void AdCPMPosh(List<String> adids){
-    	for(String adid : adids){
-        	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
-        	dto.setAdid(adid);
-        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, JsonHelper.getJSONString(dto));
-    	}
-    }
-    
     public void AdCPMPosh(List<String> adids,String mac ,String umac){
     	for(String adid : adids){
         	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
         	dto.setAdid(adid);
+        	if(StringHelper.isNotEmpty(mac))
+            	dto.setMac(mac);
+        	if(StringHelper.isNotEmpty(umac))
+        		dto.setUmac(umac);
+        	this.lpush(BusinessKeyDefine.Advertise.AdvertiseCPM, JsonHelper.getJSONString(dto));
+    	}
+    }
+    
+    public void AdCPMPosh(List<String> adids,String mac ,String umac,String userid,String source_type,String sys_type){
+    	for(String adid : adids){
+        	AdvertiseCPMDTO dto = new AdvertiseCPMDTO();
+        	dto.setAdid(adid);
+        	dto.setUserId(userid);
+        	dto.setSource_type(source_type);
+        	dto.setSys_type(sys_type);
+        	
         	if(StringHelper.isNotEmpty(mac))
             	dto.setMac(mac);
         	if(StringHelper.isNotEmpty(umac))

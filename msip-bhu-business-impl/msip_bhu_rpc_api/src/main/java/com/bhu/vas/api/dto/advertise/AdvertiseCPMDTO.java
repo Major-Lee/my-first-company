@@ -6,6 +6,9 @@ public class AdvertiseCPMDTO implements java.io.Serializable{
 	private String adid;
 	private String mac;
 	private String umac;
+	private String userid;
+	private String source_type;
+	private String sys_type;
 	
 	public String getAdid() {
 		return adid;
@@ -24,5 +27,23 @@ public class AdvertiseCPMDTO implements java.io.Serializable{
 	}
 	public void setUmac(String umac) {
 		this.umac = umac;
+	}
+	public String getUserId() {
+		return userid;
+	}
+	public void setUserId(String userid) {
+		this.userid = userid;
+	}
+	public String getSource_type() {
+		return source_type;
+	}
+	public void setSource_type(String source_type) {
+		this.source_type = source_type;
+	}
+	public String getSys_type() {
+		return sys_type;
+	}
+	public void setSys_type(String sys_type) {
+		this.sys_type = sys_type;
 	}
 }

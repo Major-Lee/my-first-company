@@ -11,7 +11,9 @@
     <result property="transmode" column="transmode"/>
     <result property="transtype" column="transtype"/>
     <result property="transmode_desc" column="transmode_desc"/>
-    <result property="transtype_desc" column="transtype_desc"/>    
+    <result property="transtype_desc" column="transtype_desc"/>   
+    <result property="sourcetype" column="sourcetype"/>
+    <result property="systype" column="systype"/>   
     <result property="rmoney" column="rmoney"/>
     <result property="cash" column="cash"/>
     <result property="memo" column="memo"/>
@@ -33,6 +35,8 @@
 	    	transtype,
 	    	transmode_desc,
 	    	transtype_desc,
+	    	sourcetype,
+	    	systype,
 	    	rmoney,
 	    	cash,
 	    	memo,
@@ -49,6 +53,8 @@
 	    	transtype,
 	    	transmode_desc,
 	    	transtype_desc,
+	   	    sourcetype,
+	    	systype,
 	    	rmoney,
 	    	cash,
 	    	memo,
@@ -64,7 +70,9 @@
 	    	#{transmode},
 	    	#{transtype},
 	    	#{transmode_desc},
-	    	#{transtype_desc},	    	
+	    	#{transtype_desc},	 
+	    	#{sourcetype},	
+	    	#{systype},	   	
 	    	#{rmoney},
 	    	#{cash},
 	    	#{memo},
@@ -79,6 +87,8 @@
 	    	transtype = #{transtype},
 	    	transmode_desc = #{transmode_desc},
 	    	transtype_desc = #{transtype_desc},
+	    	sourcetype = #{sourcetype},	
+	    	systype = #{systype},	   	
 	    	rmoney = #{rmoney},
 	    	cash = #{cash},
 	    	memo = #{memo},
