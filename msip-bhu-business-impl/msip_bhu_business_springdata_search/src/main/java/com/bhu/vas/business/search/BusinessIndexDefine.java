@@ -240,4 +240,69 @@ public interface BusinessIndexDefine {
 			}
 		}
 	}
+	
+	
+	
+	interface Ssid{
+		public static final String IndexName	= "ssid_index_v1";
+		public static final String Type 		= "ssid";
+		public static final int Shards		    = 5;
+		public static final int replicas 		= 1;
+		public static final String refreshInterval = "-1";
+		public static final int RetryOnConflict = 3;
+		
+		enum Field implements FieldDefine{
+			ID("id", null),
+			S_BSSID("s_bssid",null),
+			S_SSID("s_ssid", null),
+			S_DEVICE("s_device", null),
+			S_GEOPOINT("s_geopoint", null),
+			S_PWD("s_pwd", null),
+
+			S_CREATED_AT("s_created_at",null),
+			S_UPDATED_AT("s_updated_at",null),
+			;
+			String name;
+			String score_name;
+			
+			Field(String name, String score_name){
+				this.name = name;
+				this.score_name = score_name;
+			}
+			@Override
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
+			@Override
+			public String getScore_name() {
+				return score_name;
+			}
+
+			public void setScore_name(String score_name) {
+				this.score_name = score_name;
+			}
+
+
+
+			private static Map<String, Field> ssidFieldMaps;
+			
+			static {
+				ssidFieldMaps = new HashMap<String, Field>();
+				Field[] items = values();//new ThumbType[] {SMALL, MIDDLE, LARGE, ORIGINAL};
+				for (Field item : items){
+					ssidFieldMaps.put(item.name, item);
+				}
+			}
+			
+
+			public static Field getByName(String name) {
+				Field ret = ssidFieldMaps.get(name);
+				return ret;
+			}
+		}
+	}
 }
