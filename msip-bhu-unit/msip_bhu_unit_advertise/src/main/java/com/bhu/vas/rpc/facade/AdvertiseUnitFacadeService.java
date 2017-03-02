@@ -909,7 +909,7 @@ public class AdvertiseUnitFacadeService {
 		long oldScore = doc.getA_score();
 		long topScore = 100000000000000L;
 		int topState = doc.getA_top();
-		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
+//		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
 		String balance = userConsumptiveWalletFacadeService.getUserCash(uid);
 		if(isTop){//置顶
 			

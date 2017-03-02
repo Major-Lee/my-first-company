@@ -1,6 +1,5 @@
 package com.bhu.vas.api.vto.advertise;
 
-import java.util.Map;
 
 @SuppressWarnings("serial")
 public class AdvertiseReportVTO implements java.io.Serializable{
