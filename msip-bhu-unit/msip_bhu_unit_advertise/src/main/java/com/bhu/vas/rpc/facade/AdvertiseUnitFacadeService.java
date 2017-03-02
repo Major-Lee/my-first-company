@@ -279,7 +279,7 @@ public class AdvertiseUnitFacadeService {
 				}
 				
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, Double.valueOf(advertise.getCash()), UConsumptiveWalletTransType.AdsPublish, 
-						String.format("createNewAdvertise uid[%s]", uid), null, null);
+						null, null, String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
 					if(executeRet == 1){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
@@ -833,7 +833,7 @@ public class AdvertiseUnitFacadeService {
 			
 			if(!userFacadeService.isAdminByUid(uid)){
 				final int executeRet = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, adid, BusinessRuntimeConfiguration.AdvertiseHandbill, UConsumptiveWalletTransType.AdsRefresh, 
-						String.format("createNewAdvertise uid[%s]", uid), null, null);
+						null, null, String.format("createNewAdvertise uid[%s]", uid), null, null);
 				if(executeRet != 0){
 					if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseHandbill){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);

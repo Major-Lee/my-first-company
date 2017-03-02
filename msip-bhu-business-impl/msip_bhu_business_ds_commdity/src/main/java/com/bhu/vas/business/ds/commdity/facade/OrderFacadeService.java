@@ -1420,9 +1420,11 @@ public class OrderFacadeService {
 		String amount = null;
 		if (BusinessEnumType.CommdityCategory.isRewardInternetLimit(commdity.getCategory())){
 			amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdity.getId(), umactype);
-		}else{
+		}else if(BusinessEnumType.CommdityCategory.isRewardMonthlyInternetLimit(commdity.getCategory())){
 			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(mac);
 			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(psn, commdity.getId(), umactype));
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		if(StringUtils.isEmpty(amount)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);

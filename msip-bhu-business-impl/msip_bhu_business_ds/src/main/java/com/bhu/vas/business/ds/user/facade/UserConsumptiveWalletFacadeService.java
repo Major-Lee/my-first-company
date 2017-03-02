@@ -31,10 +31,10 @@ public class UserConsumptiveWalletFacadeService{
 	@Resource
 	private UserService userService;
 	
-	private int userConsumptiveWalletInOutWithProcedure(int uid,String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,
-			double rmoney,double cash,String desc,String memo, Map<String, Object>outParam){
+	private int userConsumptiveWalletInOutWithProcedure(int uid, String orderid,UConsumptiveWalletTransMode transMode, UConsumptiveWalletTransType transType,
+			String sourceType, String sysType, double rmoney,double cash,String desc,String memo, Map<String, Object>outParam){
 		ConsumptiveWalletInOrOutProcedureDTO processorDTO = ConsumptiveWalletInOrOutProcedureDTO.build(uid, orderid, 
-				transMode, transType,null,null,
+				transMode, transType, sourceType, sysType,
 				rmoney, cash, desc, memo);
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
 		if(executeRet == 0){
@@ -59,10 +59,11 @@ public class UserConsumptiveWalletFacadeService{
 		return executeRet;
 	}
 	
-	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String desc, String memo, Map<String, Object>outParam){
+	public int userPurchaseGoods(int uid, String orderid, double cash, UConsumptiveWalletTransType transType, String sourceType, String sysType, String desc, String memo, Map<String, Object>outParam){
 		logger.info(String.format("userPurchaseGoods uid[%s] orderid[%s] cash[%s] transType[%s] desc[%s] memo[%s].", uid, orderid, cash, transType, desc, memo));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		return userConsumptiveWalletInOutWithProcedure(uid, orderid,UConsumptiveWalletTransMode.CashPayment, transType, cash, cash,desc, memo, outParam);
+		return userConsumptiveWalletInOutWithProcedure(uid, orderid, UConsumptiveWalletTransMode.CashPayment, 
+				transType, sourceType, sysType, cash, cash,desc, memo, outParam);
 	}
 	
 	
@@ -86,7 +87,7 @@ public class UserConsumptiveWalletFacadeService{
 		double cash = Double.parseDouble(amount);
 		return userConsumptiveWalletInOutWithProcedure(uid, 
 				orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
-				UConsumptiveWalletTransType.Recharge2C, cash, cash, desc, StringHelper.EMPTY_STRING_GAP, null);
+				UConsumptiveWalletTransType.Recharge2C, null, null, cash, cash, desc, StringHelper.EMPTY_STRING_GAP, null);
 	}
 	
 }
