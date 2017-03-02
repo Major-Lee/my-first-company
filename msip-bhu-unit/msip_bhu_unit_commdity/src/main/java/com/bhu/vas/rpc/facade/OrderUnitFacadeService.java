@@ -1375,7 +1375,8 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.spendBalanceOrder(commdity, uid, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
 			int result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, order.getId(), 
-					Double.parseDouble(order.getAmount()), BusinessEnumType.UConsumptiveWalletTransType.PurchaseInternetService, "spend balance:"+order.getAmount(), "", null);
+					Double.parseDouble(order.getAmount()), BusinessEnumType.UConsumptiveWalletTransType.PurchaseInternetService,
+					null, null, "spend balance:"+order.getAmount(), "", null);
 			if(result == 0){
 				CommdityOrderCommonVTO vto = new CommdityOrderCommonVTO();
 				vto.setAmount(order.getAmount());
