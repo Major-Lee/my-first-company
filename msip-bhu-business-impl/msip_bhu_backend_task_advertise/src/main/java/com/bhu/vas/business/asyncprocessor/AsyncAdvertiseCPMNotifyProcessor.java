@@ -28,8 +28,6 @@ import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -231,9 +229,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 				if(Double.valueOf(balance) < BusinessRuntimeConfiguration.AdvertiseCPMPrices){
 					entity.setTop(0);
 					advertiseService.update(entity);
-					List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
-					WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-							maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
+//					List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
+//					WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//							maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
 					advertiseIndexIncrementService.adScoreUpdIncrement(cpmDto.getAdid(), oldScore - topScore,0);
 					
 					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);
@@ -241,9 +239,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			}else if(result == 1){
 				entity.setTop(0);
 				advertiseService.update(entity);
-				List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
-				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-						maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
+//				List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(cpmDto.getAdid());
+//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//						maclist, JsonHelper.getJSONString(entity.toRedis()), oldScore - topScore);
 				advertiseIndexIncrementService.adScoreUpdIncrement(cpmDto.getAdid(), oldScore - topScore,0);
 				
 				throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT);

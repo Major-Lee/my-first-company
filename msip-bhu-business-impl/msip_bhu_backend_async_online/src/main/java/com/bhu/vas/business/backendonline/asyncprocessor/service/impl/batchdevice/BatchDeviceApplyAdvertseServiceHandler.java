@@ -31,8 +31,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -132,8 +130,8 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				
 				switch (adDTO.getDtoType()) {
 					case IDTO.ACT_ADD:
-						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-							macList, JsonHelper.getJSONString(ad.toRedis()),Double.parseDouble(ad.getId()));
+//						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//							macList, JsonHelper.getJSONString(ad.toRedis()),Double.parseDouble(ad.getId()));
 						advertiDetails(ad, start, macList.size());
 //						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
@@ -300,11 +298,11 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			}
 
 			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType(),score);
-			if(maclist !=null && !maclist.isEmpty()){
-				AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
-				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-						maclist, JsonHelper.getJSONString(ad.toRedis()),score);
-			}
+//			if(maclist !=null && !maclist.isEmpty()){
+//				AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
+//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//						maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+//			}
 			
 		}else{
 			advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.UnVerified.getType(), null);
