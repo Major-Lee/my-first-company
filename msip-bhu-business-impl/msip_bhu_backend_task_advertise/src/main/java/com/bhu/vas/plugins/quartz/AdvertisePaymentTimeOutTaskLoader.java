@@ -8,20 +8,14 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
-import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 public class AdvertisePaymentTimeOutTaskLoader {
 	private static Logger logger = LoggerFactory.getLogger(AdvertisePaymentTimeOutTaskLoader.class);
@@ -56,9 +50,9 @@ public class AdvertisePaymentTimeOutTaskLoader {
 				ad.setState(BusinessEnumType.AdvertiseStateType.EscapeOrder.getType());
 				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
-				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
-				}
+//				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+//					AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
+//				}
 			}
 		}
 		advertiseService.updateAll(updateList);
@@ -73,9 +67,9 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		if(!ads.isEmpty()){
 			for(Advertise ad : ads){
 				logger.info(String.format("invaildHomeImageSmallArea adid[%s] count[%s]", ad.getId(),ad.getCount()));
-				List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(ad.getId());
-				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
-				AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
+//				List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(ad.getId());
+//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
+//				AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
 				adIds.add(ad.getId());
 			}

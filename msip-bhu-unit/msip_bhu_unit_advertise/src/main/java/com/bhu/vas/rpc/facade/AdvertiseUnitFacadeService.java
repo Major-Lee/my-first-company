@@ -50,7 +50,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalH
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -460,7 +459,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 			Advertise advertise=advertiseService.getById(advertiseId);
-			AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
+//			AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
 
 			advertise.setVerify_uid(verify_uid);
 			if(advertise.getState()==AdvertiseStateType.UnVerified.getType() || (advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType() && advertise.getState() == BusinessEnumType.AdvertiseStateType.OnPublish.getType())){
@@ -468,11 +467,11 @@ public class AdvertiseUnitFacadeService {
 					advertise.setState(AdvertiseStateType.UnPublish.getType());
 					advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.UnPublish.getType(),null);
 				}else{
-					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-						List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
-						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
-						AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
-					}
+//					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+//						List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
+//						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
+//						AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
+//					}
 					
 					advertise.setState(AdvertiseStateType.VerifyFailure.getType());
 					advertise.setReject_reason(msg);
@@ -481,10 +480,10 @@ public class AdvertiseUnitFacadeService {
 					AdvertisePortalHashService.getInstance().advertiseVerifyFailure(advertiseId, msg);
 				}
 				advertiseService.update(advertise);
-				if(state!=0 && advertise.getType() != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){//退费（个人热播暂不退费）
-					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
-							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));
-				}
+//				if(state!=0 && advertise.getType() != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){//退费（个人热播暂不退费）
+//					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
+//							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));
+//				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_VERIFY_TYPESUPPORT);
@@ -612,11 +611,11 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
 		}
 		
-		if(advertise.getState() == AdvertiseStateType.OnPublish.getType()){
-			List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
-			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
-			AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
-		}
+//		if(advertise.getState() == AdvertiseStateType.OnPublish.getType()){
+//			List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
+//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
+//			AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
+//		}
 		advertise.setState(AdvertiseStateType.EscapeOrder.getType());
 		advertiseService.update(advertise);
 		advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.EscapeOrder.getType(),null);
@@ -925,8 +924,8 @@ public class AdvertiseUnitFacadeService {
 			
 			advertise.setTop(1);
 			advertiseService.update(advertise);
-			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore + topScore);
+//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore + topScore);
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore + topScore,1);
 			
 		}else if (isRefresh){//刷新
@@ -944,12 +943,12 @@ public class AdvertiseUnitFacadeService {
 			}
 
 			if(topState == 1){
-				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
+//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
 				advertiseIndexIncrementService.adScoreUpdIncrement(adid, topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)),1);
 			}else{
-				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-						maclist, JsonHelper.getJSONString(advertise.toRedis()), Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
+//				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//						maclist, JsonHelper.getJSONString(advertise.toRedis()), Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
 				advertiseIndexIncrementService.adScoreUpdIncrement(adid,  Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)), topState);
 			}
 			
@@ -959,8 +958,8 @@ public class AdvertiseUnitFacadeService {
 			
 			advertise.setTop(0);
 			advertiseService.update(advertise);
-			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore - topScore);
+//			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+//					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore - topScore);
 			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore - topScore,0);
 			
 		}else{
