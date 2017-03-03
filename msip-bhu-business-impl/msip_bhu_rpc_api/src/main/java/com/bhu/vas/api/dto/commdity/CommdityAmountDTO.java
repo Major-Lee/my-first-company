@@ -24,7 +24,15 @@ public class CommdityAmountDTO implements java.io.Serializable{
 	private String monthCardAmount;
 	private String weekCardAmount;
 	private String dayCardAmount;
+	//人民币转新加坡币汇率
+	private String SGD_Rate;
 	
+	public String getSGD_Rate() {
+		return SGD_Rate;
+	}
+	public void setSGD_Rate(String sGD_Rate) {
+		SGD_Rate = sGD_Rate;
+	}
 	public String getMonthCardAmount() {
 		return monthCardAmount;
 	}

@@ -1728,6 +1728,64 @@ public class BusinessEnumType {
 		}
 	}
 	
+	/**
+	 * 支付费用币种
+	 * @author fengshibo
+	 *
+	 */
+	public enum PaymentFeeType{
+		CNY("CNY","人民币","人民币"),
+		SGD("SGD","新加坡元","新加坡元"),
+		;
+		private String key;
+		private String name;
+		private String desc;
+		
+		
+		static Map<String, PaymentFeeType> allPaymentFeeTypes;
+		
+		private PaymentFeeType(String key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static PaymentFeeType fromKey(String key){
+			if(key == null) return null;
+			return allPaymentFeeTypes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allPaymentFeeTypes.containsKey(key);
+		}
+		
+		static {
+			allPaymentFeeTypes = new HashMap<String, PaymentFeeType>();
+			PaymentFeeType[] types = values();
+			for (PaymentFeeType type : types){
+				allPaymentFeeTypes.put(type.getKey(), type);
+			}
+		}
+	}
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
