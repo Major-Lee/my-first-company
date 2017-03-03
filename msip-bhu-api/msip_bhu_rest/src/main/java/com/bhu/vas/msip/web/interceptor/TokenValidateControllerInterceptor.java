@@ -83,6 +83,15 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/ad/random");
 		//查询广告列表
 		ignoreTokensValidateUriSet.add("/ad/customize/fetch_by_condition_message");
+		//查询广告详情
+		ignoreTokensValidateUriSet.add("/ad/queryAdvertiseInfo");
+		//广告cpm通知
+		ignoreTokensValidateUriSet.add("/ad/cpm_notify");
+		//portal获取广告列表
+		ignoreTokensValidateUriSet.add("/ad/fetch_adlist_portal");
+		//app获取广告列表
+		ignoreTokensValidateUriSet.add("/ad/fetch_adlist_app");
+		
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");

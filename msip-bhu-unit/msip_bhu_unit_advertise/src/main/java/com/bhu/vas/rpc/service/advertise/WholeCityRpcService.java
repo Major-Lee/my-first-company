@@ -22,6 +22,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
@@ -248,5 +249,23 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<Boolean> destoryTips(int uid,String adid) {
 		logger.info(String.format("destoryTips uid[%s] adid[%s]",uid,adid));
 		return advertiseUnitFacadeService.destoryTips(uid,adid);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype) {
+		logger.info(String.format("advertiseCPMNotify adids[%s] userid[%s] sourcetype[%s] systype[%s]",adids,userid,sourcetype,systype));
+		return advertiseUnitFacadeService.advertiseCPMNotify(adids,userid,sourcetype,systype);
+	}
+
+	@Override
+	public RpcResponseDTO<AdvertiseResponseVTO> fetchAdListByPortal(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo) {
+		logger.info(String.format("fetchAdListByPortal mac[%s] umac[%s] sourcetype[%s] systype[%s] pageSize[%s] pageNo[%s]",mac,umac,sourcetype,systype,pageSize,pageNo));
+		return advertiseUnitFacadeService.fetchAdListByPortal(mac,umac,sourcetype,systype,pageSize,pageNo);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo) {
+		logger.info(String.format("fetchAdListByAPP lat[%s] lon[%s] adcode[%s] pageSize[%s] pageNo[%s]",lat,lon,adcode,pageSize,pageNo));
+		return advertiseUnitFacadeService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
 	}
 }

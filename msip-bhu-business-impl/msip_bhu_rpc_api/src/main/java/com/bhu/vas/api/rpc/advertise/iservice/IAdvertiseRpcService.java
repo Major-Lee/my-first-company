@@ -9,6 +9,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
@@ -135,5 +136,15 @@ public interface IAdvertiseRpcService{
 	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
 
 	public RpcResponseDTO<Boolean> destoryTips(int uid, String adid);
+
+	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids, String userid,
+			String sourcetype, String systype);
+
+	public RpcResponseDTO<AdvertiseResponseVTO> fetchAdListByPortal(String mac,
+			String umac, String sourcetype, String systype, int pageSize,
+			int pageNo);
+
+	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat, double lon,
+			String adcode, int pageSize, int pageNo);
 
 }

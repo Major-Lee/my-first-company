@@ -39,6 +39,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseDailyResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
@@ -599,65 +600,65 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
-		Advertise ad = advertiseService.getById(advertiseId);
+//		Advertise ad = advertiseService.getById(advertiseId);
+//		
+//		if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
+//		}
+//		
+//		if(ad.getState() != BusinessEnumType.AdvertiseStateType.Published.getType()){
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+//		}
+//		
+//		if(uid != ad.getUid()){
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
+//		}
+//		
+//		
+//		AdvertiseReportVTO report = new AdvertiseReportVTO();
+//		AdvertiseVTO adVto = ad.toVTO();
+//		AdvertiseResultVTO resultVto = new AdvertiseResultVTO();
+//		List<AdvertiseDailyResultVTO> adResults = new ArrayList<AdvertiseDailyResultVTO>();
+//		ModelCriteria mc = new ModelCriteria();
+//		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
+//		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+//		
+//		int adApplySum = 0;
+//		int adPVSum = 0;
+//		int adUvSum = 0;
+//		float cashSum = 0;
+//		for(AdvertiseDetails income : incomes){
+//			AdvertiseDailyResultVTO  dailyVto = new AdvertiseDailyResultVTO();
+//			dailyVto.setDate(income.getPublish_time());
+//			dailyVto.setAdApplyCount(income.getPublish_count());
+//			dailyVto.setAdPV(income.getPv());
+//			dailyVto.setAdUV(income.getUv());
+//			
+//			adApplySum +=income.getPublish_count();
+//			if(income.getCash() !=null || !income.getCash().isEmpty()){
+//				cashSum +=Double.parseDouble(income.getCash());
+//			}
+//			adPVSum+=dailyVto.getAdPV();
+//			adUvSum+=dailyVto.getAdUV();
+//			adResults.add(dailyVto);
+//		}
+//		resultVto.setAdApplySum(adApplySum);
+//		resultVto.setAdPVSum(adPVSum);
+//		resultVto.setAdUVSum(adUvSum);
+//		resultVto.setAdResult(adResults);
+//		
+//		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
+//		billVto.setExpect(Float.parseFloat(ad.getCash()));
+//		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
+//		
+//		float balance = Float.parseFloat(ad.getCash())*10000 - cashSum*10000;
+//		billVto.setBalance(balance > 0 ? balance/10000 : 0);
+//		
+//		report.setAdDetail(adVto);
+//		report.setAdResult(resultVto);
+//		report.setAdBills(billVto);
 		
-		if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
-		}
-		
-		if(ad.getState() != BusinessEnumType.AdvertiseStateType.Published.getType()){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
-		}
-		
-		if(uid != ad.getUid()){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
-		}
-		
-		
-		AdvertiseReportVTO report = new AdvertiseReportVTO();
-		AdvertiseVTO adVto = ad.toVTO();
-		AdvertiseResultVTO resultVto = new AdvertiseResultVTO();
-		List<AdvertiseDailyResultVTO> adResults = new ArrayList<AdvertiseDailyResultVTO>();
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
-		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-		
-		int adApplySum = 0;
-		int adPVSum = 0;
-		int adUvSum = 0;
-		float cashSum = 0;
-		for(AdvertiseDetails income : incomes){
-			AdvertiseDailyResultVTO  dailyVto = new AdvertiseDailyResultVTO();
-			dailyVto.setDate(income.getPublish_time());
-			dailyVto.setAdApplyCount(income.getPublish_count());
-			dailyVto.setAdPV(income.getPv());
-			dailyVto.setAdUV(income.getUv());
-			
-			adApplySum +=income.getPublish_count();
-			if(income.getCash() !=null || !income.getCash().isEmpty()){
-				cashSum +=Double.parseDouble(income.getCash());
-			}
-			adPVSum+=dailyVto.getAdPV();
-			adUvSum+=dailyVto.getAdUV();
-			adResults.add(dailyVto);
-		}
-		resultVto.setAdApplySum(adApplySum);
-		resultVto.setAdPVSum(adPVSum);
-		resultVto.setAdUVSum(adUvSum);
-		resultVto.setAdResult(adResults);
-		
-		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
-		billVto.setExpect(Float.parseFloat(ad.getCash()));
-		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
-		
-		float balance = Float.parseFloat(ad.getCash())*10000 - cashSum*10000;
-		billVto.setBalance(balance > 0 ? balance/10000 : 0);
-		
-		report.setAdDetail(adVto);
-		report.setAdResult(resultVto);
-		report.setAdBills(billVto);
-		
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(report);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 	}
 	
 	/**
@@ -700,43 +701,6 @@ public class AdvertiseUnitFacadeService {
 			vtos.add(vto);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
-	}
-	
-	private AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
-		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
-		SimpleDateFormat  format= new SimpleDateFormat(pattern);  
-	    Date startDate = format.parse(start);
-	    Date endDate = format.parse(end);
-	    long startLong = startDate.getTime();  
-	    long endLong = endDate.getTime(); 
-	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
-	    
-		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
-		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-
-		for(int i=index; i<=days; i++){
-			String time = null;
-			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
-			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
-			Date times = format2.parse(time);
-			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
-			occupiedVto.setTrashs(trashVtos);
-			occupiedVto.setDate(time);
-			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district,null));
-			
-			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
-			if(userFacadeService.checkOperatorByUid(uid)){
-				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
-				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
-			}else{
-				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
-				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
-			}
-			occupiedVtos.add(occupiedVto);
-		}
-		positionVto.setOccupyAds(occupiedVtos);
-		return positionVto;
 	}
 	
 	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(String mac,String umac,int pageNo,int pageSize,boolean customize,String ... messages){
@@ -990,15 +954,81 @@ public class AdvertiseUnitFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
-	
+	/**
+	 * 清除小红点
+	 * @param uid
+	 * @param adid
+	 * @return
+	 */
 	public RpcResponseDTO<Boolean> destoryTips(int uid,String adid){
 		AdvertiseTipsHashService.getInstance().destoryTips(uid, adid);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdvertise(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo){
+	/**
+	 * app Cpm通知
+	 * @param adids
+	 * @param userid
+	 * @param sourcetype
+	 * @param systype
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype){
+		List<Advertise> advertises = advertiseService.findByIds(ArrayHelper.toList(adids));
+		List<String> ads = new ArrayList<String>();
+		for(Advertise ad : advertises){
+			if(ad.getTop() == 1)
+				ads.add(ad.getId());
+		}
+		AdvertiseCPMListService.getInstance().AdCPMPosh(ads,null,null,userid,sourcetype,systype);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	/**
+	 * portal获取小传单列表
+	 * @param mac
+	 * @param umac
+	 * @param sourcetype
+	 * @param systype
+	 * @param pageSize
+	 * @param pageNo
+	 * @return
+	 */
+	public RpcResponseDTO<AdvertiseResponseVTO> fetchAdListByPortal(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo){
 		WifiDevice device = wifiDeviceService.getById(mac);
-		Page<AdvertiseDocument> search_result= advertiseDataSearchService.searchByGeoPointDistanceAndAdcode(null, Double.valueOf(device.getLat()), Double.valueOf(device.getLon()), "5km", device.getAdcode(), pageSize, pageNo);
+		List<AdvertiseVTO> vtos = fetchAdvertise(null, Double.valueOf(device.getLat()), Double.valueOf(device.getLon()), device.getAdcode(), pageSize, pageNo);
+		List<String> ads = new ArrayList<String>();
+		for(AdvertiseVTO vto : vtos){
+			if(vto.getTop() == 1)
+				ads.add(vto.getId());
+		}
+		AdvertiseCPMListService.getInstance().AdCPMPosh(ads,mac,umac,umac,sourcetype,systype);
+
+		AdvertiseResponseVTO results = new AdvertiseResponseVTO();
+		results.setAdcode(device.getAdcode());
+		results.setCity(device.getCity());
+		results.setProvince(device.getProvince());
+		results.setDistrict(device.getDistrict());
+		results.setVtos(vtos);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
+	}
+	
+	/**
+	 * app获取小传单列表
+	 * @param lat
+	 * @param lon
+	 * @param adcode
+	 * @param pageSize
+	 * @param pageNo
+	 * @return
+	 */
+	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo){
+		List<AdvertiseVTO> vtos = fetchAdvertise(null, lat, lon, adcode, pageSize, pageNo);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+	}
+	
+	private List<AdvertiseVTO> fetchAdvertise(String contextId, double lat, double lon,String adcode,int pageSize,int pageNo){
+		Page<AdvertiseDocument> search_result= advertiseDataSearchService.searchByGeoPointDistanceAndAdcode(null, lat, lon, "5km", adcode, pageSize, pageNo);
 		List<AdvertiseVTO> vtos = null;
 		if(search_result != null){
 			List<AdvertiseDocument> searchDocuments = search_result.getContent();//.getResult();
@@ -1026,33 +1056,48 @@ public class AdvertiseUnitFacadeService {
 					 vto1.setPv(portalPv.get(index));
 					 index++;
 				}
-				AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac,umac,sourcetype,systype);
 			}
 		}else{
 			vtos = Collections.emptyList();
 		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+		return vtos;
 	}
 	
-	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype){
-		List<Advertise> advertises = advertiseService.findByIds(ArrayHelper.toList(adids));
-		List<String> ads = new ArrayList<String>();
-		for(Advertise ad : advertises){
-			if(ad.getTop() == 1)
-				ads.add(ad.getId());
-		}
-		advertiseCPMNotify(ads,null,null,userid,sourcetype,systype);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-	}
-	
-	private void advertiseCPMNotify(List<String> adids,String mac ,String umac,String userid,String sourcetype,String systype){
-		List<String> cpmAdids = new ArrayList<String>();
-		for(String adid : adids){
-			//TODO 检测是否需要进行CPM计费
-			if (!AdvertiseUserCPMCheckHashService.getInstance().checkUserCpm(adid, userid)) {
-				cpmAdids.add(adid);
+	private AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
+		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
+		SimpleDateFormat  format= new SimpleDateFormat(pattern);  
+	    Date startDate = format.parse(start);
+	    Date endDate = format.parse(end);
+	    long startLong = startDate.getTime();  
+	    long endLong = endDate.getTime(); 
+	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
+	    
+		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
+		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
+
+		for(int i=index; i<=days; i++){
+			String time = null;
+			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
+			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
+			Date times = format2.parse(time);
+			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
+			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
+			occupiedVto.setTrashs(trashVtos);
+			occupiedVto.setDate(time);
+			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district,null));
+			
+			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			if(userFacadeService.checkOperatorByUid(uid)){
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+			}else{
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
 			}
+			occupiedVtos.add(occupiedVto);
 		}
-		AdvertiseCPMListService.getInstance().AdCPMPosh(cpmAdids,mac,umac,userid,sourcetype,systype);
+		positionVto.setOccupyAds(occupiedVtos);
+		return positionVto;
 	}
+	
 }
