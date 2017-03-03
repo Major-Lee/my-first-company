@@ -83,7 +83,7 @@ public class HeeService{
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.HEE_PREPAID_RETURN_URL;
 		}
-    	String reckoningId = payLogicService.createPaymentId(out_trade_no,"Hee",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
+    	String reckoningId = payLogicService.createPaymentId(out_trade_no,"Hee",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid,"");
     	if (!StringUtils.isBlank(locationUrl)) {
     		logger.info(String.format("get heepay locationUrl [%s] ",locationUrl));
     		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();

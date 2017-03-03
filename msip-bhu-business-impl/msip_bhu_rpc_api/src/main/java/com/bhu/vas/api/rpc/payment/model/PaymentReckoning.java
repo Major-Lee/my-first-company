@@ -19,17 +19,19 @@ public class PaymentReckoning  extends BaseStringModel{
 	private String third_party_code; 
 	private int pay_status; 
 	private int notify_status; 
+	private Date created_at;
+	private Date notify_at; 
+	private Date paid_at; 
 	private int charge_user; 
 	private int charge_merchant; 
 	private int type; 
 	private int tax; 
 	private int balance; 
 	private int tradeday; 
-	private String remark; 
 	private String channel_type;
-	private Date created_at;
-	private Date notify_at; 
-	private Date paid_at;  
+	private String remark; 
+	private String fee_type; 
+	 
 	public String getOrder_id() {
 		return order_id;
 	}
@@ -165,6 +167,12 @@ public class PaymentReckoning  extends BaseStringModel{
 		this.paid_at = paid_at;
 	}
 	
+	public String getFee_type() {
+		return fee_type;
+	}
+	public void setFee_type(String fee_type) {
+		this.fee_type = fee_type;
+	}
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)

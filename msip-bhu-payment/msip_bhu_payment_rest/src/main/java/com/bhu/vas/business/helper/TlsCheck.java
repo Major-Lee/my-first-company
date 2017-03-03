@@ -1,4 +1,4 @@
-package com.bhu.vas.web.payments.util;
+package com.bhu.vas.business.helper;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;

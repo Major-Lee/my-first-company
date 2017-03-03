@@ -1,9 +1,5 @@
 package com.bhu.vas.web.service;
 
-import static com.bhu.vas.web.payments.util.SampleConstants.clientID;
-import static com.bhu.vas.web.payments.util.SampleConstants.clientSecret;
-import static com.bhu.vas.web.payments.util.SampleConstants.mode;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +30,7 @@ import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.business.qqmail.SendMailHelper;
-import com.bhu.vas.web.payments.servlet.PaymentWithPayPalServlet;
+import com.bhu.vas.web.payment.PaymentController;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Details;
 import com.paypal.api.payments.Item;
@@ -70,9 +67,8 @@ public class PayPalService {
 	@Resource
 	PaymentParameterService paymentParameterService;
 	
-	private static final Logger logger = Logger.getLogger(PaymentWithPayPalServlet.class);
-//	public static final String WebhookId = "2ND47987AC600853R";
-	public static final String WebhookId = "8HC53929NS051904L";  ///live pays.bhuwifi.com
+	private final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+
 	
 	
 	
@@ -84,8 +80,9 @@ public class PayPalService {
     		String ip,
     		String return_url,
     		String usermac,
-    		String paymentName,
-    		String appid) {
+    		String payment_name,
+    		String appid,
+    		String fee_type) {
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
@@ -95,7 +92,7 @@ public class PayPalService {
     	}
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	long get_midas_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-    	String reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_PAYPAL.i18n(),usermac,paymentName,appid);
+    	String reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_PAYPAL.i18n(),usermac,payment_name,appid,fee_type);
     	long get_midas_reckoning_end = System.currentTimeMillis() - get_midas_reckoning_begin; // 这段代码放在程序执行后
     	logger.info(out_trade_no+"paypal支付获取支付流水号耗时：" + get_midas_reckoning_end + "毫秒");
 
@@ -119,7 +116,7 @@ public class PayPalService {
 		
 		return_url = PayHttpService.PAYPAL_RETURN_URL;
 		long get_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-		String results = createPayment(reckoningId,paymentName,total_fee, return_url);
+		String results = createPayment(reckoningId,payment_name,total_fee,fee_type, return_url);
 		long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no+"请求paypal获取支付URL耗时：" + get_midas_url_end + "毫秒");
 		int nowOutTimeLevel = payHttpService.getOt();
@@ -141,13 +138,13 @@ public class PayPalService {
 				paymentNowpayErrorLog.setId(reckoningId);
 				paymentNowpayErrorLog.setOrder_id(out_trade_no);
 				paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
-				paymentNowpayErrorLog.setC_type("Midas");
+				paymentNowpayErrorLog.setC_type("PayPal");
 				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
 			}
 			
 			switch (paypalWarningCount) {
 			case 3:
-				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "PayPal",get_midas_url_end+"");
 				String resp = "ture";
 				String acc = PayHttpService.Internal_level2_warning_man;
 				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
@@ -163,7 +160,7 @@ public class PayPalService {
 				break;
 			}
 		}catch(Exception e){
-			logger.info(String.format("apply midas catch exception [%s]",e.getMessage()+e.getCause()));
+			logger.info(String.format("apply paypal catch exception [%s]",e.getMessage()+e.getCause()));
 		}
 		
 		logger.info(String.format("apply paypal results [%s]",results));
@@ -177,19 +174,19 @@ public class PayPalService {
 			return result;
 		}
     }
-	public String createPayment(String recokoningId ,String name,String pay_amount,String returnUrl) {
+	public String createPayment(String recokoningId ,String payment_name,String pay_amount,String fee_type,String returnUrl) {
 		String result = "error";
 		
 		Payment createdPayment = null;
 		// ### Api Context
-		APIContext apiContext = new APIContext(clientID, clientSecret, mode);
+		APIContext apiContext = new APIContext(PayHttpService.clientID, PayHttpService.clientSecret, PayHttpService.mode);
 		Details details = new Details();
 		//details.setShipping("0");
 		details.setSubtotal(pay_amount);
 		//details.setTax("0");
 		Amount amount = new Amount();
 //		amount.setCurrency("USD");
-		amount.setCurrency("SGD");
+		amount.setCurrency(fee_type);
 		amount.setTotal(pay_amount);
 		amount.setDetails(details);
 
@@ -200,7 +197,7 @@ public class PayPalService {
 		transaction.setInvoiceNumber(recokoningId);
 		// ### Items
 		Item item = new Item();
-		item.setName(name).setQuantity("1").setCurrency("SGD").setPrice(pay_amount);
+		item.setName(payment_name).setQuantity("1").setCurrency(fee_type).setPrice(pay_amount);
 		ItemList itemList = new ItemList();
 		List<Item> items = new ArrayList<Item>();
 		items.add(item);

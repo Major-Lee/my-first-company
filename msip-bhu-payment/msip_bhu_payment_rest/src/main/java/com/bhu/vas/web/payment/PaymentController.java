@@ -1,9 +1,5 @@
 package com.bhu.vas.web.payment;
 
-import static com.bhu.vas.web.payments.util.SampleConstants.clientID;
-import static com.bhu.vas.web.payments.util.SampleConstants.clientSecret;
-import static com.bhu.vas.web.payments.util.SampleConstants.mode;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +49,6 @@ import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.business.helper.XMLUtil;
 import com.bhu.vas.business.qqmail.SendMailHelper;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
-import com.bhu.vas.web.payments.util.ResultPrinter;
 import com.bhu.vas.web.service.AlipayService;
 import com.bhu.vas.web.service.AppWeixinService;
 import com.bhu.vas.web.service.HeeService;
@@ -70,11 +62,6 @@ import com.heepay.api.Heepay;
 import com.nowpay.config.NowpayConfig;
 import com.nowpay.sign.MD5Facade;
 import com.nowpay.util.FormDateReportConvertor;
-import com.paypal.api.payments.CreditCard;
-import com.paypal.api.payments.Event;
-import com.paypal.base.Constants;
-import com.paypal.base.rest.APIContext;
-import com.paypal.base.rest.PayPalRESTException;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
@@ -117,8 +104,6 @@ public class PaymentController extends BaseController{
 	PayLogicService payLogicService;
 	@Autowired
     PayHttpService payHttpService;
-	@Autowired
-	PayPalService paypalService;
 	@Resource
 	PaymentReckoningService paymentReckoningService;
 	@Resource
@@ -603,13 +588,13 @@ public class PaymentController extends BaseController{
         	
         	String total_fee_fen = BusinessHelper.getMoney(total_fee);
         	int temp = Integer.parseInt(total_fee_fen);
-        	if(temp < 1000){
-        		logger.error(String.format("apply withdrawals total_fee[%s] errorMsg:[%s] , [%s]", total_fee,ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT.i18n(),"10元"));
-        		payLogicService.updateWithdrawalsStatus(null, withdraw_no, withdraw_type,false);
-				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"}), BusinessWebHelper.getLocale(request)));
-        		return;
-        	}
+//        	if(temp < 1000){
+//        		logger.error(String.format("apply withdrawals total_fee[%s] errorMsg:[%s] , [%s]", total_fee,ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT.i18n(),"10元"));
+//        		payLogicService.updateWithdrawalsStatus(null, withdraw_no, withdraw_type,false);
+//				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+//    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"}), BusinessWebHelper.getLocale(request)));
+//        		return;
+//        	}
         	
     		PaymentWithdraw paymentWithdraw = paymentWithdrawService.findByOrderId(withdraw_no);
     		if(paymentWithdraw != null){
@@ -669,8 +654,9 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = false, value = "") String payment_completed_url,
     		@RequestParam(required = false, value = "") String channel,
     		@RequestParam(required = false, value = "") String version,
-    		@RequestParam(required = false, value = "") String paymentName,
-    		@RequestParam(required = false, value = "") String ot){ 
+    		@RequestParam(required = false, value = "") String payment_name,
+    		@RequestParam(required = false, value = "") String ot,
+    		@RequestParam(required = false, value = "") String fee_type){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("get Payment Url goods_no [%s]", goods_no));
 		
@@ -704,17 +690,17 @@ public class PaymentController extends BaseController{
 				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
 				switch(app){
     			case BHU_PREPAID_BUSINESS:
-    				if (StringUtils.isBlank(paymentName)) {
-    					paymentName = "虎钻";
+    				if (StringUtils.isBlank(payment_name)) {
+    					payment_name = "虎钻";
     				}
     				break;
     			case DEFAULT: 
-    				if (StringUtils.isBlank(paymentName)) {
-    					paymentName = "打赏";
+    				if (StringUtils.isBlank(payment_name)) {
+    					payment_name = "打赏";
     				}
     				break;
     			default:
-    				paymentName = "打赏";
+    				payment_name = "打赏";
     				break;
 				}
 			}else{
@@ -785,32 +771,37 @@ public class PaymentController extends BaseController{
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
     				long PC_WEIXIN_begin = System.currentTimeMillis();
-    				result =  nativeWeixinService.doNativeWxPayment(request,response,"BHU",total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    				result =  nativeWeixinService.doNativeWxPayment(request,response,"BHU",total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid);
     				long PC_WEIXIN_end = System.currentTimeMillis() - PC_WEIXIN_begin; 
     				logger.info(goods_no+"PC微信支付耗时：" + PC_WEIXIN_end + "毫秒");
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
     				long PC_ALIPAY_begin = System.currentTimeMillis();
-    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
+    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,payment_name,appid,ot);
     				long PC_ALIPAY_end = System.currentTimeMillis() - PC_ALIPAY_begin; 
     				logger.info(goods_no+"PC支付宝耗时：" + PC_ALIPAY_end + "毫秒");
     				break;
     			case BHU_APP_WEIXIN: //App微信支付
     				long APP_WEIXIN_begin = System.currentTimeMillis();
-    				result =  appWeixinService.doAppPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
+    				result =  appWeixinService.doAppPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid,channel);
     				long APP_WEIXIN_end = System.currentTimeMillis() - APP_WEIXIN_begin; 
     				logger.info(goods_no+"APP微信支付耗时：" + APP_WEIXIN_end + "毫秒");
     				break;
     			case BHU_APP_ALIPAY: //App支付宝
     				long APP_ALIPAY_begin = System.currentTimeMillis();
-    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
+    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,payment_name,appid,ot);
     				long APP_ALIPAY_end = System.currentTimeMillis() - APP_ALIPAY_begin; 
     				logger.info(goods_no+"App支付宝耗时：" + APP_ALIPAY_end + "毫秒");
     				break;
     			case BHU_WAP_PAYPAL: //Wap Paypal
+    				if (StringUtils.isBlank(fee_type)) {
+    	        		logger.error(String.format("get Payment Url payment_type [%s] ,fee_type [%s]", payment_type,fee_type));
+    	    			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    	    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
+    	    			return;
+    	    		}
     				long WAP_PAYPAL_begin = System.currentTimeMillis();
-    				//result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
-    				result =  payPalService.doPaypal(response,request,version, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				result =  payPalService.doPaypal(response,request,version, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid,fee_type); 
     				long WAP_PAYPAL_end = System.currentTimeMillis() - WAP_PAYPAL_begin; 
     				logger.info(goods_no+"Wap Paypal耗时：" + WAP_PAYPAL_end + "毫秒");
     				break;
@@ -823,19 +814,19 @@ public class PaymentController extends BaseController{
         				
         				if(agentMerchant.equals("Now")){
         					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
-        					result =  nowService.doNow(response,"Now", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  nowService.doNow(response,"Now", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid); 
         					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
             				long end = System.currentTimeMillis() - begin;
             	    		logger.info(goods_no+"Wap微信现在支付，逻辑处理完成耗时：" + end + "毫秒！！！！！！");
         				}else if(agentMerchant.equals("Hee")){
         					long WAP_WEIXIN_Hee_begin = System.currentTimeMillis();
-        					result =  heeService.doHee(response,"Hee", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  heeService.doHee(response,"Hee", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid); 
         					long WAP_WEIXIN_Hee_end = System.currentTimeMillis() - WAP_WEIXIN_Hee_begin; 
             				logger.info(goods_no+"Wap微信汇元支付获取支付url耗时：" + WAP_WEIXIN_Hee_end + "毫秒");
         				}else{
         					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
-        					result =  nowService.doNow(response,"Now", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  nowService.doNow(response,"Now", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid); 
         					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
             				long end = System.currentTimeMillis() - begin;
@@ -843,7 +834,7 @@ public class PaymentController extends BaseController{
         				}
     				}else if(channel.equals(PaymentSceneChannelType.WAPQR.getName())){
     					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
-    					result =  nativeWeixinService.doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    					result =  nativeWeixinService.doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid);
     					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
         				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
 						
@@ -855,7 +846,7 @@ public class PaymentController extends BaseController{
                 	break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				long WAP_ALIPAY_begin = System.currentTimeMillis();
-    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
+    				result =  alipayService.doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,payment_name,appid,ot);
     				long WAP_ALIPAY_end = System.currentTimeMillis() - WAP_ALIPAY_begin; 
     				logger.info(goods_no+"Wap支付宝支付耗时：" + WAP_ALIPAY_end + "毫秒");
     				break;
@@ -1327,29 +1318,29 @@ public class PaymentController extends BaseController{
 //			logger.info("Failed to connect to TLS 1.2 endpoint.");
 //		}
    		
-   		try{
-   			APIContext apiContext = new APIContext(clientID, clientSecret, mode);
-   			
-   			apiContext.addConfiguration(Constants.PAYPAL_WEBHOOK_ID, PayPalService.WebhookId);
-   			
-   			Boolean result = Event.validateReceivedEvent(apiContext, PayPalService.getHeadersInfo(request), PayPalService.getBody(request));
-   			
-   			System.out.println("Result is " + result);
-   			logger.info("Webhook Validated:  "+ result);
-   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), CreditCard.getLastResponse(), null);
-   		} catch (PayPalRESTException e) {
-   			logger.error(e.getMessage());
-   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
-   		} catch (InvalidKeyException e) {
-   			logger.error(e.getMessage());
-   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
-   		} catch (NoSuchAlgorithmException e) {
-   			logger.error(e.getMessage());
-   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
-   		} catch (SignatureException e) {
-   			logger.error(e.getMessage());
-   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
-   		}
+//   		try{
+//   			APIContext apiContext = new APIContext(clientID, clientSecret, mode);
+//   			
+//   			apiContext.addConfiguration(Constants.PAYPAL_WEBHOOK_ID, PayPalService.WebhookId);
+//   			
+//   			Boolean result = Event.validateReceivedEvent(apiContext, PayPalService.getHeadersInfo(request), PayPalService.getBody(request));
+//   			
+//   			System.out.println("Result is " + result);
+//   			logger.info("Webhook Validated:  "+ result);
+//   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), CreditCard.getLastResponse(), null);
+//   		} catch (PayPalRESTException e) {
+//   			logger.error(e.getMessage());
+//   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
+//   		} catch (InvalidKeyException e) {
+//   			logger.error(e.getMessage());
+//   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
+//   		} catch (NoSuchAlgorithmException e) {
+//   			logger.error(e.getMessage());
+//   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
+//   		} catch (SignatureException e) {
+//   			logger.error(e.getMessage());
+//   			ResultPrinter.addResult(request, response, "Webhook Validated:  ", CreditCard.getLastRequest(), null, e.getMessage());
+//   		}
    		
 //		String isNull = request.getParameter("out_trade_no");
 //		if (isNull == null) {
