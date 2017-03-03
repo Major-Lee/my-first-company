@@ -216,7 +216,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			
 			Map<String, Object>outParam = new HashMap<String, Object>();
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), BusinessRuntimeConfiguration.AdvertiseCPMPrices, 
-					UConsumptiveWalletTransType.AdsCPM, null, null, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
+					UConsumptiveWalletTransType.AdsCPM, cpmDto.getSource_type(), cpmDto.getSys_type(), String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
 				//UV
 				AdvertiseUserCPMCheckHashService.getInstance().userCpmNotify(cpmDto.getAdid(), cpmDto.getUserId(), cpmDto.getUserId());
