@@ -21,6 +21,11 @@
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
+  <resultMap id="modelResultBySumCash" type="hashmap">
+	  	<result property="date" column="date"/>
+	  	<result property="sum" column="sum"/>
+  </resultMap> 
+  
   	<sql id="modelTableName">
 	    <![CDATA[
 	    	t_vas_users_consumptive_wallet_log
@@ -141,6 +146,33 @@
 				 -->
 			</if>
 		</where>
+	</select>
+	
+	<select id="selectListBySumCash" resultMap="modelResultBySumCash" parameterType="map">
+	    select DATE_FORMAT(updated_at,#{pattern}) as date ,sum(cash) as sum 
+	    	from <include refid="modelTableName" /> 
+	    <where>
+	    	<if test="_parameter != null">
+				orderid = #{orderid}
+				AND
+					transtype = #{transtype}
+			</if>
+			<if test="start !=null and end != null">
+				AND
+					updated_at
+				BETWEEN
+					#{start}
+				AND
+					#{end}
+			</if>
+		</where>
+		 GROUP BY DATE_FORMAT(updated_at,#{pattern})
+		 ORDER BY updated_at DESC
+		 <if test="pn!=null and ps !=null">
+			LIMIT 
+	    	#{pn},
+	   		#{ps}
+		</if>
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

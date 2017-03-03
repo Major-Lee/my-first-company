@@ -32,6 +32,7 @@ import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.vto.advertise.AdCommentVTO;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
@@ -62,6 +63,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.helper.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
@@ -112,6 +114,9 @@ public class AdvertiseUnitFacadeService {
 	
 	@Resource
 	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
+	
+	@Resource
+	private UserConsumptiveWalletLogService userConsumptiveWalletLogService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -594,72 +599,53 @@ public class AdvertiseUnitFacadeService {
 	}
 	
 	/**
-	 * 查看报表
+	 * 查看cpm记录
 	 * @param uid
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
-//		Advertise ad = advertiseService.getById(advertiseId);
-//		
-//		if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
-//		}
-//		
-//		if(ad.getState() != BusinessEnumType.AdvertiseStateType.Published.getType()){
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
-//		}
-//		
-//		if(uid != ad.getUid()){
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
-//		}
-//		
-//		
-//		AdvertiseReportVTO report = new AdvertiseReportVTO();
-//		AdvertiseVTO adVto = ad.toVTO();
-//		AdvertiseResultVTO resultVto = new AdvertiseResultVTO();
-//		List<AdvertiseDailyResultVTO> adResults = new ArrayList<AdvertiseDailyResultVTO>();
-//		ModelCriteria mc = new ModelCriteria();
-//		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
-//		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-//		
-//		int adApplySum = 0;
-//		int adPVSum = 0;
-//		int adUvSum = 0;
-//		float cashSum = 0;
-//		for(AdvertiseDetails income : incomes){
-//			AdvertiseDailyResultVTO  dailyVto = new AdvertiseDailyResultVTO();
-//			dailyVto.setDate(income.getPublish_time());
-//			dailyVto.setAdApplyCount(income.getPublish_count());
-//			dailyVto.setAdPV(income.getPv());
-//			dailyVto.setAdUV(income.getUv());
-//			
-//			adApplySum +=income.getPublish_count();
-//			if(income.getCash() !=null || !income.getCash().isEmpty()){
-//				cashSum +=Double.parseDouble(income.getCash());
-//			}
-//			adPVSum+=dailyVto.getAdPV();
-//			adUvSum+=dailyVto.getAdUV();
-//			adResults.add(dailyVto);
-//		}
-//		resultVto.setAdApplySum(adApplySum);
-//		resultVto.setAdPVSum(adPVSum);
-//		resultVto.setAdUVSum(adUvSum);
-//		resultVto.setAdResult(adResults);
-//		
-//		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
-//		billVto.setExpect(Float.parseFloat(ad.getCash()));
-//		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
-//		
-//		float balance = Float.parseFloat(ad.getCash())*10000 - cashSum*10000;
-//		billVto.setBalance(balance > 0 ? balance/10000 : 0);
-//		
-//		report.setAdDetail(adVto);
-//		report.setAdResult(resultVto);
-//		report.setAdBills(billVto);
-		
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,String start,String end, int pageNo ,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria cr = mc.createCriteria();
+		cr.andColumnEqualTo("orderid", advertiseId).andColumnEqualTo("transtype", UConsumptiveWalletTransType.AdsCPM.getName());
+		if(StringHelper.isNotEmpty(start) && StringHelper.isNotEmpty(end))
+			cr.andColumnBetween("updated_at", start, end);
+		mc.setPageNumber(pageNo);
+    	mc.setPageSize(pageSize);
+		mc.setOrderByClause("updated_at desc");
+		List<UserConsumptiveWalletLog> results = userConsumptiveWalletLogService.findModelByModelCriteria(mc);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
+	
+	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize){
+		String pattern = null;
+		String startDate = null;
+		String endDate = null;
+		if(start !=null && end !=null){
+			startDate = DateTimeHelper.getDateTime(new Date(start), DateTimeHelper.FormatPattern1);
+			endDate = DateTimeHelper.getDateTime(new Date(end), DateTimeHelper.FormatPattern1);
+		}
+
+		switch (type) {
+		case 0:
+			pattern = "%Y-%m-%d %h";
+			break;
+		case 1:
+			pattern = "%Y-%m-%d";
+			break;
+		case 2:
+			pattern = "%Y-%m";
+			break;
+		default:
+			pattern = "%Y-%m-%d %h";
+			break;
+		}
+		
+		List<Map<String, Object>> results = userConsumptiveWalletLogService.selectListBySumCash(pattern, advertiseId, UConsumptiveWalletTransType.AdsCPM.getName(),startDate,endDate,pageNo,pageSize);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
+	}
+	
+	
 	
 	/**
 	 * 根据经纬度和距离查看周围设备数量

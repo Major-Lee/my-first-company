@@ -8,4 +8,5 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
 public class UserConsumptiveWalletLogDao extends AbstractCoreDao<Long,UserConsumptiveWalletLog>{
+	
 }
