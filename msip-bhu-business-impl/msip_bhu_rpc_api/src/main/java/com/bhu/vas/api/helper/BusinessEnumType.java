@@ -1397,25 +1397,18 @@ public class BusinessEnumType {
 			this.type = type;
 			this.name = name;
 		}
-
-		
 		public Integer getType() {
 			return type;
 		}
-
-
 		public void setType(Integer type) {
 			this.type = type;
 		}
-
-
 		public String getName() {
 			return name;
 		}
 		public void setName(String name) {
 			this.name = name;
 		}
-		
 		public static boolean correct(Integer type, AdvertiseType advertiseType){
 			if(type == null || advertiseType == null) return false;
 			
@@ -1424,17 +1417,13 @@ public class BusinessEnumType {
 			}
 			return false;
 		}
-		
 		public static AdvertiseTag fromKey(Integer type){
 			if(type == null) return null;
 			return allAdvertiseTagTypes.get(type);
 		}
-		
 		public static boolean supported(Integer type){
 			return allAdvertiseTagTypes.containsKey(type);
 		}
-		
-		
 		static {
 			allAdvertiseTagTypes = new HashMap<Integer, AdvertiseTag>();
 			AdvertiseTag[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
@@ -1443,7 +1432,58 @@ public class BusinessEnumType {
 			}
 		}
 	}
-
+	
+	public enum AdvertiseSourceType{
+		protal("protal","portal"),
+		utool("utool","utool"),
+		bhuwifi("bhuwifi","bhuwifi"),
+		ios("ios","ios"),
+		android("android","android"),
+		;
+		private String type;
+		private String name;
+		
+		static Map<String, AdvertiseSourceType> allAdvertiseSourceTypes;
+		
+		private AdvertiseSourceType(String type,String name){
+			this.type = type;
+			this.name = name;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public static boolean correct(String type, AdvertiseSourceType advertiseSourceType){
+			if(type == null || advertiseSourceType == null) return false;
+			
+			if(type.equals(advertiseSourceType.getType())){
+				return true;
+			}
+			return false;
+		}
+		public static AdvertiseSourceType fromKey(String type){
+			if(type == null) return null;
+			return allAdvertiseSourceTypes.get(type);
+		}
+		public static boolean supported(String type){
+			return allAdvertiseSourceTypes.containsKey(type);
+		}
+		static {
+			allAdvertiseSourceTypes = new HashMap<String, AdvertiseSourceType>();
+			AdvertiseSourceType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (AdvertiseSourceType type : types){
+				allAdvertiseSourceTypes.put(type.getType(), type);
+			}
+		}
+	}
 	
 	/**
 	 * 腾讯im推送频道定义

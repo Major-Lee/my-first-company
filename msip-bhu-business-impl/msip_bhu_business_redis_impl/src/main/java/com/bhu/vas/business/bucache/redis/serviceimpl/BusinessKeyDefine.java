@@ -167,6 +167,7 @@ public class BusinessKeyDefine {
 		public static final String AdvertiseTips = "ADTP.";
 		public static final String AdvertiseData = "HD:";
 		public static final String AdvertiseCPM = "ADCPM";
+		public static final String AdvertiseCPMCheck = "ADCPMCK.";
 	}
 	
 	public static class Message{

@@ -5,6 +5,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionLogicEnumType;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
@@ -38,6 +39,33 @@ public class AdvertiseSearchMessageBuilder {
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		scm.addSorts(sc_sortByGeopoint);
+		
+		return scm;
+	}
+	
+	public static SearchConditionMessage builderSearchMessageWithGeoPointDistanceAndAdcode(String contextId, double lat, double lon, String distance,String adcode){
+		SearchConditionGeopointDistancePayload geopointDistancePayload = SearchConditionGeopointDistancePayload.buildPayload(
+				contextId, lat, lon, distance);
+		SearchCondition sc_geopointDistance = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
+				Field.A_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
+				JsonHelper.getJSONString(geopointDistancePayload));
+		
+		SearchCondition sc_adcode = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
+				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), adcode);
+		
+		SearchCondition sc_adcode_all = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
+				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), "000000");
+		
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_geopointDistance);
+		pack_must.addChildSearchCondtions(sc_adcode);
+		pack_must.addChildSearchCondtions(sc_adcode_all);
+		
+		SearchConditionSort sc_sortByScore = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
+				Field.A_SCORE.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		scm.addSorts(sc_sortByScore);
 		
 		return scm;
 	}
