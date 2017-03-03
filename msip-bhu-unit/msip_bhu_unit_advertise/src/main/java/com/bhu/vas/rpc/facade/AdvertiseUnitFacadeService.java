@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.omg.CORBA.DoubleHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdCommentVTO;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
@@ -48,18 +50,21 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMList
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseUserCPMCheckHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.helper.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
@@ -68,6 +73,7 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -105,6 +111,9 @@ public class AdvertiseUnitFacadeService {
 	
 	@Resource
 	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
@@ -988,20 +997,61 @@ public class AdvertiseUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdvertise(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo){
-		
-		return null;
+		WifiDevice device = wifiDeviceService.getById(mac);
+		Page<AdvertiseDocument> search_result= advertiseDataSearchService.searchByGeoPointDistanceAndAdcode(null, Double.valueOf(device.getLat()), Double.valueOf(device.getLon()), "5km", device.getAdcode(), pageSize, pageNo);
+		List<AdvertiseVTO> vtos = null;
+		if(search_result != null){
+			List<AdvertiseDocument> searchDocuments = search_result.getContent();//.getResult();
+			if(searchDocuments.isEmpty()) {
+				vtos = Collections.emptyList();
+			}else{
+				vtos = new ArrayList<AdvertiseVTO>();
+				AdvertiseVTO vto = null;
+				List<String> adids = new ArrayList<String>();
+				List<String> topAds = new ArrayList<String>();
+				for(AdvertiseDocument doc : searchDocuments){
+					vto = AdvertiseDocumentHelper.advertiseDocToVto(doc);
+					if(doc.getA_top() == 1){
+						topAds.add(doc.getId());
+					}
+					vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
+					adids.add(doc.getId());
+					vtos.add(vto);
+				}
+				List<String> portalPv =  AdvertisePortalHashService.getInstance().queryAdvertisePV(adids);
+				List<String> portalAct =  AdvertisePortalHashService.getInstance().queryAdvertiseAct(adids);
+				int index = 0;
+				for(AdvertiseVTO vto1 : vtos){
+					 vto1.setAct(portalAct.get(index));
+					 vto1.setPv(portalPv.get(index));
+					 index++;
+				}
+				AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac,umac,sourcetype,systype);
+			}
+		}else{
+			vtos = Collections.emptyList();
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
 	public RpcResponseDTO<Boolean> advertiseCPMNotify(String[] adids,String userid,String sourcetype ,String systype){
-		AdvertiseCPMListService.getInstance().AdCPMPosh(ArrayHelper.toList(adids),null,null,userid,sourcetype,systype);
-		return null;
+		List<Advertise> advertises = advertiseService.findByIds(ArrayHelper.toList(adids));
+		List<String> ads = new ArrayList<String>();
+		for(Advertise ad : advertises){
+			if(ad.getTop() == 1)
+				ads.add(ad.getId());
+		}
+		advertiseCPMNotify(ads,null,null,userid,sourcetype,systype);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
 	private void advertiseCPMNotify(List<String> adids,String mac ,String umac,String userid,String sourcetype,String systype){
 		List<String> cpmAdids = new ArrayList<String>();
 		for(String adid : adids){
 			//TODO 检测是否需要进行CPM计费
-			cpmAdids.add(adid);
+			if (!AdvertiseUserCPMCheckHashService.getInstance().checkUserCpm(adid, userid)) {
+				cpmAdids.add(adid);
+			}
 		}
 		AdvertiseCPMListService.getInstance().AdCPMPosh(cpmAdids,mac,umac,userid,sourcetype,systype);
 	}
