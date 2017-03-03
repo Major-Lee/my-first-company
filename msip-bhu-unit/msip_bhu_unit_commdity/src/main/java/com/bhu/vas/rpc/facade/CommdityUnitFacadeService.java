@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -129,6 +130,7 @@ public class CommdityUnitFacadeService {
 			}
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
+			commdityAmountDto.setSGD_Rate(PaymentInternalHelper.getSGDRate());
 			commdityAmountDto.setSsid(chargingFacadeService.fetchWifiDeviceSharedNetworkSSID(psn));
 			commdityAmountDto.setUsers_rx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersRxRate(psn));
 			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(psn));
