@@ -28,11 +28,11 @@ public class AdvertiseUserCPMCheckHashService extends AbstractRelationHashCache{
         return sb.toString();
     }
     
-    public boolean checkUserCpm(String adid,String userid){
-    	 return this.hexists(generateKey(adid, DateTimeHelper.getDateTime("DD")), userid);
+    public boolean checkUserCpm(String adid,String userid,String sourcetype){
+    	 return this.hexists(generateKey(adid, DateTimeHelper.getDateTime("DD")), userid+sourcetype);
     }
 	
-    public void userCpmNotify(String adid,String userid){
+    public void userCpmNotify(String adid,String userid,String sourcetype){
     	this.hset(generateKey(adid, DateTimeHelper.getDateTime("DD")), userid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern0));
     	this.expire(generateKey(adid, DateTimeHelper.getDateTime("DD")), 24*3600);
     }

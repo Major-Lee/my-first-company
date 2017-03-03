@@ -28,6 +28,7 @@ import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseUserCPMCheckHashService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -135,8 +136,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 		exec_processes.get(hash).submit((new Runnable(){
 			@Override
 			public void run(){
-//				asyncDeliverMessageService.sendBatchAdvertiseCPMNotifyActionMessage(message);
-				process(cpmDto, entity);
+				//检查是否需要进行CPM计费
+				if(!AdvertiseUserCPMCheckHashService.getInstance().checkUserCpm(cpmDto.getAdid(), cpmDto.getUserId(), cpmDto.getSource_type()))
+					process(cpmDto, entity);
 			}
 		}));
 	}
@@ -216,6 +218,9 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 			result = userConsumptiveWalletFacadeService.userPurchaseGoods(uid, cpmDto.getAdid(), BusinessRuntimeConfiguration.AdvertiseCPMPrices, 
 					UConsumptiveWalletTransType.AdsCPM, null, null, String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
+				//UV
+				AdvertiseUserCPMCheckHashService.getInstance().userCpmNotify(cpmDto.getAdid(), cpmDto.getUserId(), cpmDto.getUserId());
+				
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
 					Long cpmid = (Long)outParam.get("cpmid");
 					if(cpmid != null && cpmid.longValue() > 0){

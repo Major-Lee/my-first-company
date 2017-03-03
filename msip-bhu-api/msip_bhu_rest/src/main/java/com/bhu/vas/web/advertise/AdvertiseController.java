@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
@@ -495,6 +496,82 @@ public class AdvertiseController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/cpm_notify", method = {RequestMethod.POST})
+    public void advertiseCPMNotify(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String[]  adids,
+            @RequestParam(required = true) String  userid,
+            @RequestParam(required = true) String  sourcetype,
+            @RequestParam(required = true) String  systype) {
+		try{
+	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseCPMNotify(adids,userid,sourcetype,systype);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_adlist_portal", method = {RequestMethod.POST})
+    public void fetchAdListByPortal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String  mac,
+            @RequestParam(required = true) String  umac,
+            @RequestParam(required = true) String  sourcetype,
+            @RequestParam(required = true) String  systype,           
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+		try{
+	        RpcResponseDTO<AdvertiseResponseVTO> rpcResult = advertiseRpcService.fetchAdListByPortal(mac , umac , sourcetype , systype,  pageSize ,  pageNo);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_adlist_app", method = {RequestMethod.POST})
+    public void fetchAdListByAPP(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) double  lat,
+            @RequestParam(required = true) double  lon,
+            @RequestParam(required = true) String  adcode,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+		try{
+	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+				
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
