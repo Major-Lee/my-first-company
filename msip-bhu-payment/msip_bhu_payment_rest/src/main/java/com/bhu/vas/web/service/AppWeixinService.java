@@ -89,7 +89,7 @@ public class AppWeixinService{
 			mchKey = payHttpService.getAppDSMchKey();
 		}
 		total_fee = BusinessHelper.getMoney(total_fee);
-		String reckoningId = payLogicService.createPaymentId(out_trade_no,channel,total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName,appid);
+		String reckoningId = payLogicService.createPaymentId(out_trade_no,channel,total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName,appid,"");
 		if (!StringUtils.isBlank(locationUrl)) {
 			logger.info(String.format("apply App Wx Payment locationUrl [%s] ",locationUrl));
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();

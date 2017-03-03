@@ -275,8 +275,11 @@ public class PayLogicService {
  		return reckoningId;
     }
     
-    public String createPaymentId(String out_trade_no,String channelType,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
+    public String createPaymentId(String out_trade_no,String channelType,String total_fee,String Ip,String type,String usermac,String paymentName,String appId,String fee_type){
     	
+    	if(StringUtils.isBlank(fee_type)){
+    		fee_type = "CNY";
+    	}
     	//判断请求支付类型
     	String paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
     	if(type.equals(PaymentChannelCode.BHU_PC_WEIXIN.i18n())){
@@ -318,6 +321,7 @@ public class PayLogicService {
     	order.setSubject(paymentName);
     	order.setExter_invoke_ip(Ip);
     	order.setAppid(appId);
+    	order.setFee_type(fee_type);
     	String token = RandomPicker.randString(BusinessHelper.letters, 10);
     	order.setToken(token);
     	paymentReckoningService.insert(order);

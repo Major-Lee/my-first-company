@@ -6,16 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentChannelSatDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentInfoDetailDTO;
-import com.bhu.vas.api.rpc.payment.vto.PaymentChannelStatVTO;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * java发送post请求
@@ -46,23 +36,27 @@ public class PostRequestUtil {
 ////			System.out.println( sr);
 //			
 //		}
-		String aa = "startTime=2017-02-11&endTime=2017-02-14";
-		Object response = sendPost("http://upay.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", aa);
-		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
-		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
-		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());
-		String info = paymentChannelList.get(1).getInfo();
-		
-		JSONObject json;
-		try {
-			json = new JSONObject(info);
-			JSONObject now =  (JSONObject) json.get("hee");
-			//JSONObject jsons = new JSONObject(now);
-			System.out.println(now.get("amount"));
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		String aa = "appid=1002&secret=1F915A8DA370422582CBAC1DB6A806UU&withdraw_no=1hhd0ttgmmmbbn&withdraw_type=weixin&total_fee=10&userId=ohdupuGI3vkfnQSMFsPMlnQPdQvg&userName=张鹏宇";
+		Object response = sendPost("http://upay.bhuwifi.com/msip_bhu_payment_rest/payment/submitWithdrawals", aa);
+//		String aa = "openid=ohdupuGI3vkfnQSMFsPMlnQPdQvg&callback=sss";
+//		Object response = sendPost("http://localhost:8080/wxpay/pay", aa);
+
+		System.out.println(response);
+		//		ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+//		List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+//		//System.out.println( paymentChannelList.get(1).getAmount()+"info:"+paymentChannelList.get(1).getInfo());
+//		String info = paymentChannelList.get(1).getInfo();
+//		
+//		JSONObject json;
+//		try {
+//			json = new JSONObject(info);
+//			JSONObject now =  (JSONObject) json.get("hee");
+//			//JSONObject jsons = new JSONObject(now);
+//			System.out.println(now.get("amount"));
+//		} catch (JSONException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 //		try {
 //			JSONObject dds = json.optJSONObject(info);
 //			System.out.println(dds.get("hee"));

@@ -25,9 +25,6 @@ public class WithDrawNotifyResponse extends WxResponse {
         super.getValueFromMap(map);
         return_code=map.get("return_code").toString();
         return_msg=map.get("return_msg").toString();
-        mch_appid=map.get("mch_appid").toString();
-        mchid=map.get("mchid").toString();
-        device_info=map.get("device_info").toString();
         nonce_str=map.get("nonce_str").toString();
         result_code=map.get("result_code").toString();
         return_code=map.get("return_code").toString();
