@@ -66,8 +66,8 @@ public class UserWalletController extends BaseController{
 			System.out.println(String.format("walletWithdraw uid [%s] appid [%s] payment_type [%s] pwd [%s] cash [%s]", 
 					uid,appid,payment_type,pwd,cash));
 			//财务结算，不允许每月26~N+5提现
-			boolean isOpen = BusinessWebHelper.isOpenWithdrawDate();
-//			boolean isOpen = false;//BusinessWebHelper.isOpenWithdrawDate();
+			//boolean isOpen = BusinessWebHelper.isOpenWithdrawDate();
+			boolean isOpen = false;//BusinessWebHelper.isOpenWithdrawDate();
 			if(isOpen){
 				logger.info(String.format("walletWithdraw  is InvalidTime"));
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_INVALID_TIME);

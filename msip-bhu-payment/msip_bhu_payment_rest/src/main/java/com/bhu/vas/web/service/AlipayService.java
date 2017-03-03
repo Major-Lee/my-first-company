@@ -106,7 +106,7 @@ public class AlipayService{
 		PaymentChannelCode payChannel =PaymentChannelCode.getPaymentChannelCodeByCode(type);
 		switch (payChannel) {
 		case BHU_WAP_ALIPAY:
-			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_ALIPAY.i18n(),usermac,paymentName,appid);
+			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_ALIPAY.i18n(),usermac,paymentName,appid,"");
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -124,7 +124,7 @@ public class AlipayService{
 			//sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_APP_ALIPAY:
-			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid);
+			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid,"");
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -142,7 +142,7 @@ public class AlipayService{
 			//sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_PC_ALIPAY:
-			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac,paymentName,appid);
+			reckoningId = payLogicService.createPaymentId(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac,paymentName,appid,"");
 			sParaTemp.put("service", AlipayConfig.service);
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);

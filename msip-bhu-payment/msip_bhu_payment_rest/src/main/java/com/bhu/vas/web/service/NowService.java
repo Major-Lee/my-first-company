@@ -100,7 +100,7 @@ public class NowService{
 
 		long get_now_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		String reckoningId = payLogicService.createPaymentId(out_trade_no, "Now", total_fee_fen, ip,
-				PaymentChannelCode.BHU_WAP_WEIXIN.i18n(), usermac, paymentName, appid);
+				PaymentChannelCode.BHU_WAP_WEIXIN.i18n(), usermac, paymentName, appid,"");
 		long get_now_reckoning_end = System.currentTimeMillis() - get_now_reckoning_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no + "现在支付获取支付流水号耗时：" + get_now_reckoning_end + "毫秒");
 		// 做MD5签名
