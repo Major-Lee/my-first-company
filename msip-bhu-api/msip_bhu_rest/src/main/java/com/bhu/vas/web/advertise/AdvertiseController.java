@@ -161,7 +161,7 @@ public class AdvertiseController extends BaseController{
 	public void queryAdvertise(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) int uid,
+			@RequestParam(required = false) Integer uid,
 			@RequestParam(required = true) String advertiseId
 			) {
 		try{
