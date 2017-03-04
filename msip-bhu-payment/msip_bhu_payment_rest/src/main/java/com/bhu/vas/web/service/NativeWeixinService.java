@@ -83,7 +83,7 @@ public class NativeWeixinService{
     	}
     		
     	long begin = System.currentTimeMillis(); 
-        String reckoningId = payLogicService.createPaymentId(out_trade_no,channel_type,total_fee,Ip,type,usermac,paymentName,appId);
+        String reckoningId = payLogicService.createPaymentId(out_trade_no,channel_type,total_fee,Ip,type,usermac,paymentName,appId,"");
         long end = System.currentTimeMillis() - begin; 
         logger.info(out_trade_no+"生成支付流水号耗时：" + end + "毫秒");
         

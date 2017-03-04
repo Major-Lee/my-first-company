@@ -537,7 +537,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) String  mac,
             @RequestParam(required = true) String  umac,
             @RequestParam(required = true) String  sourcetype,
-            @RequestParam(required = true) String  systype,           
+            @RequestParam(required = false) String  systype,           
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		try{

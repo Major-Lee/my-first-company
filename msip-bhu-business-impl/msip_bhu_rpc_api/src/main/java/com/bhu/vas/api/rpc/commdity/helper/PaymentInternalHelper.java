@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.commdity.helper;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -11,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.PaymentSceneChannelDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentFeeType;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
@@ -63,7 +67,7 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
-			String amount, String requestip, String umac, String orderid, String payment_completed_url,
+			String amount, String fee_type, String requestip, String umac, String orderid, String payment_completed_url,
 			String channel,String version, String payment_name, String orderTimeout){
 		Map<String, String> api_params = generatePaymentApiParamMap(appid);
 		if(api_params == null){
@@ -72,16 +76,20 @@ public class PaymentInternalHelper {
 					amount, requestip, umac, payment_completed_url, appid,channel,version));
 			return null;
 		}
-		
 		api_params.put("payment_type", payment_type);
-		api_params.put("total_fee", amount);
+		if (BusinessEnumType.OrderPaymentType.WapPayPal.getKey().equals(payment_type)){
+			api_params.put("total_fee", fetchFinallyAmountByCurrency(fee_type, amount));
+			api_params.put("fee_type", fee_type);
+		}else{
+			api_params.put("total_fee", amount);
+		}
 		api_params.put("exter_invoke_ip", requestip);
 		api_params.put("umac", umac);
 		api_params.put("goods_no", orderid);
 		api_params.put("payment_completed_url", payment_completed_url);
 		api_params.put("channel", channel);
 		api_params.put("version", version);
-		api_params.put("paymentName", payment_name);
+		api_params.put("payment_name", payment_name);
 		api_params.put("ot", orderTimeout);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
@@ -202,20 +210,32 @@ public class PaymentInternalHelper {
 		}
 	}
 	public static PaymentSceneChannelDTO formatPaymentTypeAndChannel(String payment_type, Integer channel){
-		
 		return PaymentSceneChannelDTO.builder(payment_type, channel);
 	}
-	public static void main(String[] args) throws Exception{
-		//String orderid = "10012016031700000000000000000244";
-		
-/*		Map<String, String> api_params = generateWithdrawApiParamMap();
-		api_params.put("userName", "网文龙咔咔咔咔");
-		String response = HttpHelper.postUrlAsString("http://192.168.66.88:8005/api/ucloud/withdraw", api_params, null, "utf-8");
-		System.out.println(new String("\u8bf7\u63d0\u4f9b\u63d0\u73b0\u7c7b\u578b"));
-*/		//simulatePaysuccessCommunication(orderid);
-		//simulateWithdrawSuccessCommunication(orderid);
-		//System.out.println(new String("\u53c2\u6570\u9519\u8bef:openid\u5b57\u6bb5\u4e0d\u6b63\u786e,\u8bf7\u68c0\u67e5\u662f\u5426\u5408\u6cd5"));
-		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
-		//String params = rcp_dto.getParams();
+	
+	public static String fetchFinallyAmountByCurrency(String fee_type, String amount){
+		PaymentFeeType feeType = BusinessEnumType.PaymentFeeType.fromKey(fee_type);
+		String result = amount;
+		switch (feeType) {
+		case SGD:
+			result = ArithHelper.getCuttedCurrency(ArithHelper.mul(round(FeeType_Rate_SGD), Double.parseDouble(amount))+"");
+			break;
+		case CNY:
+		default:
+			break;
+		}
+		return result;
+	}
+	
+	public static double round(double v){
+	    BigDecimal b = new BigDecimal(Double.toString(v));
+	    BigDecimal one = new BigDecimal("1");
+	        return b.divide(one,2,BigDecimal.ROUND_UP).doubleValue();
+	}
+	  
+	public static double FeeType_Rate_SGD = 0.2049;
+	
+	public static String getSGDRate(){
+		return ArithHelper.getCuttedCurrency(round(FeeType_Rate_SGD)+"");
 	}
 }

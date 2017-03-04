@@ -189,7 +189,8 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid, String advertiseId) {
 		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s]",uid,
 				advertiseId));
-		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId);
+//		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId);
+		return null;
 	}
 	
 	@Override

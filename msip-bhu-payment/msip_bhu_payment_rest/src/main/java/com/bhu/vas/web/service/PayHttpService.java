@@ -101,15 +101,34 @@ public class PayHttpService {
    public static String ORDER_AGENT = "Now-Hee";
    public static int ORDER_ALLOCATION_LEVEL = 2;
    
+//	public static final String WebhookId = "2ND47987AC600853R";
+//	public static final String WebhookId = "8HC53929NS051904L";  ///sandbox pays.bhuwifi.com
+	public static final String WebhookId = "8HC53929NS051904L";  ///live pays.bhuwifi.com
+	//测试账号
+	//public static final String clientID = "AYSq3RDGsmBLJE-otTkBtM-jBRd1TCQwFf9RGfwddNXWz0uFU9ztymylOhRS";
+	//public static final String clientSecret = "EGnHDxD_qRPdaLdZz8iCr8N7_MzF-YHPTkjs6NKYQvQSBngp4PTTVWkPZRbL";
+	
+	//Reward 账号
+	//public static final String clientID = "AWWE6iwONClmvWGmgclGxGhLkdrEX9Gz1LV3xpBIDj9j84wbZc9tujzpyRuDceyLb-9MIMjBLaW5F6r5";
+	//public static final String clientSecret = "ENYgGLiLEHyhgljXGI7bBI_sBbYlpczdVuUJFqo3UrCIdv98cfgJrR1NLdJr0SZVUoL5f4-4gSznsvhS";
+	//pay_now 账号  Sandbox
+//	public static final String clientID = "ATqjfpPcSfZGIrNylYCxVsgaLsJVjBsVTc1_eXvIA_C1MMHkNwSPrIwiMPyz_W-TPYX6wjqwV2SblIp1";
+//	public static final String clientSecret = "EAqLTLIcv6sbIslWcJBgnchVaWzRSMvtqoYl3ihCtvYbvJyWr9bxv7Pge2WSnrm82wbbycyqpRnh8ZN1";
+	
+	//pay_now 账号 live
+	public static final String clientID = "Ach5x3MU88WiLfFjlbRPYVDvNrIswRC7shIePJjNah1qG6Ci4wIQBuOIcAec0Lq1X6cfBn8JDX-V1G-p";
+	public static final String clientSecret = "ECbXLUDrzm__LeqzUyNtAbknDVNYzqEPYv68Gg96x9d9Biaqt_uYjSAq7rY_7YFpbUFVzin8jRBt6L4I";
+	public static final String mode = "live";
    
    
    //证书地址
     public static String WITHDRAW_URL = "/home";
+    //public static String WITHDRAW_URL = "E://paymenttest";
     //本地生成微信二维码支付，所需的公司logo地址
-    public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
-    public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
-//    public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
-//    public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
+//    public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
+//    public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
+    public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
+    public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
 
     private  Logger log = LoggerFactory.getLogger(PayHttpService.class);
 
@@ -424,7 +443,7 @@ public class PayHttpService {
      * @param parameters
      * @return
      */
-    public  String createSign(String mchKey, String characterEncoding, SortedMap<Object, Object> parameters) {
+    public static  String createSign(String mchKey, String characterEncoding, SortedMap<Object, Object> parameters) {
     	StringBuffer sb = new StringBuffer();
         Set<Map.Entry<Object, Object>> es = parameters.entrySet();
         Iterator<Map.Entry<Object, Object>> it = es.iterator();
@@ -514,7 +533,7 @@ public class PayHttpService {
      * @param parameters
      * @return
      */
-    public  String getRequestXml(SortedMap<Object, Object> parameters) {
+    public static  String getRequestXml(SortedMap<Object, Object> parameters) {
         StringBuffer sb = new StringBuffer();
         sb.append("<xml>");
         Set<Map.Entry<Object, Object>> es = parameters.entrySet();
@@ -553,7 +572,7 @@ public class PayHttpService {
      * 日期：2015年6月26日 下午3:51:44
      * @return
      */
-    public  String getNonceStr() {
+    public static String getNonceStr() {
         Random random = new Random();
         return MD5Util.MD5Encode(String.valueOf(random.nextInt(10000)), "UTF-8");
     }
@@ -894,6 +913,8 @@ public class PayHttpService {
         /** 客户端本地ip */
         parameters.put("spbill_create_ip", localIp);
         parameters.put("check_name", "NO_CHECK");
+//        parameters.put("check_name", "OPTION_CHECK");
+//        parameters.put("re_user_name", userName);
         parameters.put("openid", openid);
 
         /** MD5进行签名，必须为UTF-8编码，注意上面几个参数名称的大小写 */
@@ -915,12 +936,51 @@ public class PayHttpService {
 			unifiedOrderResponse.setResultMessage("微信请求接口捕获异常证书路径有误");
 			log.error("提交提现请求失败");
 		}
-        
+        System.out.println(unifiedOrderResponse.getPayment_time()+unifiedOrderResponse.getPayment_no() + unifiedOrderResponse.getPartner_trade_no());
         return unifiedOrderResponse;
 	}
 
 	public static void main(String[] args) {
-		//ClientCustomSSL.gethttpRequests();
+		SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
+        /** 公众号APPID */
+        parameters.put("mch_appid", "wx126530d1a1e1e4ed");
+        /** 商户号 */
+        parameters.put("mchid", "1315518101");
+        /** 随机字符串 */
+        parameters.put("nonce_str", getNonceStr());
+        /** 商品名称 */
+        parameters.put("desc", "必虎提现");
+        /** 订单号 */
+        parameters.put("partner_trade_no", System.currentTimeMillis());
+        /** 订单金额以分为单位，只能为整数 */
+        parameters.put("amount", "100");
+        /** 客户端本地ip */
+        parameters.put("spbill_create_ip", "123.45.33.44");
+//        parameters.put("check_name", "OPTION_CHECK");
+        parameters.put("check_name", "NO_CHECK");
+//        parameters.put("re_user_name", "张鹏宇");
+        parameters.put("openid", "ohdupuGI3vkfnQSMFsPMlnQPdQvg");
+
+        /** MD5进行签名，必须为UTF-8编码，注意上面几个参数名称的大小写 */
+        String sign = createSign("b8ff48b46b181af54ac4fe597ebf0828", "UTF-8", parameters);
+        parameters.put("sign", sign);
+
+        /** 生成xml结构的数据，用于统一下单接口的请求 */
+        String requestXML = getRequestXml(parameters);
+        System.out.println("requestXML：" + requestXML);
+
+        WithDrawNotifyResponse unifiedOrderResponse = new WithDrawNotifyResponse();
+        
+        try {
+        	unifiedOrderResponse = HttpResponseUtil.httpRequest("1315518101",withdrawalsRequestApiBaseUrl,"", requestXML, WithDrawNotifyResponse.class);
+		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
+				| CertificateException | IOException e) {
+			unifiedOrderResponse.setResultSuccess(false);
+			unifiedOrderResponse.setResultErrorCode("FAIL");
+			unifiedOrderResponse.setResultMessage("微信请求接口捕获异常证书路径有误");
+			System.out.println("提交提现请求失败");
+		}
+        System.out.println(unifiedOrderResponse.getPayment_no());;
 	}
 
 }

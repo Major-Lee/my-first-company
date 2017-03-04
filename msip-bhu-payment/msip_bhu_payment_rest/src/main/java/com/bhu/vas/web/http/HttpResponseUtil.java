@@ -9,6 +9,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
@@ -25,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.bhu.vas.business.helper.JsonUtil;
 import com.bhu.vas.business.helper.XMLUtil;
+import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
 
 /**
  * Http方式请求第三方支付接口
@@ -166,7 +168,8 @@ public class HttpResponseUtil {
         return convertResponse(HttpContentUtil.appendQueryParams(url, params),responeClass);
     }
     static <RESPONE extends WxResponse>  RESPONE convertResponse(String content,Class<RESPONE> responeClass){
-        System.out.println("RESPONSE:"+content);
+    	
+    	System.out.println("RESPONSE:"+content);
         if(content==null ){
             return null;
         }
@@ -174,7 +177,7 @@ public class HttpResponseUtil {
         if(content.length()==0){
             return null;
         }
-        RESPONE response;
+        RESPONE response ;
         if(content.startsWith("<")){
             try {
                 response= responeClass.newInstance();
@@ -183,6 +186,7 @@ public class HttpResponseUtil {
                 }
                 response.setResponseContent(content);
                 Map map = XMLUtil.doXMLParse(content);
+                
                 response.setPropertyMap(map);
             } catch (Exception e) {
             	System.out.println(e.getCause()+e.getMessage());
@@ -194,11 +198,79 @@ public class HttpResponseUtil {
         return response;
     }
     
-    public static  <RESPONE extends WxResponse> RESPONE httpRequest(String mchId, String url,String nOTIFY_URL,String data, Class<RESPONE> responeClass) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
+    static WithDrawNotifyResponse convertResponseNew(String content,Class<WithDrawNotifyResponse> responeClass){
+    	
+    	System.out.println("RESPONSE:"+content);
+    	if(content==null ){
+    		return null;
+    	}
+    	content=content.trim();
+    	if(content.length()==0){
+    		return null;
+    	}
+    	WithDrawNotifyResponse response ;
+    	if(content.startsWith("<")){
+    		try {
+                response= responeClass.newInstance();
+                if(response==null){
+                    return null;
+                }
+                response.setResponseContent(content);
+                Map map = XMLUtil.doXMLParse(content);
+                response.setPropertyMap(map);
+    		} catch (Exception e) {
+    			System.out.println(e.getCause()+e.getMessage());
+    			Map<String,String> resp = new HashMap<String,String>();
+    			String 	partner_trade_no ="";	
+    			String 	payment_no ="";	
+    			String 	payment_time ="";	
+    			if(content.contains("<return_code><![CDATA[SUCCESS]]></return_code>") && content.contains("<result_code><![CDATA[SUCCESS]]></result_code>")){
+    				if(content.contains("<partner_trade_no><![CDATA[")){
+    					int startIn = content.indexOf("<partner_trade_no><![CDATA[");
+    					int endIn = content.indexOf("]]></partner_trade_no>");
+    					partner_trade_no = content.substring(startIn+27, endIn);
+    				}
+    				if(content.contains("<payment_no><![CDATA[")){
+    					int startIn = content.indexOf("<payment_no><![CDATA[");
+    					int endIn = content.indexOf("]]></payment_no>");
+    					payment_no = content.substring(startIn+21, endIn);
+    				}
+    				if(content.contains("<payment_time><![CDATA[")){
+    					int startIn = content.indexOf("<payment_time><![CDATA[");
+    					int endIn = content.indexOf("]]></payment_time>");
+    					payment_time = content.substring(startIn+23, endIn);
+    				}
+    			}	
+    			
+    			resp.put("return_code", "SUCCESS");
+    			resp.put("return_msg", "支付成功");
+    			resp.put("nonce_str", "d1f255a373a3cef72e03aa9d980c7eca");
+    			resp.put("result_code", "SUCCESS");
+    			resp.put("partner_trade_no", partner_trade_no);
+    			resp.put("payment_no", payment_no);
+    			resp.put("payment_time", payment_time);
+    			WithDrawNotifyResponse responses = null ;
+    			try {
+					responses = WithDrawNotifyResponse.class.newInstance();
+					responses.setPropertyMap(resp);
+					responses.setResponseContent(content);
+					responses.setResultSuccess(true);
+				} catch (InstantiationException | IllegalAccessException e1) {
+					System.out.println("ddddd"+e1.getMessage()+e.getMessage());
+				}
+                return responses;
+    		}
+    	}else{
+    		response= JsonUtil.fromJson(content, responeClass);
+    	}
+    	return response;
+    }
+    
+    public static  WithDrawNotifyResponse  httpRequest(String mchId, String url,String nOTIFY_URL,String data, Class<WithDrawNotifyResponse> responeClass) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
+//    	 String  pathFile = "E://paymenttest/1315518101.p12";
 		 KeyStore keyStore  = KeyStore.getInstance("PKCS12");
 		 String pathFile = nOTIFY_URL+"/payment/"+mchId+".p12";
 		 //String pathFile = "E://payment//1260112001.p12";
-		//String pathFile = "E:/paymenttest/"+mchId+".p12";
 	        FileInputStream instream = new FileInputStream(new File(pathFile));
 	        System.out.println(pathFile);
 	        try {
@@ -238,6 +310,51 @@ public class HttpResponseUtil {
 
 	        String jsonStr = EntityUtils .toString(response.getEntity(), "UTF-8");
 	        EntityUtils.consume(entity);
-			return convertResponse(jsonStr, responeClass);
+			return convertResponseNew(jsonStr, responeClass);
+	}
+    
+    public static void main(String[] args) {
+		String dd = "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[支付成功]]></return_msg><nonce_str><![CDATA[d1f255a373a3cef72e03aa9d980c7eca]]></nonce_str><result_code><![CDATA[SUCCESS]]></result_code>	<partner_trade_no><![CDATA[PROWDWX1488339043611btff]]></partner_trade_no><payment_no><![CDATA[1000018301201703016552085079]]></payment_no><payment_time><![CDATA[2017-03-01 11:30:47]]></payment_time></xml>"
+						;
+		Map<String,String> resp = new HashMap<String,String>();
+				String 	partner_trade_no ="";	
+				String 	payment_no ="";	
+				String 	payment_time ="";	
+				if(dd.contains("<return_code><![CDATA[SUCCESS]]></return_code>") && dd.contains("<result_code><![CDATA[SUCCESS]]></result_code>")){
+					if(dd.contains("<partner_trade_no><![CDATA[")){
+						int startIn = dd.indexOf("<partner_trade_no><![CDATA[");
+						int endIn = dd.indexOf("]]></partner_trade_no>");
+						partner_trade_no = dd.substring(startIn+27, endIn);
+					}
+					if(dd.contains("<payment_no><![CDATA[")){
+						int startIn = dd.indexOf("<payment_no><![CDATA[");
+						int endIn = dd.indexOf("]]></payment_no>");
+						payment_no = dd.substring(startIn+21, endIn);
+					}
+					if(dd.contains("<payment_time><![CDATA[")){
+						int startIn = dd.indexOf("<payment_time><![CDATA[");
+						int endIn = dd.indexOf("]]></payment_time>");
+						payment_time = dd.substring(startIn+23, endIn);
+					}
+				}
+				resp.put("return_code", "SUCCESS");
+				resp.put("return_msg", "支付成功");
+				resp.put("nonce_str", "d1f255a373a3cef72e03aa9d980c7eca");
+				resp.put("result_code", "SUCCESS");
+				resp.put("partner_trade_no", partner_trade_no);
+				resp.put("payment_no", payment_no);
+				resp.put("payment_time", payment_time);
+				WithDrawNotifyResponse response;
+				try {
+					response = WithDrawNotifyResponse.class.newInstance();
+					response.setPropertyMap(resp);
+					response.setResponseContent(dd);
+					response.setResultSuccess(true);
+				} catch (InstantiationException | IllegalAccessException e) {
+					System.out.println(e.getCause() + e.getMessage());
+				}
+				//partner_trade_no:PROWDWX1488339043611btffpayment_no1000018301201703016552085079payment_time2017-03-01 11:30:47
+				System.out.println("partner_trade_no:"+partner_trade_no+"payment_no"+payment_no+"payment_time"+payment_time);
+						
 	}
 }
