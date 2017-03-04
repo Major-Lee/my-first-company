@@ -1,9 +1,11 @@
 package com.bhu.vas.business.search.service.wifi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -39,8 +41,28 @@ public class SsidDataSearchService extends AbstractDataSearchConditionService<Ss
 	}
 	
 	
-	public Page<SsidDocument> searchPageByBssidAndSsid(String bssid, String ssid){
-		SearchConditionMessage scm = SsidSearchMessageBuilder.builderSearchMessageByBssidAndSsid(bssid, ssid);
-		return super.searchByConditionMessage(scm, 0, 3);
+//	public Page<SsidDocument> searchPageByBssidAndSsidAndMode(String bssid, String ssid, String mode){
+//		SearchConditionMessage scm = SsidSearchMessageBuilder.builderSearchMessageByBssidAndSsidAndMode(bssid, ssid, mode);
+//		return super.searchByConditionMessage(scm, 0, 3);
+//	}
+//	
+	
+	/**
+	 * 根据条件搜索数据
+	 * 绑定设备的用户id
+	 * 设备的业务线类型
+	 * @param u_id
+	 * @param d_dut
+	 * @return
+	 */
+	public List<SsidDocument> searchPageByBssidAndSsidAndMode(String bssid, String ssid, String mode){
+		SearchConditionMessage scm = SsidSearchMessageBuilder.builderSearchMessageByBssidAndSsidAndMode(bssid, ssid, mode);
+		return super.searchListByConditionMessage(scm, 0, 100);
+	}
+
+	public void bulkIndexOne(SsidDocument doc){
+		List<SsidDocument> list = new ArrayList<SsidDocument>();
+		list.add(doc);
+		super.bulkIndex(list, true, false);
 	}
 }

@@ -6,9 +6,9 @@
 
   <resultMap id="modelResult" type="ssidInfo">
     <id property="id" column="id"/>
-    <result property="bssid" column="bssid"/>
     <result property="ssid" column="ssid"/>
     <result property="pwd" column="pwd"/>
+    <result property="mode" column="mode"/>
     <result property="device" column="device"/>
     <result property="lat" column="lat"/>
     <result property="lon" column="lon"/>
@@ -24,8 +24,8 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	bssid,
 	    	ssid,
+	    	mode,
 	    	device,
 	    	pwd,
 	    	lat,
@@ -36,8 +36,8 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	bssid,
 	    	ssid,
+	    	mode,
 	    	device,
 	    	pwd,
 	    	lat,
@@ -49,8 +49,8 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-			#{bssid},
 			#{ssid},
+	    	#{mode},
 			#{pwd},
 			#{device},
 	    	#{lat},
@@ -60,8 +60,8 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	bssid = #{bssid},
 	    	ssid = #{ssid},
+	    	mode = #{mode},
 	    	device = #{device},
 	    	pwd = #{pwd},
 	    	lat = #{lat},

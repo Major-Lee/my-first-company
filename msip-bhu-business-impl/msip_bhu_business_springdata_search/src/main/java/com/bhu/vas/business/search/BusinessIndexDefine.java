@@ -253,14 +253,14 @@ public interface BusinessIndexDefine {
 		
 		enum Field implements FieldDefine{
 			ID("id", null),
-			S_BSSID("s_bssid",null),
 			S_SSID("s_ssid", null),
+			S_MODE("s_mode", null),
 			S_DEVICE("s_device", null),
 			S_GEOPOINT("s_geopoint", null),
 			S_PWD("s_pwd", null),
 
-			S_CREATED_AT("s_created_at",null),
-			S_UPDATED_AT("s_updated_at",null),
+			CREATED_AT("created_at",null),
+			UPDATED_AT("updated_at",null),
 			;
 			String name;
 			String score_name;

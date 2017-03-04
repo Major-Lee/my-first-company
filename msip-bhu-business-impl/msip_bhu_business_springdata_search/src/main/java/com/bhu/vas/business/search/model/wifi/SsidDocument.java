@@ -28,20 +28,23 @@ public class SsidDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.not_analyzed,
-			store = true
-	)
-	private String s_bssid;
-	
-	@Field(
-			type = FieldType.String,
+			searchAnalyzer = "whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
 	private String s_ssid;
-	
+
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "whitespace",
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String s_mode;
+
+	@Field(
+			type = FieldType.String,
+			searchAnalyzer = "whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -75,17 +78,23 @@ public class SsidDocument extends AbstractDocument{
 	public String getId() {
 		return this.id;
 	}
+	
+	
+
+	public String getS_mode() {
+		return s_mode;
+	}
+
+
+
+	public void setS_mode(String s_mode) {
+		this.s_mode = s_mode;
+	}
+
+
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getS_bssid() {
-		return s_bssid;
-	}
-
-	public void setS_bssid(String s_bssid) {
-		this.s_bssid = s_bssid;
 	}
 
 	public String getS_ssid() {

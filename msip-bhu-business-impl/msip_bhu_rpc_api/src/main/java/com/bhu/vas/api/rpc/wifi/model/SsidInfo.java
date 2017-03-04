@@ -10,13 +10,13 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class SsidInfo extends BaseStringModel{
-	private String bssid;
 	private String ssid;
+	private String mode;
 	private String device;
 	private String pwd;
 
-	private double lat;
-	private double lon;
+	private Double lat;
+	private Double lon;
 	private Date created_at;
 	private Date updated_at;
 	
@@ -29,14 +29,6 @@ public class SsidInfo extends BaseStringModel{
 		this.id = id;
 	}
 	
-	public String getBssid() {
-		return bssid;
-	}
-
-	public void setBssid(String bssid) {
-		this.bssid = bssid;
-	}
-
 	public String getSsid() {
 		return ssid;
 	}
@@ -61,19 +53,19 @@ public class SsidInfo extends BaseStringModel{
 		this.pwd = pwd;
 	}
 
-	public double getLat() {
+	public Double getLat() {
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	public void setLat(Double lat) {
 		this.lat = lat;
 	}
 
-	public double getLon() {
+	public Double getLon() {
 		return lon;
 	}
 
-	public void setLon(double lon) {
+	public void setLon(Double lon) {
 		this.lon = lon;
 	}
 
@@ -91,6 +83,15 @@ public class SsidInfo extends BaseStringModel{
 
 	public void setUpdated_at(Date updated_at) {
 		this.updated_at = updated_at;
+	}
+	
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 	@Override

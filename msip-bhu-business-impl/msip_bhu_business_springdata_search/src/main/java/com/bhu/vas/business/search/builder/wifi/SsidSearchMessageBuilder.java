@@ -15,16 +15,18 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class SsidSearchMessageBuilder {
 	
-	public static SearchConditionMessage builderSearchMessageByBssidAndSsid(String bssid, String ssid){
+	public static SearchConditionMessage builderSearchMessageByBssidAndSsidAndMode(String bssid, String ssid, String mode){
 
-		SearchCondition sc_s_bssid = SearchCondition.builderSearchCondition(BusinessIndexDefine.Ssid.
-				Field.S_BSSID.getName(),  SearchConditionPattern.StringEqual.getPattern(), bssid);
+		SearchCondition sc_s_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.Ssid.
+				Field.ID.getName(),  SearchConditionPattern.StringEqual.getPattern(), bssid);
 		SearchCondition sc_s_ssid = SearchCondition.builderSearchCondition(BusinessIndexDefine.Ssid.
 				Field.S_SSID.getName(),  SearchConditionPattern.StringEqual.getPattern(), ssid);
-		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_s_bssid, sc_s_ssid);
+		SearchCondition sc_s_mode = SearchCondition.builderSearchCondition(BusinessIndexDefine.Ssid.
+				Field.S_MODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), mode);
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_s_id, sc_s_ssid, sc_s_mode);
 		
 		SearchConditionSort sc_sortByCreated = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Ssid.
-				Field.S_CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				Field.CREATED_AT.getName(), SearchConditionSortPattern.Sort.getPattern(),
 				SortOrder.DESC, null);
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
