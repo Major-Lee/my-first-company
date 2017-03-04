@@ -77,7 +77,7 @@ public class PaymentInternalHelper {
 			return null;
 		}
 		api_params.put("payment_type", payment_type);
-		if (BusinessEnumType.OrderPaymentType.WapPayPal.equals(payment_type)){
+		if (BusinessEnumType.OrderPaymentType.WapPayPal.getKey().equals(payment_type)){
 			api_params.put("total_fee", fetchFinallyAmountByCurrency(fee_type, amount));
 			api_params.put("fee_type", fee_type);
 		}else{
