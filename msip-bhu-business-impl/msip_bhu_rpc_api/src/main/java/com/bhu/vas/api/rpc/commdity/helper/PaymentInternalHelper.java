@@ -218,7 +218,10 @@ public class PaymentInternalHelper {
 		String result = amount;
 		switch (feeType) {
 		case SGD:
-			result = ArithHelper.getCuttedCurrency(ArithHelper.mul(round(FeeType_Rate_SGD), Double.parseDouble(amount))+"");
+			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_SGD, Double.parseDouble(amount)),3)+"");
+			break;
+		case USD:
+			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_USD, Double.parseDouble(amount)),3)+"");
 			break;
 		case CNY:
 		default:
@@ -227,15 +230,16 @@ public class PaymentInternalHelper {
 		return result;
 	}
 	
-	public static double round(double v){
+	public static double round(double v, int scale){
+		if(scale<0){
+            throw new IllegalArgumentException(
+                "The scale must be a positive integer or zero");
+        }
 	    BigDecimal b = new BigDecimal(Double.toString(v));
 	    BigDecimal one = new BigDecimal("1");
-	        return b.divide(one,2,BigDecimal.ROUND_UP).doubleValue();
+	        return b.divide(one,scale,BigDecimal.ROUND_UP).doubleValue();
 	}
 	  
 	public static double FeeType_Rate_SGD = 0.2049;
-	
-	public static String getSGDRate(){
-		return ArithHelper.getCuttedCurrency(round(FeeType_Rate_SGD)+"");
-	}
+	public static double FeeType_Rate_USD = 0.1450;
 }

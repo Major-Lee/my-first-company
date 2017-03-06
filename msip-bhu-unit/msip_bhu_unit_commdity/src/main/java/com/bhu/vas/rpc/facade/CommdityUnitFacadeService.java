@@ -14,13 +14,13 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
+import com.bhu.vas.api.dto.commdity.CommdityForeignCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.CommditySaasAmountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
-import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -130,26 +130,27 @@ public class CommdityUnitFacadeService {
 			}
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
-			commdityAmountDto.setSGD_Rate(PaymentInternalHelper.getSGDRate());
+			String dayAmount = CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
+									Reward_Day_Internet_Commdity_ID, umactype));
+			String weekAmount = CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
+									Reward_Week_Internet_Commdity_ID, umactype));
+			String monthAmount = CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
+									Reward_Month_Internet_Commdity_ID, umactype));
 			commdityAmountDto.setSsid(chargingFacadeService.fetchWifiDeviceSharedNetworkSSID(psn));
 			commdityAmountDto.setUsers_rx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersRxRate(psn));
 			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(psn));
 			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(psn,umactype));
 			commdityAmountDto.setUser7d(OrdersFinishCountStringService.getInstance().fetchOrdersFinishRecent7Days()+"");
-			commdityAmountDto.setMonthCardAmount(CommdityHelper.
-					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
-									Reward_Month_Internet_Commdity_ID, umactype)));
-			
-			commdityAmountDto.setWeekCardAmount(CommdityHelper.
-					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
-									Reward_Week_Internet_Commdity_ID, umactype)));
-			
-			commdityAmountDto.setDayCardAmount(CommdityHelper.
-					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
-									Reward_Day_Internet_Commdity_ID, umactype)));
+			commdityAmountDto.setMonthCardAmount(monthAmount);
+			commdityAmountDto.setWeekCardAmount(weekAmount);
+			commdityAmountDto.setDayCardAmount(dayAmount);
+			commdityAmountDto.setFc_amount(CommdityForeignCurrencyDTO.builder(amount, dayAmount, weekAmount, monthAmount));
 			
 			logger.info(String.format("intervalAMount success commdityid[%s] "
 					+ "mac[%s] umac[%s] umactype[%s] amount[%s] "
