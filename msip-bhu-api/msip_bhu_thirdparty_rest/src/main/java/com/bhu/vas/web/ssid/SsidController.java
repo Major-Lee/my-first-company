@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.ISsidRpcService;
-import com.bhu.vas.api.rpc.wifi.model.SsidInfo;
+import com.bhu.vas.api.vto.SsidInfoVTO;
 import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -57,7 +57,7 @@ public class SsidController extends BaseController{
 			@RequestParam(required = true) String bssid,
 			@RequestParam(required = true) String ssid,
 			@RequestParam(required = true) String capabilities){
-		RpcResponseDTO<SsidInfo> rpcResult = ssidRpcService.querySsidInfo(bssid, ssid, capabilities);
+		RpcResponseDTO<SsidInfoVTO> rpcResult = ssidRpcService.querySsidInfo(bssid, ssid, capabilities);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -63,7 +63,7 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 	private void repairUserPortalAuth(String hdmac,String mobileno){
 		UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
 		if(auth == null){
-			userIdentityAuthService.generateIdentityAuth(UserIdentityAuth.countrycode, mobileno, hdmac);
+			userIdentityAuthService.generateIdentityAuth(UserIdentityAuth.DEFAULT_COUNTRYCODE, mobileno, hdmac);
 		}
 	}
 }

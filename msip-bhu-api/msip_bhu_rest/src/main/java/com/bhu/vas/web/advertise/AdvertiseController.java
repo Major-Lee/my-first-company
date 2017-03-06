@@ -241,8 +241,8 @@ public class AdvertiseController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String advertiseId,
-			@RequestParam(required = true) Long start,
-			@RequestParam(required = true) Long end,
+			@RequestParam(required = false) Long start,
+			@RequestParam(required = false) Long end,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
 			) {
@@ -272,8 +272,8 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) int  uid,
             @RequestParam(required = true) String  advertiseId,
             @RequestParam(required = true) int  type,
-            @RequestParam(required = true) Long  start,
-            @RequestParam(required = true) Long  end,
+            @RequestParam(required = false) Long  start,
+            @RequestParam(required = false) Long  end,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		try{
@@ -481,9 +481,16 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = false) String mac,
-            @RequestParam(required = false) String umac) {
+            @RequestParam(required = false) String umac,
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) String adcode,
+            @RequestParam(required = false) String sourcetype,
+            @RequestParam(required = false) String systype,
+            @RequestParam(required = false,defaultValue = "1") int type
+    		) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac);
+	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

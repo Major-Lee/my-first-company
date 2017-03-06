@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.thirdparty.iservice.ISsidRpcService;
 import com.bhu.vas.api.rpc.wifi.model.SsidInfo;
+import com.bhu.vas.api.vto.SsidInfoVTO;
 import com.bhu.vas.business.search.service.wifi.SsidDataSearchService;
 import com.bhu.vas.rpc.facade.SsidUnitFacadeService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -20,7 +21,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * @author yetao
  *
  */
-@Service("thirdPartyRpcService")
+@Service("ssidRpcService")
 public class SsidRpcService implements ISsidRpcService {
 	private final Logger logger = LoggerFactory.getLogger(SsidRpcService.class);
 
@@ -45,11 +46,12 @@ public class SsidRpcService implements ISsidRpcService {
 		}
 	}
 	
-	public RpcResponseDTO<SsidInfo> querySsidInfo(String bssid, String ssid, String mode){
+	public RpcResponseDTO<SsidInfoVTO> querySsidInfo(String bssid, String ssid, String mode){
 		logger.info(String.format("querySsidInfo bssid[%s], ssid[%s], mode[%s]", bssid, ssid, mode));
 		try{
 			SsidInfo ret = ssidUnitFacadeService.querySsidInfo(bssid, ssid, mode);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+			SsidInfoVTO vto = SsidInfoVTO.fromSsidInfo(ret);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

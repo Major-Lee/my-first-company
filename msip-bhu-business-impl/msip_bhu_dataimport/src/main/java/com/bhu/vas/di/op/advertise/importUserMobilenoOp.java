@@ -40,7 +40,7 @@ public class importUserMobilenoOp {
 			UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
 			if(auth!=null){
 				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-				String mobileno = auth.getMobileno().substring(auth.getMobileno().indexOf(StringHelper.WHITESPACE_STRING_GAP)).trim();
+				String mobileno = auth.getMobileno();//.substring(auth.getMobileno().indexOf(StringHelper.WHITESPACE_STRING_GAP)).trim();
 				if(wifiDevice !=null){
 					UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord(wifiDevice.getProvince(), wifiDevice.getCity(), wifiDevice.getDistrict(), mobileno);
 				}
