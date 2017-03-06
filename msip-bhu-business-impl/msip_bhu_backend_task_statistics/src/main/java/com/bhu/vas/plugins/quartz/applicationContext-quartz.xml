@@ -18,7 +18,8 @@
 		<!-- Triggers集成 -->
 		<property name="triggers">
 			<list>
-			
+				<!-- 每天0点0分1秒 每天执行一次 -->
+				<ref bean="fincialStatEntryTaskLoaderCronTrigger" />	
 				<!-- 每天1点04分 每天执行一次 -->
 				<ref bean="userIncomeBackendTaskLoaderCronTrigger" />	
 				<!-- 每天两点零九分 -->
@@ -87,5 +88,18 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="fincialStatisticsTaskLoaderJob" class="com.bhu.vas.plugins.quartz.FincialStatisticsTaskLoader" />
+
+
+	<!-- 每天0点0分1秒,统计财务对账数据 -->
+	<bean id="fincialStatisticsTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="fincialStatEntryTaskLoaderCronJobDetail" />
+		<property name="cronExpression" value="${statistic.fincialStatEntry}" />
+	</bean>
+	<bean id="fincialStatEntryTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="fincialStatEntryTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="fincialStatEntryTaskLoaderJob" class="com.bhu.vas.plugins.quartz.FincialStatEntryTaskLoader" />
 
 </beans>

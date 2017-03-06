@@ -800,6 +800,12 @@ public class PaymentController extends BaseController{
     	    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     	    			return;
     	    		}
+    				if(fee_type.equals("CNY")){
+    					logger.error(String.format("get Payment Url payment_type [%s] ,fee_type [%s]", payment_type,fee_type));
+    	    			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    	    					ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL), BusinessWebHelper.getLocale(request)));
+    	    			return;
+    				}
     				long WAP_PAYPAL_begin = System.currentTimeMillis();
     				result =  payPalService.doPaypal(response,request,version, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,payment_name,appid,fee_type); 
     				long WAP_PAYPAL_end = System.currentTimeMillis() - WAP_PAYPAL_begin; 

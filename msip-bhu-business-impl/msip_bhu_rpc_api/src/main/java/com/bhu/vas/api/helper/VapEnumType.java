@@ -128,6 +128,11 @@ public class VapEnumType {
 		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片",
 				"{\"icon\":\"" + IMAGE_CLOUD + "uroutermini\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-20\"}]}"),
 
+		uRouterDC_902("TU_H902","AP902","BN212","Z05",DUT_uRouter,"uRouter (DC)","uRouter","2.4GHz DC供电","16M Flash, 64M内存, MT7628N芯片",
+				"{\"icon\":\"" + IMAGE_CLOUD + "urouterdc\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"}]}"),
+		uRouterAcDC_903("TU_H903","AP903","BN213","Z06",DUT_uRouter,"uRouter AC (DC)","uRouter","2.4GHz 5GHz 家用AP DC供电","16MFLASH, 64M内存, MT7628A+7612E芯片",
+				"{\"icon\":\"" + IMAGE_CLOUD + "urouteracdc\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-18\"},{\"name\":\"wifi1\",\"mode\":\"a\",\"power_range\":\"0-18\"}]}"),
+
 		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"Juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片",
 				"{\"icon\":\"" + IMAGE_CLOUD + "undefined\", \"radio\":[{\"name\":\"wifi0\",\"mode\":\"g\",\"power_range\":\"0-27\"}]}"),
 		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"Juwan pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关", //暂时改为单频
@@ -442,6 +447,8 @@ public class VapEnumType {
 			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix()) 
 					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterAcPlusTU_403.getPrefix()) 
 					|| prefix.equals(uRouterMiniTU_901.getPrefix())
+					|| prefix.equals(uRouterDC_902.getPrefix())
+					|| prefix.equals(uRouterAcDC_903.getPrefix())
 					|| prefix.equals(uRouterTU_801.getPrefix()) 
 					|| prefix.equals(uRouterTU_802.getPrefix()) 
 					|| prefix.equals(uRouterTU_810.getPrefix()) 
@@ -474,6 +481,7 @@ public class VapEnumType {
 					|| uRouterTU_810.getPrefix().equals(prefix)
 					|| uRouterTU_821.getPrefix().equals(prefix)
 					|| uRouterTU_841.getPrefix().equals(prefix)
+					|| uRouterAcDC_903.getPrefix().equals(prefix)
 					){
 				return true;
 			}
