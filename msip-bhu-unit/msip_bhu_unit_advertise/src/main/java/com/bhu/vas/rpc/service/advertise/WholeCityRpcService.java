@@ -227,9 +227,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac) {
-		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s]",mac,umac));
-		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac);
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type) {
+		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s] lat[%s] lon[%s] adcode[%s] sourcetype[%s] systype[%s] type[%s]",mac,umac,lat,lon,adcode,sourcetype,systype,type));
+		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 	}
 	
 	@Override

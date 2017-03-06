@@ -481,9 +481,16 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = false) String mac,
-            @RequestParam(required = false) String umac) {
+            @RequestParam(required = false) String umac,
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) String adcode,
+            @RequestParam(required = true) String sourcetype,
+            @RequestParam(required = true) String systype,
+            @RequestParam(required = false,defaultValue = "1") int type
+    		) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac);
+	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

@@ -124,8 +124,6 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac ,String umac);
-
 	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
 
 	public RpcResponseDTO<Boolean> destoryTips(int uid, String adid);
@@ -147,5 +145,9 @@ public interface IAdvertiseRpcService{
 	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(
 			int uid, String advertiseId, Long start, Long end, int pageNo,
 			int pageSize);
+
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,
+			String umac, Double lat, Double lon, String adcode,
+			String sourcetype, String systype, int type);
 
 }
