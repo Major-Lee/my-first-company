@@ -241,8 +241,8 @@ public class AdvertiseController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String advertiseId,
-			@RequestParam(required = true) Long start,
-			@RequestParam(required = true) Long end,
+			@RequestParam(required = false) Long start,
+			@RequestParam(required = false) Long end,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
 			) {
@@ -272,8 +272,8 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) int  uid,
             @RequestParam(required = true) String  advertiseId,
             @RequestParam(required = true) int  type,
-            @RequestParam(required = true) Long  start,
-            @RequestParam(required = true) Long  end,
+            @RequestParam(required = false) Long  start,
+            @RequestParam(required = false) Long  end,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		try{
