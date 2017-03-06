@@ -484,9 +484,7 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-			if(uid != null && userFacadeService.isAdminByUid(uid)){
-				advertiseVTO.setUid(advertise.getUid()+"");
-			}
+			advertiseVTO.setUid(advertise.getUid()+"");
 			advertiseVTO.setCount(advertiseVTO.getCount());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 	}
