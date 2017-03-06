@@ -249,6 +249,12 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info(String.format("advertiseCPMNotify adids[%s] userid[%s] sourcetype[%s] systype[%s]",adids,userid,sourcetype,systype));
 		return advertiseUnitFacadeService.advertiseCPMNotify(adids,userid,sourcetype,systype);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> advertiseCPCNotify(String adids,String userid,String sourcetype ,String systype) {
+		logger.info(String.format("advertiseCPCNotify adids[%s] userid[%s] sourcetype[%s] systype[%s]",adids,userid,sourcetype,systype));
+		return advertiseUnitFacadeService.advertiseCPCNotify(adids,userid,sourcetype,systype);
+	}
 
 	@Override
 	public RpcResponseDTO<AdvertiseResponseVTO> fetchAdListByPortal(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo) {
