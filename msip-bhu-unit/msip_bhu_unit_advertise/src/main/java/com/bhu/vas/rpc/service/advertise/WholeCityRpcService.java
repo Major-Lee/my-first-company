@@ -270,7 +270,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	
 	@Override
 	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize) {
-		logger.info(String.format("fetchAdvertiseChartReport uid[%s] advertiseId[%s] type[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,start,end,pageNo,pageSize));
+		logger.info(String.format("fetchAdvertiseChartReport uid[%s] advertiseId[%s] type[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,type,start,end,pageNo,pageSize));
 		return advertiseUnitFacadeService.fetchAdvertiseChartReport(uid,advertiseId,type,start,end,pageNo,pageSize);
 	}
 }
