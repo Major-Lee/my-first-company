@@ -16,6 +16,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
@@ -268,5 +269,17 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo) {
 		logger.info(String.format("fetchAdListByAPP lat[%s] lon[%s] adcode[%s] pageSize[%s] pageNo[%s]",lat,lon,adcode,pageSize,pageNo));
 		return advertiseUnitFacadeService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,Long start,Long end, int pageNo ,int pageSize) {
+		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,start,end,pageNo,pageSize));
+		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId,start,end,pageNo,pageSize);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize) {
+		logger.info(String.format("fetchAdvertiseChartReport uid[%s] advertiseId[%s] type[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,start,end,pageNo,pageSize));
+		return advertiseUnitFacadeService.fetchAdvertiseChartReport(uid,advertiseId,type,start,end,pageNo,pageSize);
 	}
 }
