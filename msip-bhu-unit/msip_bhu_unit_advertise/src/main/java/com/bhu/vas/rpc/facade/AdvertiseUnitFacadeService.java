@@ -484,7 +484,7 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-			if(userFacadeService.isAdminByUid(uid)){
+			if(uid != null && userFacadeService.isAdminByUid(uid)){
 				advertiseVTO.setUid(advertise.getUid()+"");
 			}
 			advertiseVTO.setCount(advertiseVTO.getCount());
