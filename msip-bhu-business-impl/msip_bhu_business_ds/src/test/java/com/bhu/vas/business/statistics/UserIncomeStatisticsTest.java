@@ -3,14 +3,15 @@ package com.bhu.vas.business.statistics;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.bhu.vas.api.rpc.charging.model.UserIncome;
-import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
+import com.bhu.vas.api.rpc.charging.model.StatisticFincialIncome;
+import com.bhu.vas.api.rpc.charging.model.StatisticFincialMonth;
+import com.bhu.vas.business.ds.statistics.service.StatisticFincialIncomeService;
+import com.bhu.vas.business.ds.statistics.service.StatisticFincialMonthService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.smartwork.msip.localunit.BaseTest;
 
@@ -21,6 +22,11 @@ public class UserIncomeStatisticsTest extends BaseTest {
 
 	@Resource
 	private UserIncomeService userIncomeService;
+	
+	@Resource
+	private StatisticFincialMonthService statisticFincialMonthService;
+	@Resource
+	private StatisticFincialIncomeService statisticFincialIncomeService;
 
 
 
@@ -44,6 +50,13 @@ public class UserIncomeStatisticsTest extends BaseTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
 		String time =sdf.format(date);
 		System.out.println(time);
+		StatisticFincialMonth statisticFincialMonth = statisticFincialMonthService.getById(40);
+		System.out.println("statisticFincialMonth："+statisticFincialMonth.getMonthid());
+		
+		StatisticFincialIncome statisticFincialIncome = statisticFincialIncomeService.getById(78);
+		System.out.println("statisticFincialIncome："+statisticFincialIncome.getDayid());
+//		UserIncome userIncome = userIncomeService.getById("219");
+//		System.out.println(userIncome.getIncome());
 //		List<UserIncome> userIncomList=userIncomeService.findMonthList(time+"%");
 //		System.out.println("userIncomList size:"+userIncomList.size());
 //		if(userIncomList.size()<=0){
