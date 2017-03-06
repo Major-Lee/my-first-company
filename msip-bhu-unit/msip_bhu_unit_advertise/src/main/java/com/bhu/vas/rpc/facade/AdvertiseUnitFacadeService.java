@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.omg.CORBA.DoubleHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -29,19 +28,14 @@ import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.vto.advertise.AdCommentVTO;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseDailyResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
@@ -52,7 +46,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCPMList
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseTipsHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseUserCPMCheckHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -67,7 +60,6 @@ import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.helper.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
-import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
@@ -76,7 +68,6 @@ import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -260,7 +251,7 @@ public class AdvertiseUnitFacadeService {
 
 			Advertise smAd= advertiseService.insert(entity);
 			
-			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
+			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd,userFacadeService.isShamUser(uid));
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
@@ -604,11 +595,18 @@ public class AdvertiseUnitFacadeService {
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,String start,String end, int pageNo ,int pageSize){
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,Long start,Long end, int pageNo ,int pageSize){
+		
+		String startDate = null;
+		String endDate = null;
+		if(start !=null && end !=null){
+			startDate = DateTimeHelper.getDateTime(new Date(start), DateTimeHelper.FormatPattern1);
+			endDate = DateTimeHelper.getDateTime(new Date(end), DateTimeHelper.FormatPattern1);
+		}
 		ModelCriteria mc = new ModelCriteria();
 		Criteria cr = mc.createCriteria();
 		cr.andColumnEqualTo("orderid", advertiseId).andColumnEqualTo("transtype", UConsumptiveWalletTransType.AdsCPM.getName());
-		if(StringHelper.isNotEmpty(start) && StringHelper.isNotEmpty(end))
+		if(StringHelper.isNotEmpty(startDate) && StringHelper.isNotEmpty(endDate))
 			cr.andColumnBetween("updated_at", start, end);
 		mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
@@ -904,40 +902,34 @@ public class AdvertiseUnitFacadeService {
 	 * @param umac
 	 * @return
 	 */
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac){
-		List<AdvertiseVTO> vtos = null;
-		Page<AdvertiseDocument> search_result = advertiseDataSearchService.searchPageByCreated();
-		if(search_result != null){
-				List<AdvertiseDocument> searchDocuments = search_result.getContent();//.getResult();
-				if(searchDocuments.isEmpty()) {
-					vtos = Collections.emptyList();
-				}else{
-					vtos = new ArrayList<AdvertiseVTO>();
-					AdvertiseVTO vto = null;
-					List<String> adids = new ArrayList<String>();
-					List<String> topAds = new ArrayList<String>();
-					for(AdvertiseDocument doc : searchDocuments){
-						vto = AdvertiseDocumentHelper.advertiseDocToVto(doc);
-						if(doc.getA_top() == 1){
-							topAds.add(doc.getId());
-						}
-						vto.setComment_sum(AdvertiseCommentSortedSetService.getInstance().AdCommentCount(doc.getId()));
-						adids.add(doc.getId());
-						vtos.add(vto);
-					}
-					List<String> portalPv =  AdvertisePortalHashService.getInstance().queryAdvertisePV(adids);
-					List<String> portalAct =  AdvertisePortalHashService.getInstance().queryAdvertiseAct(adids);
-					int index = 0;
-					for(AdvertiseVTO vto1 : vtos){
-						 vto1.setAct(portalAct.get(index));
-						 vto1.setPv(portalPv.get(index));
-						 index++;
-					}
-					AdvertiseCPMListService.getInstance().AdCPMPosh(topAds,mac,umac);
-				}
-		}else{
-			vtos = Collections.emptyList();
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type){
+		double real_lat = 0;
+		double real_lon = 0;
+		String real_adcode = null;
+		switch (type) {
+		case 0:
+			WifiDevice device = wifiDeviceService.getById(mac);
+			real_lat = Double.valueOf(device.getLat());
+			real_lon = Double.valueOf(device.getLon());
+			real_adcode = device.getAdcode();
+			break;
+		case 1:
+			real_lat = lat;
+			real_lon = lon;
+			real_adcode = adcode;
+			break;
+		default:
+			break;
 		}
+		List<AdvertiseVTO> vtos = fetchAdvertise(null, real_lat, real_lon, real_adcode, 3, 1);
+		List<String> ads = new ArrayList<String>();
+		for(AdvertiseVTO vto : vtos){
+			if(vto.getTop() == 1)
+				ads.add(vto.getId());
+		}
+		AdvertiseCPMListService.getInstance().AdCPMPosh(ads,mac,umac,umac,sourcetype,systype);
+
+		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	/**
@@ -1085,5 +1077,4 @@ public class AdvertiseUnitFacadeService {
 		positionVto.setOccupyAds(occupiedVtos);
 		return positionVto;
 	}
-	
 }

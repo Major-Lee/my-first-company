@@ -3,8 +3,10 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
@@ -105,15 +107,6 @@ public interface IAdvertiseRpcService{
 	 */
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId);
 
-	/**
-	 * 查看广告报表
-	 * @param uid
-	 * @param advertiseId
-	 * @return
-	 */
-	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,
-			String advertiseId);
-
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(int uid,
 			String province, String city, String district, double lat,
 			double lon, String distances);
@@ -131,8 +124,6 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<AdvertiseUserDetailVTO> userAdvertiseDetail(int uid);
 
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac ,String umac);
-
 	public RpcResponseDTO<Boolean> confirmPay(int uid, String adid);
 
 	public RpcResponseDTO<Boolean> destoryTips(int uid, String adid);
@@ -146,5 +137,17 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat, double lon,
 			String adcode, int pageSize, int pageNo);
+
+	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(
+			int uid, String advertiseId, int type, Long start, Long end,
+			int pageNo, int pageSize);
+
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(
+			int uid, String advertiseId, Long start, Long end, int pageNo,
+			int pageSize);
+
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,
+			String umac, Double lat, Double lon, String adcode,
+			String sourcetype, String systype, int type);
 
 }

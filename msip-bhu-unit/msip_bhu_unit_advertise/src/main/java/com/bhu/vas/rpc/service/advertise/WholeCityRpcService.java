@@ -16,12 +16,12 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
@@ -186,14 +186,6 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid, String advertiseId) {
-		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s]",uid,
-				advertiseId));
-//		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId);
-		return null;
-	}
-	
-	@Override
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(int uid ,String province, String city, String district,double lat,double lon,String distances) {
 		logger.info(String.format("countDeviceCountByGEOPoint uid[%s] province[%s] city[%s] district[%s] lat[%s] lon[%s]  distances[%s]",uid,
 				province,city,district,lat,lon,distances));
@@ -235,9 +227,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac) {
-		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s]",mac,umac));
-		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac);
+	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type) {
+		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s] lat[%s] lon[%s] adcode[%s] sourcetype[%s] systype[%s] type[%s]",mac,umac,lat,lon,adcode,sourcetype,systype,type));
+		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 	}
 	
 	@Override
@@ -268,5 +260,17 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo) {
 		logger.info(String.format("fetchAdListByAPP lat[%s] lon[%s] adcode[%s] pageSize[%s] pageNo[%s]",lat,lon,adcode,pageSize,pageNo));
 		return advertiseUnitFacadeService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,Long start,Long end, int pageNo ,int pageSize) {
+		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,start,end,pageNo,pageSize));
+		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId,start,end,pageNo,pageSize);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize) {
+		logger.info(String.format("fetchAdvertiseChartReport uid[%s] advertiseId[%s] type[%s] start[%s] end[%s] pageSize[%s] pageNo[%s]",uid,advertiseId,start,end,pageNo,pageSize));
+		return advertiseUnitFacadeService.fetchAdvertiseChartReport(uid,advertiseId,type,start,end,pageNo,pageSize);
 	}
 }

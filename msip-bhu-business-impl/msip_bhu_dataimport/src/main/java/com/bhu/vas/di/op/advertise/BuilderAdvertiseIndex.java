@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.search.helper.AdvertiseDocumentHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
@@ -28,6 +29,8 @@ public class BuilderAdvertiseIndex {
 	
 	private static AdvertiseService advertiseService;
 	private static AdvertiseDataSearchService advertiseDataSearchService;
+	private static UserFacadeService userFacadeService;
+
 
 	
 	public static void main(String[] args) {
@@ -48,7 +51,8 @@ public class BuilderAdvertiseIndex {
 			AdvertiseDocument doc = null;
 			int index = 0;
 			for(Advertise advertise : entitys){
-				doc = AdvertiseDocumentHelper.fromNormalAdvertise(advertise);
+				
+				doc = AdvertiseDocumentHelper.fromNormalAdvertise(advertise,userFacadeService.isShamUser(advertise.getUid()));
 				if(doc != null){
 					System.out.println("index :"+ ++index);
 					advertiseDataSearchService.insertIndex(doc, false, false);

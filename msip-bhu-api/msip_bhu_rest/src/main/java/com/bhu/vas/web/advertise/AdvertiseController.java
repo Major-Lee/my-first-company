@@ -1,6 +1,7 @@
 package com.bhu.vas.web.advertise;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
@@ -238,11 +240,16 @@ public class AdvertiseController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) String advertiseId
+			@RequestParam(required = true) String advertiseId,
+			@RequestParam(required = false) Long start,
+			@RequestParam(required = false) Long end,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
 			) {
+		
 		try{
-			RpcResponseDTO<AdvertiseReportVTO> rpcResult = advertiseRpcService.fetchAdvertiseReport
-					(uid,advertiseId);
+			RpcResponseDTO<List<UserConsumptiveWalletLog>> rpcResult = advertiseRpcService.fetchAdvertiseReport
+					(uid,advertiseId,start,end,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -256,6 +263,34 @@ public class AdvertiseController extends BaseController{
 		}
 		
 	}
+	
+    @ResponseBody()
+    @RequestMapping(value = "/chart/report", method = {RequestMethod.POST})
+    public void fetchAdvertiseChartReport(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int  uid,
+            @RequestParam(required = true) String  advertiseId,
+            @RequestParam(required = true) int  type,
+            @RequestParam(required = false) Long  start,
+            @RequestParam(required = false) Long  end,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+		try{
+	        RpcResponseDTO<List<Map<String, Object>>> rpcResult = advertiseRpcService.fetchAdvertiseChartReport(uid,advertiseId,type,start,end,pageNo,pageSize);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+				
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
 	
 	@ResponseBody()
 	@RequestMapping(value = "/fetch_device_geopoint", method = {RequestMethod.POST})
@@ -372,6 +407,7 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
+            @RequestParam(required = false) String mac,
             @RequestParam(required = false) Integer vuid,
             @RequestParam(required = true) String adid,
             @RequestParam(required = true) String message,
@@ -445,9 +481,16 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = false) String mac,
-            @RequestParam(required = false) String umac) {
+            @RequestParam(required = false) String umac,
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) String adcode,
+            @RequestParam(required = false) String sourcetype,
+            @RequestParam(required = false) String systype,
+            @RequestParam(required = false,defaultValue = "1") int type
+    		) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac);
+	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
