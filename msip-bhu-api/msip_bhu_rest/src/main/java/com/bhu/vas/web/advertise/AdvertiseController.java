@@ -573,6 +573,30 @@ public class AdvertiseController extends BaseController{
     }
     
     @ResponseBody()
+    @RequestMapping(value = "/cpc", method = {RequestMethod.POST})
+    public void advertiseCPCNotify(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String  adids,
+            @RequestParam(required = true) String  userid,
+            @RequestParam(required = true) String  sourcetype,
+            @RequestParam(required = false) String  systype) {
+		try{
+	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseCPCNotify(adids,userid,sourcetype,systype);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
     @RequestMapping(value = "/fetch_adlist_portal", method = {RequestMethod.POST})
     public void fetchAdListByPortal(
             HttpServletRequest request,

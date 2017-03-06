@@ -963,6 +963,19 @@ public class AdvertiseUnitFacadeService {
 	}
 	
 	/**
+	 * CPC通知
+	 * @param adids
+	 * @param userid
+	 * @param sourcetype
+	 * @param systype
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> advertiseCPCNotify(String adids,String userid,String sourcetype ,String systype){
+		//TODO 暂留
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	/**
 	 * portal获取小传单列表
 	 * @param mac
 	 * @param umac

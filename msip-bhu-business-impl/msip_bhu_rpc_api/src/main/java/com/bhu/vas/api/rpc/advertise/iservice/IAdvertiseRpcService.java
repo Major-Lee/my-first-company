@@ -150,4 +150,7 @@ public interface IAdvertiseRpcService{
 			String umac, Double lat, Double lon, String adcode,
 			String sourcetype, String systype, int type);
 
+	public RpcResponseDTO<Boolean> advertiseCPCNotify(String adids, String userid,
+			String sourcetype, String systype);
+
 }
