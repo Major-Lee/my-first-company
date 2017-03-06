@@ -29,12 +29,12 @@ public class AdvertiseUserCPMCheckHashService extends AbstractRelationHashCache{
     }
     
     public boolean checkUserCpm(String adid,String userid,String sourcetype){
-    	 return this.hexists(generateKey(adid, DateTimeHelper.getDateTime("DD")), userid+sourcetype);
+    	 return this.hexists(generateKey(adid, DateTimeHelper.getDateTime("dd")), userid+sourcetype);
     }
 	
     public void userCpmNotify(String adid,String userid,String sourcetype){
-    	this.hset(generateKey(adid, DateTimeHelper.getDateTime("DD")), userid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern0));
-    	this.expire(generateKey(adid, DateTimeHelper.getDateTime("DD")), 24*3600);
+    	this.hset(generateKey(adid, DateTimeHelper.getDateTime("dd")), userid+sourcetype, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern0));
+    	this.expire(generateKey(adid, DateTimeHelper.getDateTime("dd")), 24*3600);
     }
     
 	@Override

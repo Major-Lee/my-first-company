@@ -219,7 +219,7 @@ public class AsyncAdvertiseCPMNotifyProcessor {
 					UConsumptiveWalletTransType.AdsCPM, cpmDto.getSource_type(), cpmDto.getSys_type(), String.format("ad cpm计费 uid[%s] adid[%s]", uid,cpmDto.getAdid()), null, outParam);
 			if(result == 0){
 				//UV
-				AdvertiseUserCPMCheckHashService.getInstance().userCpmNotify(cpmDto.getAdid(), cpmDto.getUserId(), cpmDto.getUserId());
+				AdvertiseUserCPMCheckHashService.getInstance().userCpmNotify(cpmDto.getAdid(), cpmDto.getUserId(), cpmDto.getSource_type());
 				
 				if(StringUtils.isNotEmpty(cpmDto.getMac())){
 					Long cpmid = (Long)outParam.get("cpmid");
