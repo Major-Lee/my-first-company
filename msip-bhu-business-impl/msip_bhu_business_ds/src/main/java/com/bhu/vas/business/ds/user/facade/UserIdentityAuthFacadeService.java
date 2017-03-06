@@ -18,9 +18,9 @@ public class UserIdentityAuthFacadeService {
 	public String fetchUserMobilenoByHdmac(String hdmac){
 		 UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
 		 String mobileno = null;
-		 if(auth !=null){
-			 mobileno = auth.getMobileno().substring(auth.getMobileno().indexOf(StringHelper.WHITESPACE_STRING_GAP)).trim();
-		 }
+//		 if(auth !=null){
+//			 mobileno = auth.getMobileno().substring(auth.getMobileno().indexOf(StringHelper.WHITESPACE_STRING_GAP)).trim();
+//		 }
 		 return mobileno;
 	}
 	
@@ -30,11 +30,13 @@ public class UserIdentityAuthFacadeService {
 			 auth = new UserIdentityAuth();
 			 auth.setId(mac);
 			 auth.setUid(uid);
-			 auth.setMobileno(String.format("%s %s",  countrycode, acc));
+			 auth.setCountrycode(countrycode);
+			 auth.setMobileno(acc);
 			 userIdentityAuthService.insert(auth);
 		 } else {
 			 auth.setUid(uid);
-			 auth.setMobileno(String.format("%s %s",  countrycode, acc));
+			 auth.setCountrycode(countrycode);
+			 auth.setMobileno(acc);
 			 userIdentityAuthService.update(auth);
 		 }
 	}

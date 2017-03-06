@@ -29,4 +29,5 @@
  	<dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" />
  	<import resource="classpath*:spring/zookeeper/dubbo-jing-zookeeper.xml"/>-->
 	<dubbo:reference id="thirdPartyRpcService" interface="com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService" retries="0" loadbalance="roundrobin"/>
+	<dubbo:reference id="ssidRpcService" interface="com.bhu.vas.api.rpc.thirdparty.iservice.ISsidRpcService" retries="0" loadbalance="roundrobin"/>
 </beans>
