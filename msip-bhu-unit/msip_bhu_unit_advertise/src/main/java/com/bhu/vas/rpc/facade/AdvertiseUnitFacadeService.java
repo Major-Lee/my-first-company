@@ -260,7 +260,7 @@ public class AdvertiseUnitFacadeService {
 
 			Advertise smAd= advertiseService.insert(entity);
 			
-			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
+			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd,userFacadeService.isShamUser(uid));
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			advertiseDataSearchService.refresh(true);
 			
