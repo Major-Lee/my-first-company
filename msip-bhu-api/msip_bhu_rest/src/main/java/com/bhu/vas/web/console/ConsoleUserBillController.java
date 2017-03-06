@@ -52,7 +52,7 @@ public class ConsoleUserBillController extends BaseController {
     		) {
     	UserBillVTO rpcResult = null;
     	try{
-    		//rpcResult = userWalletRpcService.pagebillPlan(uid,startTime,endTime,pageNo, pageSize);
+    		rpcResult = userWalletRpcService.pageUserbillPlan(uid,startTime,endTime,pageNo, pageSize);
     		System.out.println(JsonHelper.getJSONString(rpcResult));
     	}catch(Exception e){
     		System.out.println("fetch_bill:"+e.getCause()+e.getMessage());

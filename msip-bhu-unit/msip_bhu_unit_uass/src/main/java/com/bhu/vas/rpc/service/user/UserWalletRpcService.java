@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
+import com.bhu.vas.api.vto.bill.UserBillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
@@ -211,4 +212,9 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	
 	}
 	
+	@Override
+	public UserBillVTO pageUserbillPlan(int uid,String startTime, String endTime, int pageNo, int pageSize) {
+		logger.info(String.format("pagebillPlanPages with uid[%s] startTime[%s] endTime[%s] pn[%s] ps[%s]",uid,startTime,endTime,pageNo,pageSize));
+		return userWalletUnitFacadeService.userbillPages(startTime, endTime, pageNo, pageSize);
+	}
 }
