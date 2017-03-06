@@ -54,7 +54,7 @@ public class AdvertiseSearchMessageBuilder {
 				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), adcode);
 		
 		SearchCondition sc_adcode_all = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
-				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), "000000");
+				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), "100000");
 		
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_geopointDistance);
 		pack_must.addChildSearchCondtions(sc_adcode);
