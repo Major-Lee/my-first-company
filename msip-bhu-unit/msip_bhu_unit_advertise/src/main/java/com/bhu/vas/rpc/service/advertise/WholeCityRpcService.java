@@ -22,7 +22,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
-import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResponseVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseUserDetailVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
@@ -184,14 +183,6 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info(String.format("escapeAdvertise uid[%s] advertiseId[%s]",uid,
 				advertiseId));
 		return advertiseUnitFacadeService.escapeAdvertise(uid,advertiseId);
-	}
-	
-	@Override
-	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid, String advertiseId) {
-		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s]",uid,
-				advertiseId));
-//		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId);
-		return null;
 	}
 	
 	@Override
