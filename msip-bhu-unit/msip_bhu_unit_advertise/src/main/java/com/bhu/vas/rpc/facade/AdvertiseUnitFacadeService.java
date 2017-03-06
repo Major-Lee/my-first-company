@@ -605,9 +605,9 @@ public class AdvertiseUnitFacadeService {
 		}
 		ModelCriteria mc = new ModelCriteria();
 		Criteria cr = mc.createCriteria();
-		cr.andColumnEqualTo("orderid", advertiseId).andColumnEqualTo("transtype", UConsumptiveWalletTransType.AdsCPM.getName());
+		cr.andColumnEqualTo("orderid", advertiseId).andColumnEqualTo("transtype", UConsumptiveWalletTransType.AdsCPM.getKey());
 		if(StringHelper.isNotEmpty(startDate) && StringHelper.isNotEmpty(endDate))
-			cr.andColumnBetween("updated_at", start, end);
+			cr.andColumnBetween("updated_at", startDate, endDate);
 		mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
 		mc.setOrderByClause("updated_at desc");
@@ -639,7 +639,7 @@ public class AdvertiseUnitFacadeService {
 			break;
 		}
 		
-		List<Map<String, Object>> results = userConsumptiveWalletLogService.selectListBySumCash(pattern, advertiseId, UConsumptiveWalletTransType.AdsCPM.getName(),startDate,endDate,pageNo,pageSize);
+		List<Map<String, Object>> results = userConsumptiveWalletLogService.selectListBySumCash(pattern, advertiseId, UConsumptiveWalletTransType.AdsCPM.getKey(),startDate,endDate,pageNo,pageSize);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
 	
