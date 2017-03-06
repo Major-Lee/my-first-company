@@ -61,6 +61,7 @@ import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.bill.BillDayVTO;
 import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
+import com.bhu.vas.api.vto.bill.UserBillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
@@ -75,6 +76,8 @@ import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.statistics.service.StatisticFincialIncomeService;
+import com.bhu.vas.business.ds.statistics.service.StatisticFincialMonthService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeMonthRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
@@ -133,6 +136,12 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private OrderService orderService;
+	
+	@Resource
+	private StatisticFincialMonthService statisticFincialMonthService;
+	
+	@Resource
+	private StatisticFincialIncomeService statisticFincialIncomeService;
 
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
@@ -2192,20 +2201,123 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public static void main(String[] args) {
-		String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
-		System.out.println(payDomain);
-		if(payDomain == null){
-			payDomain = "http://upay.bhuwifi.com";
+	@SuppressWarnings("unused")
+	public UserBillVTO userbillPages(String startTime, String endTime, int pageNo,
+			int pageSize){
+		
+		long billPlanBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		try {
+			if(StringUtils.isBlank(startTime)){
+				
+				startTime = DateTimeHelper.getYear(DateTimeHelper.getDateTime())+"-01";
+			}
+			if(StringUtils.isBlank(endTime)){
+				endTime = DateTimeHelper.getYear(DateTimeHelper.getDateTime())+"-12";
+			}
+			BillVTO bill = new BillVTO();
+			bill.setStartTime(startTime);
+			bill.setEndTtime(endTime);
+			
+			//statisticFincialMonthService.
+			
+			
+			
+			
+			//获取该时间段内平台收益
+			String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
+			if(payDomain == null){
+				payDomain = "http://upay.bhuwifi.com";
+			}
+			long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
+			String param = "startTime="+startTime+"&endTime="+endTime;
+			Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+			long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
+			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
+			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
+			
+			List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();
+			DecimalFormat df  = new DecimalFormat("#########0.00");
+			double totalA = 0;
+			double totalBHUA =0;
+			double totalUserA =0;
+			if (paymentChannelList != null) {
+				for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
+					System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
+					String info =paymentChannelStatVTO.getInfo();
+					ResponsePaymentInfoDTO paymentInfo = JsonHelper.getDTO(info, ResponsePaymentInfoDTO.class);
+					ResponsePaymentInfoDetailDTO hee =  paymentInfo.getHee();
+					ResponsePaymentInfoDetailDTO now =  paymentInfo.getNow();
+					ResponsePaymentInfoDetailDTO paypal =  paymentInfo.getPaypal();
+					ResponsePaymentInfoDetailDTO wifiManage =  paymentInfo.getWifiManage();
+					ResponsePaymentInfoDetailDTO wifiHelper =  paymentInfo.getWifiHelper();
+					ResponsePaymentInfoDetailDTO weixin =  paymentInfo.getWeixin();
+					ResponsePaymentInfoDetailDTO alipay =  paymentInfo.getAlipay();
+					String dateT = paymentChannelStatVTO.getTimeD();
+					BillDayVTO billDay = new BillDayVTO();
+					billDay.setDate(dateT);
+					billDay.setAilpayA(alipay.getAmount()+"");
+					billDay.setAilpayN(PaymentThirdType.ALIPAY.getName_zh());
+					billDay.setHeeA(hee.getAmount()+"");
+					billDay.setHeeN(PaymentThirdType.HEE.getName_zh());
+					billDay.setPaypalA(paypal.getAmount()+"");
+					billDay.setPaypalN(PaymentThirdType.PAYPAL.getName_zh());
+					billDay.setWifiManageN(PaymentThirdType.WIFIMANAGE.getName_zh());
+					billDay.setWifiManageA(wifiManage.getAmount()+"");
+					billDay.setWeixinA(weixin.getAmount()+"");
+					billDay.setWeixinN(PaymentThirdType.WEIXIN.getName_zh());
+					billDay.setWifiHelperA(wifiHelper.getAmount()+"");
+					billDay.setWifiHelperN(PaymentThirdType.WIFIHELPER.getName_zh());
+					billDay.setNowA(now.getAmount()+"");
+					billDay.setNowN(PaymentThirdType.NOW.getName_zh());
+					double dayTotalBHUA = 0;
+					double dayTotalUserA = 0;
+					double dayTotalA = 0;
+					billDay.setTotalBHUA("0");
+					billDay.setTotalUserA("0");
+					billDay.setTotalA("0");
+					billDayList.add(billDay);
+					
+				}
+			}
+			bill.setBillDay(billDayList);
+			bill.setAmountC("0");
+			bill.setAmountT("0");
+			bill.setAmountU("0");
+			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
+			logger.info("fetch bill rpc response："+JsonHelper.getJSONString(bill));
+			long end = System.currentTimeMillis(); // 这段代码放在程序执行前
+			System.out.println("fetch bill total elapsed+" +(end - billPlanBegin));
+			return null;
+			
+			
+		} catch (BusinessI18nCodeException bex) {
+			return null;
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return null;
 		}
-		String startTime ="2017-02-01";
-		String endTime ="2017-02-20";
-		long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
-		String param = "startTime="+startTime+"&endTime="+endTime;
-		Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
-		System.out.println(response);
-		long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
-		System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
+	}
+	
+	public static void main(String[] args) {
+		
+		System.out.println(DateTimeHelper.getYear(DateTimeHelper.getDateTime())+"-01");
+		System.out.println(DateTimeHelper.getYear(DateTimeHelper.getDateTime())+"-12");
+		
+		
+//		String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
+//		System.out.println(payDomain);
+//		if(payDomain == null){
+//			payDomain = "http://upay.bhuwifi.com";
+//		}
+//		String startTime ="2017-02-01";
+//		String endTime ="2017-02-20";
+//		long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
+//		String param = "startTime="+startTime+"&endTime="+endTime;
+//		Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
+//		System.out.println(response);
+//		long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
+//		System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
 		
 	}
 	
