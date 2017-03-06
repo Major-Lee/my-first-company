@@ -604,11 +604,18 @@ public class AdvertiseUnitFacadeService {
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,String start,String end, int pageNo ,int pageSize){
+	public RpcResponseDTO<List<UserConsumptiveWalletLog>> fetchAdvertiseReport(int uid,String advertiseId,Long start,Long end, int pageNo ,int pageSize){
+		
+		String startDate = null;
+		String endDate = null;
+		if(start !=null && end !=null){
+			startDate = DateTimeHelper.getDateTime(new Date(start), DateTimeHelper.FormatPattern1);
+			endDate = DateTimeHelper.getDateTime(new Date(end), DateTimeHelper.FormatPattern1);
+		}
 		ModelCriteria mc = new ModelCriteria();
 		Criteria cr = mc.createCriteria();
 		cr.andColumnEqualTo("orderid", advertiseId).andColumnEqualTo("transtype", UConsumptiveWalletTransType.AdsCPM.getName());
-		if(StringHelper.isNotEmpty(start) && StringHelper.isNotEmpty(end))
+		if(StringHelper.isNotEmpty(startDate) && StringHelper.isNotEmpty(endDate))
 			cr.andColumnBetween("updated_at", start, end);
 		mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
@@ -1085,5 +1092,4 @@ public class AdvertiseUnitFacadeService {
 		positionVto.setOccupyAds(occupiedVtos);
 		return positionVto;
 	}
-	
 }

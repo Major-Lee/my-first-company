@@ -13,6 +13,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointDistancePayload;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 public class AdvertiseSearchMessageBuilder {
 	
@@ -54,11 +55,20 @@ public class AdvertiseSearchMessageBuilder {
 				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), adcode);
 		
 		SearchCondition sc_adcode_all = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
-				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), "000000");
+				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), "100000");
+		
+		SearchCondition sc_adcode_city = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
+				Field.A_ADCODE.getName(),  SearchConditionPattern.PrefixContain.getPattern(), adcode.substring(0, 4));
+		
+		SearchCondition sc_adcode_province = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
+				Field.A_ADCODE.getName(),  SearchConditionPattern.PrefixContain.getPattern(), adcode.substring(0, 2));
 		
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_geopointDistance);
 		pack_must.addChildSearchCondtions(sc_adcode);
 		pack_must.addChildSearchCondtions(sc_adcode_all);
+		pack_must.addChildSearchCondtions(sc_adcode_city);
+		pack_must.addChildSearchCondtions(sc_adcode_province);
+
 		
 		SearchConditionSort sc_sortByScore = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
 				Field.A_SCORE.getName(), SearchConditionSortPattern.Sort.getPattern(),
@@ -86,5 +96,4 @@ public class AdvertiseSearchMessageBuilder {
 		
 		return scm;
 	}
-	
 }
