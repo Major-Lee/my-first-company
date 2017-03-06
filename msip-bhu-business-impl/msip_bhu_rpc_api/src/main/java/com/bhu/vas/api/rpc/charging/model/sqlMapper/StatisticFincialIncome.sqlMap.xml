@@ -42,7 +42,16 @@
 	    	#{total_cash},
 	    	#{updated_at}
 	</sql> 
-	
+	<sql id="modelFincialIncomeColumns">
+	    <![CDATA[
+	    	dayid,
+			round(sum(total_income), 2) total_income,
+			round(sum(bhu_income), 2) bhu_income,
+			round(sum(user_income), 2) user_income,
+			round(sum(withdraw_past), 2) withdraw_past,
+			round(sum(total_cash), 2) total_cash
+	    ]]>
+	</sql> 
 	<sql id="modelUpdateValues">
 			dayid  = #{dayid},
 			total_income  = #{total_income},
@@ -162,7 +171,14 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
-
+	<select id="StatisticFincialIncome" resultType="statisticFincialIncome" parameterType="String">
+		SELECT <include refid="modelFincialIncomeColumns" /> FROM msip_bhu_core.t_statistic_fincial_income
+		<where>
+	    	dayid BETWEEN #{start_day}  AND #{end_day}
+			GROUP BY dayid ORDER BY dayid DESC
+	    </where> 
+		
+	</select>
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
 	</select>

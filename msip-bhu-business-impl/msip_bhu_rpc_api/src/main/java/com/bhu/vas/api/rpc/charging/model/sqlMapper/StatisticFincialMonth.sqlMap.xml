@@ -37,7 +37,18 @@
 	    	updated_at
 	    ]]>
 	</sql>  
-	
+	<sql id="modelFincialMonthIncomeColumns">
+	    <![CDATA[
+	    	monthid monthid,
+			round(sum(begin_income), 2) begin_income,
+			round(sum(end_income), 2) end_income,
+			round(sum(cash), 2) cash,
+			round(sum(month_count), 2) month_count,
+			round(sum(month_income), 2) month_income,
+			round(sum(withdraw_apply), 2) withdraw_apply,
+			round(sum(withdraw_past), 2) withdraw_past
+	    ]]>
+	</sql> 
 	<sql id="modelInsertValues">
 			#{id},
 			#{monthid},
@@ -175,6 +186,15 @@
     	</if>  
 	</delete>
 
+	<select id="StatisticFincialMonth" resultType="statisticFincialMonth" parameterType="String">
+		SELECT <include refid="modelFincialMonthIncomeColumns" /> FROM msip_bhu_core.t_statistic_fincial_month
+		<where>
+	    	monthid BETWEEN #{start_month}  AND #{end_month}
+			GROUP BY monthid ORDER BY monthid DESC
+	    </where> 
+		
+	</select>
+	
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
 	</select>

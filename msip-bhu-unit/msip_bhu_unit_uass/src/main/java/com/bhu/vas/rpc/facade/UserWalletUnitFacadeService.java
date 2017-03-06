@@ -44,6 +44,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.StatisticFincialMonth;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -61,6 +62,7 @@ import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.bill.BillDayVTO;
 import com.bhu.vas.api.vto.bill.BillTotalVTO;
 import com.bhu.vas.api.vto.bill.BillVTO;
+import com.bhu.vas.api.vto.bill.UserBillMonthVTO;
 import com.bhu.vas.api.vto.bill.UserBillVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
@@ -2214,83 +2216,70 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isBlank(endTime)){
 				endTime = DateTimeHelper.getYear(DateTimeHelper.getDateTime())+"-12";
 			}
-			BillVTO bill = new BillVTO();
-			bill.setStartTime(startTime);
-			bill.setEndTtime(endTime);
+			UserBillVTO userbill = new UserBillVTO();
+			userbill.setStartTime(startTime);
+			userbill.setEndTtime(endTime);
 			
-			//statisticFincialMonthService.
+			double totalBeginIncome = 0; //期初
+			double totalEndIncome = 0;; //期末
+			double totalMonthCount = 0;; //交易数
+			double totalMonthIncome = 0;; //交易
+			double totalWithdrawPast = 0;; //往期已提现
+			double totalWithdrawApply = 0;; //本次提现数
+			double totalCash = 0;; //钱包余额
+			double totalBalance = 0;; //误差
 			
-			
-			
-			
-			//获取该时间段内平台收益
-			String payDomain = BusinessRuntimeConfiguration.PaymentJavaApiDomain;
-			if(payDomain == null){
-				payDomain = "http://upay.bhuwifi.com";
-			}
-			long paltformIncomeBegin = System.currentTimeMillis(); // 这段代码放在程序执行前
-			String param = "startTime="+startTime+"&endTime="+endTime;
-			Object response = sendPost(payDomain+"/bhu_pay_api/v1/msip_bhu_payment_rest/channelStat/info", param);
-			long paltformIncomeEnd = System.currentTimeMillis(); // 这段代码放在程序执行前
-			System.out.println("paltformIncome elapsed" +(paltformIncomeEnd - paltformIncomeBegin));
-			ResponsePaymentChannelSatDTO ss = JsonHelper.getDTO(response+"", ResponsePaymentChannelSatDTO.class);
-			List<PaymentChannelStatVTO>  paymentChannelList = ss.getResult();
-			
-			List<BillDayVTO> billDayList = new ArrayList<BillDayVTO>();
-			DecimalFormat df  = new DecimalFormat("#########0.00");
-			double totalA = 0;
-			double totalBHUA =0;
-			double totalUserA =0;
-			if (paymentChannelList != null) {
-				for (PaymentChannelStatVTO paymentChannelStatVTO : paymentChannelList) {
-					System.out.println( paymentChannelStatVTO.getTimeD()+"info:"+paymentChannelStatVTO.getInfo());
-					String info =paymentChannelStatVTO.getInfo();
-					ResponsePaymentInfoDTO paymentInfo = JsonHelper.getDTO(info, ResponsePaymentInfoDTO.class);
-					ResponsePaymentInfoDetailDTO hee =  paymentInfo.getHee();
-					ResponsePaymentInfoDetailDTO now =  paymentInfo.getNow();
-					ResponsePaymentInfoDetailDTO paypal =  paymentInfo.getPaypal();
-					ResponsePaymentInfoDetailDTO wifiManage =  paymentInfo.getWifiManage();
-					ResponsePaymentInfoDetailDTO wifiHelper =  paymentInfo.getWifiHelper();
-					ResponsePaymentInfoDetailDTO weixin =  paymentInfo.getWeixin();
-					ResponsePaymentInfoDetailDTO alipay =  paymentInfo.getAlipay();
-					String dateT = paymentChannelStatVTO.getTimeD();
-					BillDayVTO billDay = new BillDayVTO();
-					billDay.setDate(dateT);
-					billDay.setAilpayA(alipay.getAmount()+"");
-					billDay.setAilpayN(PaymentThirdType.ALIPAY.getName_zh());
-					billDay.setHeeA(hee.getAmount()+"");
-					billDay.setHeeN(PaymentThirdType.HEE.getName_zh());
-					billDay.setPaypalA(paypal.getAmount()+"");
-					billDay.setPaypalN(PaymentThirdType.PAYPAL.getName_zh());
-					billDay.setWifiManageN(PaymentThirdType.WIFIMANAGE.getName_zh());
-					billDay.setWifiManageA(wifiManage.getAmount()+"");
-					billDay.setWeixinA(weixin.getAmount()+"");
-					billDay.setWeixinN(PaymentThirdType.WEIXIN.getName_zh());
-					billDay.setWifiHelperA(wifiHelper.getAmount()+"");
-					billDay.setWifiHelperN(PaymentThirdType.WIFIHELPER.getName_zh());
-					billDay.setNowA(now.getAmount()+"");
-					billDay.setNowN(PaymentThirdType.NOW.getName_zh());
-					double dayTotalBHUA = 0;
-					double dayTotalUserA = 0;
-					double dayTotalA = 0;
-					billDay.setTotalBHUA("0");
-					billDay.setTotalUserA("0");
-					billDay.setTotalA("0");
-					billDayList.add(billDay);
+	    	List<UserBillMonthVTO> billMonth = new ArrayList<UserBillMonthVTO>();
+	    	
+	    	
+			List<Object> statisticFincialMonth = statisticFincialMonthService.findModelByMonthId(startTime,endTime);
+			if(statisticFincialMonth != null){
+				for (Object object : statisticFincialMonth) {
+					System.out.println("statisticFincialMonth size："+statisticFincialMonth.size());
+					StatisticFincialMonth  monthData  =(StatisticFincialMonth)object;
+					UserBillMonthVTO monthBill = new UserBillMonthVTO();
+					monthBill.setDate(monthData.getMonthid());
+					monthBill.setBeginIncome(monthData.getBegin_income());
+					monthBill.setEndIncome(monthData.getEnd_income());
+					monthBill.setCash(monthData.getCash());
+					monthBill.setMonthCount(monthData.getMonth_count());
+					monthBill.setMonthIncome(monthData.getMonth_income());
+					monthBill.setWithdrawApply(monthData.getWithdraw_apply());
+					monthBill.setWithdrawPast(monthData.getWithdraw_past());
+					//误差= 期末总收益-往期已提金额-本期申请金额-钱包剩余
+					double balance = Double.valueOf(monthData.getEnd_income())-
+							Double.valueOf(monthData.getWithdraw_past())-
+							Double.valueOf(monthData.getWithdraw_apply())-
+							Double.valueOf(monthData.getCash());
+					monthBill.setBalance(balance+"");
+			    	billMonth.add(monthBill);
+			    	
+			    	totalBeginIncome += Double.valueOf(monthData.getBegin_income());
+			    	totalEndIncome += Double.valueOf(monthData.getEnd_income());
+			    	totalMonthCount += Double.valueOf(monthData.getMonth_count());
+			    	totalMonthIncome += Double.valueOf(monthData.getMonth_income());
+			    	totalWithdrawPast += Double.valueOf(monthData.getWithdraw_past());
+			    	totalWithdrawApply += Double.valueOf(monthData.getWithdraw_apply());
+			    	totalCash += Double.valueOf(monthData.getCash());
+			    	totalBalance += balance;
 					
 				}
 			}
-			bill.setBillDay(billDayList);
-			bill.setAmountC("0");
-			bill.setAmountT("0");
-			bill.setAmountU("0");
-			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
-			logger.info("fetch bill rpc response："+JsonHelper.getJSONString(bill));
+			userbill.setTotalBalance(totalBalance+"");
+			userbill.setTotalEndIncome(totalEndIncome+"");
+			userbill.setTotalBeginIncome(totalBeginIncome+"");
+			userbill.setTotalMonthCount(totalMonthCount+"");
+			userbill.setTotalMonthIncome(totalMonthIncome+"");
+			userbill.setTotalWithdrawApply(totalWithdrawApply+"");
+			userbill.setTotalWithdrawPast(totalWithdrawPast+"");
+			userbill.setTotalCash(totalCash+"");
+			userbill.setMonthBill(billMonth);
+			
+			System.out.println("++user bill result+++"+JsonHelper.getJSONString(userbill));
+			logger.info("user bill fetch bill rpc response："+JsonHelper.getJSONString(userbill));
 			long end = System.currentTimeMillis(); // 这段代码放在程序执行前
 			System.out.println("fetch bill total elapsed+" +(end - billPlanBegin));
-			return null;
-			
-			
+			return userbill;
 		} catch (BusinessI18nCodeException bex) {
 			return null;
 		} catch (Exception ex) {
