@@ -2,18 +2,20 @@ package com.bhu.vas.api.vto.advertise;
 
 import java.util.List;
 
+import com.smartwork.msip.cores.orm.support.page.TailPage;
+
 @SuppressWarnings("serial")
 public class AdvertiseResponseVTO implements java.io.Serializable{
-	private List<AdvertiseVTO> vtos;
+	private TailPage<AdvertiseVTO> vtos;
 	private String adcode;
 	private String province;
 	private String city;
 	private String district;
 	
-	public List<AdvertiseVTO> getVtos() {
+	public TailPage<AdvertiseVTO> getVtos() {
 		return vtos;
 	}
-	public void setVtos(List<AdvertiseVTO> vtos) {
+	public void setVtos(TailPage<AdvertiseVTO> vtos) {
 		this.vtos = vtos;
 	}
 	public String getAdcode() {

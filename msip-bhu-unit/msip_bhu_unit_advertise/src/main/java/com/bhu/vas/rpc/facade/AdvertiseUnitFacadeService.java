@@ -902,7 +902,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param umac
 	 * @return
 	 */
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type){
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type){
 		double real_lat = 0;
 		double real_lon = 0;
 		String real_adcode = null;
@@ -921,7 +921,7 @@ public class AdvertiseUnitFacadeService {
 		default:
 			break;
 		}
-		List<AdvertiseVTO> vtos = fetchAdvertise(null, real_lat, real_lon, real_adcode, 3, 1);
+		TailPage<AdvertiseVTO> vtos = fetchAdvertise(null, real_lat, real_lon, real_adcode, 3, 1);
 		List<String> ads = new ArrayList<String>();
 		for(AdvertiseVTO vto : vtos){
 			if(vto.getTop() == 1)
@@ -974,7 +974,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseResponseVTO> fetchAdListByPortal(String mac ,String umac ,String sourcetype ,String systype, int pageSize , int pageNo){
 		WifiDevice device = wifiDeviceService.getById(mac);
-		List<AdvertiseVTO> vtos = fetchAdvertise(null, Double.valueOf(device.getLat()), Double.valueOf(device.getLon()), device.getAdcode(), pageSize, pageNo);
+		TailPage<AdvertiseVTO> vtos = fetchAdvertise(null, Double.valueOf(device.getLat()), Double.valueOf(device.getLon()), device.getAdcode(), pageSize, pageNo);
 		List<String> ads = new ArrayList<String>();
 		for(AdvertiseVTO vto : vtos){
 			if(vto.getTop() == 1)
@@ -988,6 +988,7 @@ public class AdvertiseUnitFacadeService {
 		results.setProvince(device.getProvince());
 		results.setDistrict(device.getDistrict());
 		results.setVtos(vtos);
+		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
 	
@@ -1000,17 +1001,19 @@ public class AdvertiseUnitFacadeService {
 	 * @param pageNo
 	 * @return
 	 */
-	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo){
-		List<AdvertiseVTO> vtos = fetchAdvertise(null, lat, lon, adcode, pageSize, pageNo);
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo){
+		TailPage<AdvertiseVTO> vtos = fetchAdvertise(null, lat, lon, adcode, pageSize, pageNo);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
 	
-	private List<AdvertiseVTO> fetchAdvertise(String contextId, double lat, double lon,String adcode,int pageSize,int pageNo){
+	private TailPage<AdvertiseVTO> fetchAdvertise(String contextId, double lat, double lon,String adcode,int pageSize,int pageNo){
 		Page<AdvertiseDocument> search_result= advertiseDataSearchService.searchByGeoPointDistanceAndAdcode(null, lat, lon, "5km", adcode, pageSize, pageNo);
 		List<AdvertiseVTO> vtos = null;
+		int total = 0;
 		if(search_result != null){
 			List<AdvertiseDocument> searchDocuments = search_result.getContent();//.getResult();
-			if(searchDocuments.isEmpty()) {
+			total = (int)search_result.getTotalElements();//.getTotal();
+			if(total == 0){
 				vtos = Collections.emptyList();
 			}else{
 				vtos = new ArrayList<AdvertiseVTO>();
@@ -1038,7 +1041,9 @@ public class AdvertiseUnitFacadeService {
 		}else{
 			vtos = Collections.emptyList();
 		}
-		return vtos;
+		TailPage<AdvertiseVTO> returnRet = new CommonPage<AdvertiseVTO>(pageNo, pageSize, total, vtos);
+		return returnRet;
+		
 	}
 	
 	private AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {

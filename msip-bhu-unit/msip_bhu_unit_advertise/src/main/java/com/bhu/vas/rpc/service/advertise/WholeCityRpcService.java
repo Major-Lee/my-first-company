@@ -227,7 +227,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type) {
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,String umac,Double lat,Double lon,String adcode,String sourcetype ,String systype,int type) {
 		logger.info(String.format("queryRandomAdvertiseDetails ... mac[%s] umac[%s] lat[%s] lon[%s] adcode[%s] sourcetype[%s] systype[%s] type[%s]",mac,umac,lat,lon,adcode,sourcetype,systype,type));
 		return advertiseUnitFacadeService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 	}
@@ -257,7 +257,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo) {
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> fetchAdListByAPP(double lat ,double lon,String adcode, int pageSize , int pageNo) {
 		logger.info(String.format("fetchAdListByAPP lat[%s] lon[%s] adcode[%s] pageSize[%s] pageNo[%s]",lat,lon,adcode,pageSize,pageNo));
 		return advertiseUnitFacadeService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
 	}

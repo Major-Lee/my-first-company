@@ -135,7 +135,7 @@ public interface IAdvertiseRpcService{
 			String umac, String sourcetype, String systype, int pageSize,
 			int pageNo);
 
-	public RpcResponseDTO<List<AdvertiseVTO>> fetchAdListByAPP(double lat, double lon,
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> fetchAdListByAPP(double lat, double lon,
 			String adcode, int pageSize, int pageNo);
 
 	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(
@@ -146,7 +146,7 @@ public interface IAdvertiseRpcService{
 			int uid, String advertiseId, Long start, Long end, int pageNo,
 			int pageSize);
 
-	public RpcResponseDTO<List<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryRandomAdvertiseDetails(String mac,
 			String umac, Double lat, Double lon, String adcode,
 			String sourcetype, String systype, int type);
 

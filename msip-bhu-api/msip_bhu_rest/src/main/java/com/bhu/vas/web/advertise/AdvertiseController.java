@@ -490,7 +490,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false,defaultValue = "1") int type
     		) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
+	        RpcResponseDTO<TailPage<AdvertiseVTO>> rpcResult = advertiseRpcService.queryRandomAdvertiseDetails(mac,umac,lat,lon,adcode,sourcetype,systype,type);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -609,7 +609,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		try{
-	        RpcResponseDTO<List<AdvertiseVTO>> rpcResult = advertiseRpcService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
+	        RpcResponseDTO<TailPage<AdvertiseVTO>> rpcResult = advertiseRpcService.fetchAdListByAPP(lat,lon,adcode,pageSize,pageNo);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
