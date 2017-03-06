@@ -1790,6 +1790,7 @@ public class BusinessEnumType {
 	public enum PaymentFeeType{
 		CNY("CNY","人民币","人民币"),
 		SGD("SGD","新加坡元","新加坡元"),
+		USD("USD","美元","美元"),
 		;
 		private String key;
 		private String name;
