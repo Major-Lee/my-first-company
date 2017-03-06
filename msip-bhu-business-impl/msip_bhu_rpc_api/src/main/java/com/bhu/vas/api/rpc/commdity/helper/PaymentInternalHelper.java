@@ -218,10 +218,10 @@ public class PaymentInternalHelper {
 		String result = amount;
 		switch (feeType) {
 		case SGD:
-			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_SGD, Double.parseDouble(amount)),3)+"");
+			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_SGD, Double.parseDouble(amount)),2)+"");
 			break;
 		case USD:
-			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_USD, Double.parseDouble(amount)),3)+"");
+			result = ArithHelper.getCuttedCurrency(round(ArithHelper.mul(FeeType_Rate_USD, Double.parseDouble(amount)),2)+"");
 			break;
 		case CNY:
 		default:
