@@ -34,18 +34,22 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
 		
 		if(!isDirtyMac(hdmac)){
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+//			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			
 			UserIdentityAuth auth = this.getById(hdmac);
 			
 			if (auth == null) {
 				auth = new UserIdentityAuth();
 				auth.setId(hdmac);
-				auth.setMobileno(accWithCountryCode);
+				auth.setMobileno(acc);
+				auth.setCountrycode(countrycode);
+//				auth.setMobileno(accWithCountryCode);
 			    this.insert(auth);
 			}else{
-				if (auth.getMobileno() != accWithCountryCode) {
-					auth.setMobileno(accWithCountryCode);
+//				if (auth.getMobileno() != accWithCountryCode) {
+				if (!acc.equals(auth.getMobileno()) || countrycode != auth.getCountrycode()) {
+					auth.setCountrycode(countrycode);
+					auth.setMobileno(acc);
 					this.update(auth);
 				}else{
 					throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
@@ -60,7 +64,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			UserIdentityAuth auth = this.getById(hdmac);
 			
 			if (auth != null) {
-				String acc = auth.getMobileno().substring(3);
+				String acc = auth.getMobileno();//.substring(3);
 				auth.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
 				return auth;
 			}else{

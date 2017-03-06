@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="userIdentityAuth">
     <id property="id" column="id"/>
+    <result property="countrycode" column="countrycode" />
     <result property="mobileno" column="mobileno"/>
     <result property="uid" column="uid"/>
     <result property="created_at" column="created_at"/>
@@ -20,6 +21,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	countrycode,
 	    	mobileno,
 	    	uid,
 	    	created_at,
@@ -28,6 +30,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	countrycode,
 	    	mobileno,
 	    	uid,
 	    	created_at,
@@ -37,6 +40,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{countrycode},
 			#{mobileno},
 			#{uid},
 			#{created_at},
@@ -44,6 +48,7 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			countrycode = #{countrycode},
 			mobileno =	#{mobileno},
 			uid = #{uid},
 			created_at = #{created_at},

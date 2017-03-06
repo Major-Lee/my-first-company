@@ -34,4 +34,6 @@
 	<!--  accesslog="/Users/tangzichao/access.log"-->
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService" 
 					ref="thirdPartyRpcService" />
+	<dubbo:service delay="5000" timeout="2000" retries="0" actives="500" loadbalance="random"  interface="com.bhu.vas.api.rpc.thirdparty.iservice.ISsidRpcService" 
+					ref="ssidRpcService" />
 </beans>

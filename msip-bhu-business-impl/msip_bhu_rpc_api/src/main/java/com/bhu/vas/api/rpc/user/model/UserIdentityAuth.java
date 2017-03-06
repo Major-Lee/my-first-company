@@ -10,13 +10,23 @@ public class UserIdentityAuth extends BaseStringModel {
 	
 	
 	public static final String[] dirtyMacs ={"00:00:00:00:00:00"};
-	public static final int countrycode = 86;
+	public static final int DEFAULT_COUNTRYCODE = 86;
+	//电话号码国家区号
+	private int countrycode = 86;
 	private String mobileno;
 	private Date created_at;
 	private boolean isAuthorize;
 	private Integer uid;
 
 
+
+	public int getCountrycode() {
+		return countrycode;
+	}
+
+	public void setCountrycode(int countrycode) {
+		this.countrycode = countrycode;
+	}
 
 	public Integer getUid() {
 		return uid;
