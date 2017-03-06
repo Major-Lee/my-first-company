@@ -485,8 +485,8 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) Double lat,
             @RequestParam(required = false) Double lon,
             @RequestParam(required = false) String adcode,
-            @RequestParam(required = true) String sourcetype,
-            @RequestParam(required = true) String systype,
+            @RequestParam(required = false) String sourcetype,
+            @RequestParam(required = false) String systype,
             @RequestParam(required = false,defaultValue = "1") int type
     		) {
 		try{
