@@ -175,6 +175,12 @@
 			type="com.bhu.vas.api.rpc.charging.model.StatisticFincialMonth" />
 		<!-- 财务对账统计 -->
 		
+
+		<!-- 财务对账统计 -->
+		<typeAlias alias="statisticFincialMonthVTO"
+			type="com.bhu.vas.api.rpc.charging.vto.StatisticFincialMonthVTO" />
+		<!-- 财务对账统计 -->
+		
 		
 		<!--对公账号 add by dongrui 20160606 start -->
 		<typeAlias alias="userPublishAccount" type="com.bhu.vas.api.rpc.user.model.UserPublishAccount" />
