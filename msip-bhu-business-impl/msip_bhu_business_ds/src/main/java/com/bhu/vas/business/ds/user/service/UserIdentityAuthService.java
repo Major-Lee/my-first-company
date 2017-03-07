@@ -53,7 +53,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 					auth.setMobileno(acc);
 					this.update(auth);
 				}else{
-					throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
+//					throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
 				}
 			}
 		}
