@@ -577,12 +577,12 @@ public class AdvertiseController extends BaseController{
     public void advertiseCPCNotify(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) String  adids,
+            @RequestParam(required = true) String  adid,
             @RequestParam(required = true) String  userid,
             @RequestParam(required = true) String  sourcetype,
             @RequestParam(required = false) String  systype) {
 		try{
-	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseCPCNotify(adids,userid,sourcetype,systype);
+	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseCPCNotify(adid,userid,sourcetype,systype);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
