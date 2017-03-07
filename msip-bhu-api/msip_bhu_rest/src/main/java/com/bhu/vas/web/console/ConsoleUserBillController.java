@@ -64,43 +64,6 @@ public class ConsoleUserBillController extends BaseController {
     }
     
     public static void main(String[] args) {
-    	UserBillVTO rpcResult = new UserBillVTO();
-    	rpcResult.setStartTime("2016-11");
-    	rpcResult.setEndTtime("2016-12");
-    	rpcResult.setTotalBalance("0.2");
-    	rpcResult.setTotalEndIncome("56.75");
-    	rpcResult.setTotalBeginIncome("4556.09");
-    	rpcResult.setTotalMonthCount("433");
-    	rpcResult.setTotalMonthIncome("34.55");
-    	rpcResult.setTotalWithdrawApply("567.66");
-    	rpcResult.setTotalWithdrawPast("3456.62");
-    	rpcResult.setTotalCash("234.5");
-    	List<UserBillMonthVTO> billMonth = new ArrayList<UserBillMonthVTO>();
-    	UserBillMonthVTO oneMonthVTO = new UserBillMonthVTO();
-    	oneMonthVTO.setDate("2016-11");
-    	oneMonthVTO.setBalance("0.2");
-    	oneMonthVTO.setBeginIncome("34.55");
-    	oneMonthVTO.setCash("3445.64");
-    	oneMonthVTO.setEndIncome("566.32");
-    	oneMonthVTO.setMonthCount("302");
-    	oneMonthVTO.setMonthIncome("33");
-    	oneMonthVTO.setWithdrawApply("344.98");
-    	oneMonthVTO.setWithdrawPast("997.2");
-    	billMonth.add(oneMonthVTO);
     	
-    	UserBillMonthVTO twoMonthVTO = new UserBillMonthVTO();
-    	twoMonthVTO.setDate("2016-12");
-    	twoMonthVTO.setBalance("34.54");
-    	twoMonthVTO.setBeginIncome("445.6");
-    	twoMonthVTO.setEndIncome("566.32");
-    	twoMonthVTO.setCash("98.22");
-    	twoMonthVTO.setMonthCount("302");
-    	twoMonthVTO.setMonthIncome("33");
-    	twoMonthVTO.setWithdrawApply("344.98");
-    	twoMonthVTO.setWithdrawPast("997.2");
-    	billMonth.add(twoMonthVTO);
-    	
-    	rpcResult.setMonthBill(billMonth);
-    	System.out.println(JsonHelper.getJSONString(rpcResult));
 	}
 }

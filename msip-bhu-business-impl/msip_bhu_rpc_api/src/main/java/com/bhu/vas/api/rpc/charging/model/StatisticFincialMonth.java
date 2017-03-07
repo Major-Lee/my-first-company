@@ -1,9 +1,9 @@
 package com.bhu.vas.api.rpc.charging.model;
 
-import com.smartwork.msip.cores.orm.model.BaseStringModel;
+import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 @SuppressWarnings("serial")
-public class StatisticFincialMonth extends BaseStringModel{
+public class StatisticFincialMonth extends BaseIntModel{
 	private int uid;
 	private String monthid;
 	private String begin_income;
