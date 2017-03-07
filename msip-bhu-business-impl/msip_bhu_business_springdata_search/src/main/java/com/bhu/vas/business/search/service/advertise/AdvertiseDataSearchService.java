@@ -76,7 +76,7 @@ public class AdvertiseDataSearchService extends AbstractDataSearchConditionServi
 	public Page<AdvertiseDocument> searchByGeoPointDistanceAndAdcode(String contextId, double lat, double lon, String distance,String adcode,int pageSize,int pageNo){
 		
 		SearchConditionMessage scm = AdvertiseSearchMessageBuilder.builderSearchMessageWithGeoPointDistanceAndAdcode(contextId, lat, lon, distance,adcode);
-		return super.searchByConditionMessage(scm, pageNo, pageSize);
+		return super.searchByConditionMessage(scm, pageNo>=1?(pageNo-1):pageNo, pageSize);
 	}
 	
 }

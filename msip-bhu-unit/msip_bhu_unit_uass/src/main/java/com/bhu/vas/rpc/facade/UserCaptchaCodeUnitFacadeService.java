@@ -209,7 +209,7 @@ public class UserCaptchaCodeUnitFacadeService {
 				BeanUtils.copyProperties(auth, authVto);
 				if(authVto.getUid() != null){
 					User user = userService.getById(authVto.getUid());
-					authVto.setNick(user.getNick());
+					authVto.setUser(user);
 				}
 			}
 			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(authVto);

@@ -193,6 +193,44 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
+	/**
+	 * 用户信息修改
+	 * @param request
+	 * @param response
+	 * @param uid 用户uid
+	 * @param nickname 昵称
+	 * @param birthday 生日
+	 * @param sex 性别
+	 * @param memo 信息描述
+	 * @param lang 语言
+	 * @param region 地域
+	 * @param isreg 是否是注册步骤
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/upd_profile_mac",method={RequestMethod.GET,RequestMethod.POST})
+	public void upd_profile_mac(HttpServletRequest request,
+			HttpServletResponse response, 
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String nick,
+			@RequestParam(required = false) String avatar,
+			@RequestParam(required = false,value="bday") String birthday,
+			@RequestParam(required = false) String sex,
+			@RequestParam(required = false) String org,
+			@RequestParam(required = false) String memo
+			) {
+			if(StringUtils.isEmpty(nick) && StringUtils.isEmpty(birthday) && StringUtils.isEmpty(sex) 
+					&& StringUtils.isEmpty(avatar) && StringUtils.isEmpty(org) && StringUtils.isEmpty(memo)){
+				SpringMVCHelper.renderJson(response, Response.SUCCESS);
+				return;
+			}
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(mac,uid, nick, avatar, sex, birthday,org,memo);
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+	}
+	
 	@ResponseBody()
 	@RequestMapping(value="/profile",method={RequestMethod.GET,RequestMethod.POST})
 	public void profile(HttpServletRequest request,

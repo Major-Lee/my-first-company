@@ -216,9 +216,10 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
+		String remoteIp = ValidateService.getRemoteAddr(request);
 		String user_agent = request.getHeader("User-Agent");
 		RpcResponseDTO<UserValidateCaptchaDTO> rpcResult = orderRpcService.validate_code_check_authorize(mac, 
-				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent);
+				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent,remoteIp);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

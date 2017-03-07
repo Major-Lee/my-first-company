@@ -28,9 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.commdity.model.Order;
-
-import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
-
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -70,7 +67,7 @@ public class DeviceOrderStatitics {
 		ctx.start();
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
-		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "", "",1);
+		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "", "",2);
 		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
 		String pcUvJsonStr=pcUvJson.getString("values");
 		pcUvJsonStr=pcUvJsonStr.substring(1);
@@ -78,7 +75,7 @@ public class DeviceOrderStatitics {
 		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
 		
-		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",2);
 		JSONObject pcMac=JSONObject.fromObject(pcMacUv);
 		String pcMacData=pcMac.getString("values");
 		pcMacData=pcMacData.substring(1);
@@ -92,7 +89,7 @@ public class DeviceOrderStatitics {
 			}
 		}
 		
-		String freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "", "",1);
+		String freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "", "",2);
 		JSONObject freePcClickJson=JSONObject.fromObject(freePcClick);
 		String freePcClickJsonStr=freePcClickJson.getString("values");
 		freePcClickJsonStr=freePcClickJsonStr.substring(1);
@@ -100,7 +97,7 @@ public class DeviceOrderStatitics {
 		int freePcClickNum=Integer.valueOf(freePcClickJsonStr.split(",")[0].replace(".0", "").trim());
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "freePcClickNum", String.valueOf(freePcClickNum));
 		
-		String freePcClickMac= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		String freePcClickMac= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "wlanapmac", "",2);
 		JSONObject freePcMac=JSONObject.fromObject(freePcClickMac);
 		String freePcMacData=freePcMac.getString("values");
 		freePcMacData=freePcMacData.substring(1);
@@ -138,7 +135,7 @@ public class DeviceOrderStatitics {
 		
 		
 		
-		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
+		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",2);
 		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
 		String pcClickJsonStr=pcClickJson.getString("values");
 		pcClickJsonStr=pcClickJsonStr.substring(1);
@@ -147,7 +144,7 @@ public class DeviceOrderStatitics {
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcClickNum", String.valueOf(pcClickNum));
 
 		
-		String pcMacClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		String pcMacClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "wlanapmac", "",2);
 		JSONObject pcMacClickJson=JSONObject.fromObject(pcMacClick);
 		String pcMacClickData=pcMacClickJson.getString("values");
 		pcMacClickData=pcMacClickData.substring(1);
@@ -334,7 +331,7 @@ public class DeviceOrderStatitics {
 		if(orders!=null&&orders.size()>0){
 			for(int i=0;i<orders.size();i++){
 				
-				if(orders.get(i).getType()==0){
+				if(orders.get(i).getType()==0 || orders.get(i).getType()==1){
 					if(orders.get(i).getStatus()==10){
 						ofaF+=Float.valueOf(orders.get(i).getAmount());
 						ofc++;
@@ -625,7 +622,7 @@ public class DeviceOrderStatitics {
         return dateNowStr;
     }
 	
-	public static void getDeviceOrder(){
+	/*public static void getDeviceOrder(){
 		//获取订单统计数量
 		//开始时间
 		String startTime = StringUtils.EMPTY;
@@ -694,7 +691,7 @@ public class DeviceOrderStatitics {
 			//System.out.println(resultMap.toString());
 			DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
 		}
-	}
+	}*/
 	
 	public static String sendPost(String url, String param) {
 		 PrintWriter out = null;
