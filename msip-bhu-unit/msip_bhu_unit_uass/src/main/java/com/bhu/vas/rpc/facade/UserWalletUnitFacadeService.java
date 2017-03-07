@@ -2066,9 +2066,9 @@ public class UserWalletUnitFacadeService {
 				}
 			}
 			bill.setBillDay(billDayList);
-			bill.setAmountC(totalBHUA+"");
-			bill.setAmountT(totalA+"");
-			bill.setAmountU(totalUserA+"");
+			bill.setAmountC(df.format(totalBHUA));
+			bill.setAmountT(df.format(totalA));
+			bill.setAmountU(df.format(totalUserA));
 			System.out.println("++user bill result+++"+JsonHelper.getJSONString(bill));
 			long end = System.currentTimeMillis(); // 这段代码放在程序执行前
 			System.out.println("fetch bill total elapsed+" +(end - billPlanBegin));
@@ -2097,7 +2097,7 @@ public class UserWalletUnitFacadeService {
 			UserBillVTO userbill = new UserBillVTO();
 			userbill.setStartTime(startTime);
 			userbill.setEndTtime(endTime);
-			
+			DecimalFormat df  = new DecimalFormat("#########0.00");
 			double totalBeginIncome = 0; //期初
 			double totalEndIncome = 0;; //期末
 			double totalMonthCount = 0;; //交易数
@@ -2129,7 +2129,7 @@ public class UserWalletUnitFacadeService {
 							Double.valueOf(monthData.getWithdraw_past())-
 							Double.valueOf(monthData.getWithdraw_apply())-
 							Double.valueOf(monthData.getCash());
-					monthBill.setBalance(balance+"");
+					monthBill.setBalance(df.format(balance));
 			    	billMonth.add(monthBill);
 			    	
 			    	totalBeginIncome += Double.valueOf(monthData.getBegin_income());
@@ -2143,14 +2143,14 @@ public class UserWalletUnitFacadeService {
 					
 				}
 			}
-			userbill.setTotalBalance(totalBalance+"");
-			userbill.setTotalEndIncome(totalEndIncome+"");
-			userbill.setTotalBeginIncome(totalBeginIncome+"");
-			userbill.setTotalMonthCount(totalMonthCount+"");
-			userbill.setTotalMonthIncome(totalMonthIncome+"");
-			userbill.setTotalWithdrawApply(totalWithdrawApply+"");
-			userbill.setTotalWithdrawPast(totalWithdrawPast+"");
-			userbill.setTotalCash(totalCash+"");
+			userbill.setTotalBalance(df.format(totalBalance));
+			userbill.setTotalEndIncome(df.format(totalEndIncome));
+			userbill.setTotalBeginIncome(df.format(totalBeginIncome));
+			userbill.setTotalMonthCount(df.format(totalMonthCount));
+			userbill.setTotalMonthIncome(df.format(totalMonthIncome));
+			userbill.setTotalWithdrawApply(df.format(totalWithdrawApply));
+			userbill.setTotalWithdrawPast(df.format(totalWithdrawPast));
+			userbill.setTotalCash(df.format(totalCash));
 			userbill.setMonthBill(billMonth);
 			
 			System.out.println("++user bill result+++"+JsonHelper.getJSONString(userbill));
@@ -2193,6 +2193,7 @@ public class UserWalletUnitFacadeService {
 	public BillTotalVTO billTotal() {
 		long billTotalStart = System.currentTimeMillis();
 		try{
+			DecimalFormat df  = new DecimalFormat("#########0.00");
 			BillTotalVTO billTotal = new BillTotalVTO();
 			double amountT = 0;
 			double amountC = 0;
@@ -2219,11 +2220,11 @@ public class UserWalletUnitFacadeService {
 					}
 				}
 			}
-			billTotal.setAmountT(amountT+"");
-			billTotal.setAmountC(amountC+"");
-			billTotal.setAmountU(amountU+"");
-			billTotal.setAmountPaid(amountPaid+"");
-			billTotal.setAmountUnPaid(amountUnPaid);
+			billTotal.setAmountT(df.format(amountT));
+			billTotal.setAmountC(df.format(amountC));
+			billTotal.setAmountU(df.format(amountU));
+			billTotal.setAmountPaid(df.format(amountPaid));
+			billTotal.setAmountUnPaid(df.format(Double.valueOf(amountUnPaid)));
 			logger.info("billTotal rpc response："+JsonHelper.getJSONString(billTotal));
 			long billTotalEnd = System.currentTimeMillis();
 			System.out.println("billTotal total ："+(billTotalEnd -billTotalStart) );

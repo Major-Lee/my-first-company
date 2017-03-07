@@ -60,21 +60,21 @@ public class UserCaptchaCodeController extends BaseController{
 	
 
 	
-	@ResponseBody()
-	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
-	public void check_identity(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) String hdmac
-			) {
-		
-		RpcResponseDTO<UserIdentityAuthVTO> rpcResult = userCaptchaCodeRpcService.validateIdentity(hdmac.toLowerCase());
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
-		}
-	}
+//	@ResponseBody()
+//	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
+//	public void check_identity(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) String hdmac
+//			) {
+//		
+//		RpcResponseDTO<UserIdentityAuthVTO> rpcResult = userCaptchaCodeRpcService.validateIdentity(hdmac.toLowerCase());
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else{
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+//		}
+//	}
 	
 	@ResponseBody()
 	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})

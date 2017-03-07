@@ -31,8 +31,8 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	 * @param acc 手机号
 	 * @param hdmac 终端mac
 	 */
-	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
-		
+	public boolean generateIdentityAuth(int countrycode ,String acc,String hdmac){	
+		boolean isNew = false;
 		if(!isDirtyMac(hdmac)){
 //			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			
@@ -45,6 +45,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 				auth.setCountrycode(countrycode);
 //				auth.setMobileno(accWithCountryCode);
 			    this.insert(auth);
+			    isNew = true;
 			}else{
 //				if (auth.getMobileno() != accWithCountryCode) {
 				if (!acc.equals(auth.getMobileno()) || countrycode != auth.getCountrycode()) {
@@ -56,6 +57,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 				}
 			}
 		}
+		return isNew;
 	}
 	
 	public UserIdentityAuth validateIdentity(String hdmac){

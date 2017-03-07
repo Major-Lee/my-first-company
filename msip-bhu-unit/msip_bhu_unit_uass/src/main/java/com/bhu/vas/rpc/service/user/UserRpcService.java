@@ -117,6 +117,13 @@ public class UserRpcService implements IUserRpcService{
 				uid,nick,avatar,sex,birthday,org,memo));
 		return userUnitFacadeService.updateProfile(uid, nick, avatar, sex, birthday,org,memo);
 	}
+	
+	@Override
+	public RpcResponseDTO<Map<String, Object>> updateProfile(String umac,int uid,String nick ,String avatar,String sex,String birthday,String org,String memo){
+		logger.info(String.format("updateProfile with umac[%s] uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s] org[%s] memo[%s]",
+				umac,uid,nick,avatar,sex,birthday,org,memo));
+		return userUnitFacadeService.updateProfile(umac,uid, nick, avatar, sex, birthday,org,memo);
+	}
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> profile(int uid) {

@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
+import com.bhu.vas.api.dto.commdity.QueryBalanceLogsVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -177,14 +178,14 @@ public class OrderRpcService implements IOrderRpcService{
 	@Override
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
-			Integer channel, String user_agent) {
-		logger.info(String.format("validate_code_check_authorize mac[%s] umac[%s] countrycode[%s] acc[%s] captcha[%s] context[%s] umactype[%s] commdityid[%s] channel[%s] user_agent[%s]",
+			Integer channel, String user_agent,String remateIp) {
+		logger.info(String.format("validate_code_check_authorize mac[%s] umac[%s] countrycode[%s] acc[%s] captcha[%s] context[%s] umactype[%s] commdityid[%s] channel[%s] user_agent[%s] remateIp[%s]",
 				mac, umac,
 				countrycode, acc, captcha, context, umactype, commdityid,
-				channel, user_agent));
+				channel, user_agent, remateIp));
 		return orderUnitFacadeService.validate_code_check_authorize(mac, umac,
 				countrycode, acc, captcha, context, umactype, commdityid,
-				channel, user_agent);
+				channel, user_agent,remateIp);
 	}
 
 	@Override
@@ -243,5 +244,13 @@ public class OrderRpcService implements IOrderRpcService{
 				commdityid, uid, mac, umac, umactype, payment_type, context, user_agent, channel));
 		return orderUnitFacadeService.spendBalanceOrder(commdityid, uid, mac, umac, umactype, payment_type, context, user_agent, channel);
 	}
-	
+
+	@Override
+	public RpcResponseDTO<QueryBalanceLogsVTO> queryBalanceLogs(Integer uid, long start_created_ts, long end_created_ts,
+			int pageNo, int pageSize) {
+		logger.info(String.format("queryBalanceLogs uid[%s] start_created_ts[%s] "
+				+ "end_created_ts[%s] pageNo[%s] pageSize[%s]", uid, start_created_ts, end_created_ts, pageNo, pageSize));
+		return orderUnitFacadeService.queryBalanceLogs(uid, start_created_ts, end_created_ts, pageNo, pageSize);
+	}
+
 }

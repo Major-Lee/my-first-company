@@ -51,6 +51,11 @@ public class AdvertiseSearchMessageBuilder {
 				Field.A_GEOPOINT.getName(), SearchConditionPattern.GeopointDistance.getPattern(), 
 				JsonHelper.getJSONString(geopointDistancePayload));
 		
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_geopointDistance);
+
+
+		
+		
 		SearchCondition sc_adcode = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
 				Field.A_ADCODE.getName(),  SearchConditionPattern.StringEqual.getPattern(), adcode);
 		
@@ -63,16 +68,17 @@ public class AdvertiseSearchMessageBuilder {
 		SearchCondition sc_adcode_province = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.Should,BusinessIndexDefine.Advertise.
 				Field.A_ADCODE.getName(),  SearchConditionPattern.PrefixContain.getPattern(), adcode.substring(0, 2));
 		
-		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_geopointDistance);
-		pack_must.addChildSearchCondtions(sc_adcode);
-		pack_must.addChildSearchCondtions(sc_adcode_all);
-		pack_must.addChildSearchCondtions(sc_adcode_city);
-		pack_must.addChildSearchCondtions(sc_adcode_province);
-
-		
 		SearchConditionSort sc_sortByScore = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.Advertise.
 				Field.A_SCORE.getName(), SearchConditionSortPattern.Sort.getPattern(),
 				SortOrder.DESC, null);
+		
+		
+		
+		SearchConditionPack pack_should = SearchConditionPack.builderSearchConditionPackWithConditions(sc_adcode);
+
+		pack_should.addChildSearchCondtions(sc_adcode_all);
+		pack_should.addChildSearchCondtions(sc_adcode_city);
+		pack_should.addChildSearchCondtions(sc_adcode_province);
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		scm.addSorts(sc_sortByScore);

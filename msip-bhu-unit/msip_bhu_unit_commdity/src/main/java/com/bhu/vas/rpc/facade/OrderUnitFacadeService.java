@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.CommdityOrderCommonVTO;
 import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
@@ -32,6 +33,7 @@ import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
+import com.bhu.vas.api.dto.commdity.QueryBalanceLogsVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -59,16 +61,21 @@ import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealListVTO;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.OrdersFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
@@ -77,6 +84,8 @@ import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserConsumptiveWalletFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
@@ -146,6 +155,9 @@ public class OrderUnitFacadeService {
 	private UserIdentityAuthService userIdentityAuthService;
 	
 	@Resource
+	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
+	
+	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
 	
 	@Resource 
@@ -153,6 +165,13 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserConsumptiveWalletFacadeService userConsumptiveWalletFacadeService;
+	
+	@Resource
+	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
+	
+	@Resource
+	private DeliverMessageService deliverMessageService;
+	
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -887,6 +906,10 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
+			//验证不是免费上网类型订单,返回错误
+			if (!order.getType().equals(BusinessEnumType.CommdityCategory.VideoInternetLimit.getCategory())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+			}
 			if (order.getStatus().intValue() == OrderStatus.DeliverCompleted.getKey().intValue()){
 				logger.info(String.format("authorizeVideoOrder orderid[%s] timeout", orderid));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_ORDER_TIMEOUT);
@@ -1026,7 +1049,7 @@ public class OrderUnitFacadeService {
 
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
-			Integer channel, String user_agent) {
+			Integer channel, String user_agent,String remateIp) {
 		try{
 			UserValidateCaptchaDTO dto = new UserValidateCaptchaDTO();
 			String accWithContryCode = PhoneHelper.format(countrycode, acc);
@@ -1035,6 +1058,19 @@ public class OrderUnitFacadeService {
 				dto.setValidate_captcha(true);
 				userIdentityAuthService.generateIdentityAuth(countrycode, acc, umac);
 				asyncDeliverMessageService.sendUserIdentityRepariActionMessage(umac,acc);
+				
+				
+				Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+				if(uid == null){
+					UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, null, null, null, DeviceEnum.Portal.getName(), remateIp, null, UserType.Normal, null);
+					deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, DeviceEnum.Portal.getName(),remateIp);
+					deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), null, acc, userExchange.getUser().getAvatar());
+					dto.setUser(userExchange.getUser());
+				}else{
+					dto.setUser(RpcResponseDTOBuilder.builderUserDTOFromUser(userService.getById(uid), false));
+				}
+				userIdentityAuthFacadeService.updateLoginDevice(uid, countrycode, acc, umac);
+				
 				//是否在白名单中
 				dto.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
 				if(dto.isAuthorize()){
@@ -1399,5 +1435,28 @@ public class OrderUnitFacadeService {
 			logger.error("spendBalanceOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+
+	public RpcResponseDTO<QueryBalanceLogsVTO> queryBalanceLogs(Integer uid, long start_created_ts,
+			long end_created_ts, int pageNo, int pageSize) {
+	try{
+		QueryBalanceLogsVTO vto = new QueryBalanceLogsVTO();
+		int count = userConsumptiveWalletFacadeService.countByParams(uid, start_created_ts, end_created_ts);
+		if (count > 0){
+			List<UserConsumptiveWalletLog> logs = userConsumptiveWalletFacadeService.findByParams(uid, 
+					start_created_ts, end_created_ts, pageNo, pageSize);
+			for(UserConsumptiveWalletLog log : logs){
+				log.setCash(ArithHelper.getCuttedCurrency(ArithHelper.longCurrencyToDouble(Math.abs(Long.parseLong(log.getCash())), 
+						BusinessRuntimeConfiguration.WalletDataBaseDegree)+""));
+			}
+			vto.setLogs(new CommonPage<UserConsumptiveWalletLog>(pageNo, pageSize, count, logs));
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}catch(BusinessI18nCodeException be){
+		return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
+	}catch(Exception ex){
+		logger.error("queryBalanceLogs Exception:", ex);
+		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+	}
 	}
 }

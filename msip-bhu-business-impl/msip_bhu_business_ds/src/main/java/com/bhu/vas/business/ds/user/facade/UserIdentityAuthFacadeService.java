@@ -15,6 +15,10 @@ public class UserIdentityAuthFacadeService {
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
 	
+	public UserIdentityAuthService getUserIdentityAuthService(){
+		return this.userIdentityAuthService;
+	}
+	
 	public String fetchUserMobilenoByHdmac(String hdmac){
 		 UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
 		 String mobileno = null;
@@ -22,6 +26,14 @@ public class UserIdentityAuthFacadeService {
 //			 mobileno = auth.getMobileno().substring(auth.getMobileno().indexOf(StringHelper.WHITESPACE_STRING_GAP)).trim();
 //		 }
 		 return mobileno;
+	}
+	
+	public boolean matchHdmacAndUid(String hdmac,int uid){
+		boolean isMatched = false;
+		UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
+		if(auth.getUid() == uid)
+			isMatched = true;
+		return isMatched;
 	}
 	
 	public void updateLoginDevice(int uid, int countrycode, String acc, String mac){

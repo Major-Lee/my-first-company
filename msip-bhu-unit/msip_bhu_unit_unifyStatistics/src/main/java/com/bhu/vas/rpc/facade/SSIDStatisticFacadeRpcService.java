@@ -47,6 +47,9 @@ import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
  */
 @Service
 public class SSIDStatisticFacadeRpcService {
+	
+	private final Logger log = LoggerFactory.getLogger(SSIDStatisticFacadeRpcService.class);
+	
 	@Resource
 	private UserService userService;
 	@Resource
@@ -59,11 +62,11 @@ public class SSIDStatisticFacadeRpcService {
 	private OrderService orderService;
 //	@Resource
 //	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
-	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	private final Logger log = LoggerFactory.getLogger(SSIDStatisticFacadeRpcService.class);
+	
 	public Map<String,Object> querySSIDStatisticInfo(Map<String,Object> map){
+		
 		Map<String,Object> result = new HashMap<String,Object>();
 		//查询日期类型
 		String type = StringUtils.EMPTY;
@@ -1202,14 +1205,14 @@ public class SSIDStatisticFacadeRpcService {
 	}
 	
 	public static void main(String[] args) {
-//		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
-//		//List<String> timeList=getLastDay(7);
-//		for(String i:timeList){
-//			System.out.println(i);
-//		}
-//		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-//		String s= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", "2016-09-07","2016-09-07", "", "",1);
-//		System.out.println(s);
+		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
+		//List<String> timeList=getLastDay(7);
+		for(String i:timeList){
+			System.out.println(i);
+		}
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		String s= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", "2017-03-01","2017-03-07", "", "",2);
+		System.out.println(s);
 		System.out.println(getLastDay(1));
 	}
 	/**

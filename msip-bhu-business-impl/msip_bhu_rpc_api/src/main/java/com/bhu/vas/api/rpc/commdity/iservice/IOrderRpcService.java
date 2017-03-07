@@ -10,6 +10,7 @@ import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
+import com.bhu.vas.api.dto.commdity.QueryBalanceLogsVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -71,7 +72,7 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
-			Integer channel, String user_agent);
+			Integer channel, String user_agent,String remateIp);
 
 	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid,Integer umactype,
 			String payment_type, Integer channel, String user_agent);
@@ -92,5 +93,8 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<CommdityOrderCommonVTO> spendBalanceOrder(Integer commdityid, Integer uid, String mac, String umac,
 			Integer umactype, String payment_type, String context, String user_agent, Integer channel);
+
+	public RpcResponseDTO<QueryBalanceLogsVTO> queryBalanceLogs(Integer uid, long start_created_ts, long end_created_ts,
+			int pageNo, int pageSize);
 	
 }

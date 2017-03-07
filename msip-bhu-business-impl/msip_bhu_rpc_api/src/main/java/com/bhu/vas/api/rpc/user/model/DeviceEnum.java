@@ -17,7 +17,8 @@ public enum DeviceEnum {
 	ITouch("ITouch","T",DeviceEnum.HandSet_IOS_Type,DeviceEnum.Display_IOS_Name,true,53,new String[]{"itouch_newly","itouch_callback"}),
 	Android("Android","R",DeviceEnum.HandSet_ANDROID_Type,DeviceEnum.Display_ANDROID_Name,false,54,new String[]{"android_newly","android_callback"}),
 	PC("PC","P",DeviceEnum.Desktop_WEB_Type,DeviceEnum.Display_WEB_Name,false,55,new String[]{"web_newly","web_callback"}),
-	
+	Portal("Portal","L",DeviceEnum.Desktop_PORTAL_Type,DeviceEnum.Desktop_PORTAL_Name,false,56,new String[]{"portal_newly","portal_callback"}),
+
 	//APP360("APP360","A3",DeviceEnum.Desktop_360_WEB_Type,DeviceEnum.Display_360_WEB_Name,false,0,new String[]{"app360_newly","app360_callback"}),
 	//APPAndroid("APPAndroid","AR",DeviceEnum.HandSet_ANDROID_Type,DeviceEnum.Display_ANDROID_Name,false,1,new String[]{"a_android_newly","a_android_callback"}),
 	//APPIPhone("APPIPhone","AO",DeviceEnum.HandSet_IOS_Type,DeviceEnum.Display_IOS_Name,false,2,new String[]{"a_iphone_newly","a_iphone_callback"}),
@@ -29,10 +30,12 @@ public enum DeviceEnum {
 	public static final String HandSet_ANDROID_Type = "adr";
 	
 	public static final String Desktop_WEB_Type = "web";
+	public static final String Desktop_PORTAL_Type = "portal";
 	public static final String Desktop_APP_Type = "app";
 	public static final String Desktop_360_WEB_Type = "360app";
 	
 	public static final String Display_WEB_Name = "Web App";
+	public static final String Desktop_PORTAL_Name = "portal app";
 	public static final String Display_360_WEB_Name = "360 Web App";
 	public static final String Display_IOS_Name = "iPhone客户端";
 	public static final String Display_ANDROID_Name = "android客户端";
