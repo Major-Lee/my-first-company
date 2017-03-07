@@ -45,7 +45,17 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 	private Long cpmid;
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private Long pbalance;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private Long pbalance_old;
 	
+	public Long getPbalance_old() {
+		return pbalance_old;
+	}
+
+	public void setPbalance_old(Long pbalance_old) {
+		this.pbalance_old = pbalance_old;
+	}
+
 	public Long getPbalance() {
 		return pbalance;
 	}
@@ -186,6 +196,7 @@ public class ConsumptiveWalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 		dto.setPdescription(description);
 		dto.setCpmid(Long.valueOf(0));
 		dto.setPbalance(Long.valueOf(0));
+		dto.setPbalance_old(Long.valueOf(0));
 		switch(transMode){
 			case CashPayment://消费
 				dto.setPcash(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(cashLong)));

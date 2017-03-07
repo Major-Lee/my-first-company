@@ -205,6 +205,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	GomeToBhuDataKey = MD5Helper.md5(GomeToBhuAppKey).substring(0, 16).getBytes();
         	BhuToGomeDataKey = MD5Helper.md5(BhuToGomeAppKey).substring(0, 16).getBytes();
 
+        	//消费者钱包发消息阈值
+        	ConsumerWalletNoticeUserRechargel1 = PropertiesHelper.getDouble("consumer.wallet.rechargel1", paramProperties, ConsumerWalletNoticeUserRechargel1);
+        	ConsumerWalletNoticeUserRechargel2 = PropertiesHelper.getDouble("consumer.wallet.rechargel2", paramProperties, ConsumerWalletNoticeUserRechargel2);
+        	
 //        	Default_Range_Cash_Pc_For_Day = PropertiesHelper.getString("safesecure.range.cash.pc.day", paramProperties, Default_Range_Cash_Pc_For_Day);
 //        	Default_Range_Cash_Mobile_For_Day = PropertiesHelper.getString("safesecure.range.cash.mobile.day", paramProperties, Default_Range_Cash_Mobile_For_Day);
 //        	Default_Range_Cash_Pc_For_Week = PropertiesHelper.getString("safesecure.range.cash.pc.week", paramProperties, Default_Range_Cash_Pc_For_Week);
@@ -298,6 +302,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final String Internal_CommdityPhysical_Payment_Template = "恭喜您！成为第%s个购买用户，我们将在1个工作日内安排发货，如有疑问，请在工作时间致电4001-588-566【必虎】";
 	public static final String Internal_payment_warning_Template = "%s故障，获取支付url超时%s毫秒。【必虎】";
 	public static final String Advertise_Verify_Notify_Template = "全城热播订单:%s,已支付，需要审核。【必虎】";
+	//消费者钱余额不足消息提醒模板
+	public static final String Internal_ConsumerWallet_NeedCharging_Template = "温馨提示：您好，截至到%s，您的账户已不足%s元，请及时充值，以免影响您的正常使用。";
+	public static final String Internal_ConsumerWallet_StopService_Template = "温馨提示：您好，截至到%s，您的账户已不足%s元，您开通的置顶等服务将被取消，请知悉！";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "[uRouter]验证码:%s,欢迎使用uRouter智能路由器！";//【华信联创】
 	//public static final String WillExpiredPush_Template = "【快看】你有%s条消息将于1小时候后过期销毁，赶快过来看看吧!";
@@ -529,6 +536,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String GomeApiUrl = "";
 	public static int GomeDistributorId = 0;
 	public static int WalletDataBaseDegree = 4;
+	
+	public static double ConsumerWalletNoticeUserRechargel1 = 5.00;
+	public static double ConsumerWalletNoticeUserRechargel2 = 0.30;
 	
 	/**
 	 * 判断是否是console用户

@@ -11,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.procedure.ConsumptiveWalletInOrOutProcedureDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
+import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
+import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWallet;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletLogService;
@@ -20,6 +23,8 @@ import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -45,25 +50,37 @@ public class UserConsumptiveWalletFacadeService{
 				transMode, transType, sourceType, sysType,
 				rmoney, cash, desc, memo);
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
-		long balance = 0;
+		double balance = 0;
+		double balance_old = 0;
 		if(executeRet == 0){
 			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s] cpmid[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo, processorDTO.getCpmid()));
 			if(outParam != null){
 				outParam.put("cpmid", processorDTO.getCpmid());
 				if(processorDTO.getPbalance() != null)
-					balance = processorDTO.getPbalance();
-				outParam.put("balance", ArithHelper.longCurrencyToDouble(balance, 
-					BusinessRuntimeConfiguration.WalletDataBaseDegree));
+					balance = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				if(processorDTO.getPbalance_old() != null)
+					balance_old = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance_old(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				outParam.put("balance", balance);
+				outParam.put("balance_old", balance_old);
+				needNoticeUserRecharge(uid, balance_old, balance);
 			}
 		}else if(executeRet == 1){
 			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
 			if(outParam != null){
+				outParam.put("cpmid", processorDTO.getCpmid());
 				if(processorDTO.getPbalance() != null)
-					balance = processorDTO.getPbalance();
-				outParam.put("balance", ArithHelper.longCurrencyToDouble(balance, 
-					BusinessRuntimeConfiguration.WalletDataBaseDegree));
+					balance = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				if(processorDTO.getPbalance_old() != null)
+					balance_old = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance_old(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				outParam.put("balance", balance);
+				outParam.put("balance_old", balance_old);
+				needNoticeUserRecharge(uid, balance_old, balance);
 			}
 		}else{
 			logger.info( String.format("消费者钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
@@ -130,6 +147,39 @@ public class UserConsumptiveWalletFacadeService{
 			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
 		}
 		return userConsumptiveWalletLogService.countByCommonCriteria(mc);
+	}
+	
+	public void needNoticeUserRecharge(Integer uid, double oldBalance, double balance){
+		logger.info(String.format("needNoticeUserRecharge uid[%s] oldBalance[%s] balance[%s]", 
+				uid, oldBalance, balance));
+		String msg = null;
+		if(fetchRechargelevel(oldBalance, balance) == 1){
+			msg = String.format(BusinessRuntimeConfiguration.Internal_ConsumerWallet_NeedCharging_Template,
+					DateTimeHelper.formatDate(DateTimeHelper.FormatPattern3), 
+					BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1);
+			
+		}else if(fetchRechargelevel(oldBalance, balance) == 2){
+			msg = String.format(BusinessRuntimeConfiguration.Internal_ConsumerWallet_StopService_Template,
+					DateTimeHelper.formatDate(DateTimeHelper.FormatPattern3), 
+					BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2);
+		}
+		if(StringHelper.isNotEmpty(msg)){
+			TimResponseBasicDTO retDto = MessageTimHelper.CreateTimSendMsgUrlCommunication(BusinessEnumType.TimPushChannel.BHUOfficial, 
+				uid+"", BusinessEnumType.TimPushMsgType.TIMTextElem, msg);
+			logger.info("needNoticeUserRecharge["+msg+"] "+JsonHelper.getJSONString(retDto));
+		}
+	}
+	
+	private int fetchRechargelevel(double oldBalance, double balance){
+		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1 && 
+				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1){
+			return 1;
+		}
+		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2 && 
+				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2){
+			return 2;
+		}
+		return 0;
 	}
 	
 }
