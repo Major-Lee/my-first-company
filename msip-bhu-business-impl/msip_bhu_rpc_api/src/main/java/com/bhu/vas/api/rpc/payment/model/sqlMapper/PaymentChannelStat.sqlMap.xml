@@ -194,7 +194,8 @@
 		</if>
 	</select>
 	<select id="platformIncome" resultMap="modelResult" parameterType="String">
-		SELECT	<include refid="modelPlatformColumns" /> FROM t_payment_channel_stat WHERE id BETWEEN #{pre_day} AND #{today}
+		SELECT	<include refid="modelPlatformColumns" /> FROM t_payment_channel_stat
+		 WHERE id BETWEEN #{pre_day} AND #{today} order by id desc
 	</select>
 
 	<delete id="removeByModelCriteria">

@@ -593,7 +593,7 @@ public class OrderFacadeService {
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 				
 				int deliver_notify_ret = userConsumptiveWalletFacadeService.rechargeConsumptiveWalletCash(order.getUid(), 
-						order.getAmount(), orderid, "充值余额 "+order.getAmount()+"元");
+						order.getAmount(), orderid, order.getPayment_type()+","+"充值余额 "+order.getAmount()+"元 ");
 				if(deliver_notify_ret == 0){
 					logger.info(String.format("uid[%s] 充值余额 %s 元成功.",order.getUid(), order.getAmount()));
 					changed_status = OrderStatus.DeliverCompleted.getKey();

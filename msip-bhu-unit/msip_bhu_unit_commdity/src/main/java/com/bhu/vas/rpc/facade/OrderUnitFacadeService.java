@@ -33,6 +33,7 @@ import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
+import com.bhu.vas.api.dto.commdity.QueryBalanceLogsVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -63,6 +64,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
@@ -904,6 +906,10 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
+			//验证不是免费上网类型订单,返回错误
+			if (!order.getType().equals(BusinessEnumType.CommdityCategory.VideoInternetLimit.getCategory())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+			}
 			if (order.getStatus().intValue() == OrderStatus.DeliverCompleted.getKey().intValue()){
 				logger.info(String.format("authorizeVideoOrder orderid[%s] timeout", orderid));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_ORDER_TIMEOUT);
@@ -1429,5 +1435,28 @@ public class OrderUnitFacadeService {
 			logger.error("spendBalanceOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+
+	public RpcResponseDTO<QueryBalanceLogsVTO> queryBalanceLogs(Integer uid, long start_created_ts,
+			long end_created_ts, int pageNo, int pageSize) {
+	try{
+		QueryBalanceLogsVTO vto = new QueryBalanceLogsVTO();
+		int count = userConsumptiveWalletFacadeService.countByParams(uid, start_created_ts, end_created_ts);
+		if (count > 0){
+			List<UserConsumptiveWalletLog> logs = userConsumptiveWalletFacadeService.findByParams(uid, 
+					start_created_ts, end_created_ts, pageNo, pageSize);
+			for(UserConsumptiveWalletLog log : logs){
+				log.setCash(ArithHelper.getCuttedCurrency(ArithHelper.longCurrencyToDouble(Math.abs(Long.parseLong(log.getCash())), 
+						BusinessRuntimeConfiguration.WalletDataBaseDegree)+""));
+			}
+			vto.setLogs(new CommonPage<UserConsumptiveWalletLog>(pageNo, pageSize, count, logs));
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}catch(BusinessI18nCodeException be){
+		return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
+	}catch(Exception ex){
+		logger.error("queryBalanceLogs Exception:", ex);
+		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+	}
 	}
 }
