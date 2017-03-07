@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -12,11 +14,15 @@ import com.bhu.vas.api.dto.procedure.ConsumptiveWalletInOrOutProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWallet;
+import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
+import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 /**
  * @author fengshibo
@@ -28,6 +34,8 @@ public class UserConsumptiveWalletFacadeService{
 	
 	@Resource
 	private UserConsumptiveWalletService userConsumptiveWalletService;
+	@Resource
+	private UserConsumptiveWalletLogService userConsumptiveWalletLogService;
 	@Resource
 	private UserService userService;
 	
@@ -93,6 +101,35 @@ public class UserConsumptiveWalletFacadeService{
 		return userConsumptiveWalletInOutWithProcedure(uid, 
 				orderid, UConsumptiveWalletTransMode.RealMoneyPayment, 
 				UConsumptiveWalletTransType.Recharge2C, null, null, cash, cash, desc, StringHelper.EMPTY_STRING_GAP, null);
+	}
+
+	public  List<UserConsumptiveWalletLog> findByParams(Integer uid, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("uid", uid);
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("updated_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
+		}
+		mc.setOrderByClause("updated_at desc");
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		return userConsumptiveWalletLogService.findModelByModelCriteria(mc);
+	}
+
+	public int countByParams(Integer uid, long start_created_ts, long end_created_ts) {
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("uid", uid);
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("updated_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
+		}
+		return userConsumptiveWalletLogService.countByCommonCriteria(mc);
 	}
 	
 }

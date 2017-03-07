@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.PaymentSceneChannelDTO;
+import com.bhu.vas.api.dto.commdity.QueryBalanceLogsVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
@@ -766,6 +767,35 @@ public void hot_play_paymenturl(
 		//1:生成订单
 		RpcResponseDTO<CommdityOrderCommonVTO> rpcResult = orderRpcService.spendBalanceOrder(commdityid, uid, mac, umac, umactype,
 				payment_type, context, user_agent, channel);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+		}
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/balance/logs",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_balance_logs(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+			@RequestParam(required = false, defaultValue = "0") long end_created_ts,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+		RpcResponseDTO<QueryBalanceLogsVTO> rpcResult = orderRpcService.queryBalanceLogs(uid, 
+				start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
