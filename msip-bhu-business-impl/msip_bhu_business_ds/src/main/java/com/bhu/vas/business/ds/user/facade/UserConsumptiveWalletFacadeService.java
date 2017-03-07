@@ -16,7 +16,6 @@ import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UConsumptiveWalletTransType;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
-import com.bhu.vas.api.rpc.message.helper.TimHttpHelper;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWallet;
 import com.bhu.vas.api.rpc.user.model.UserConsumptiveWalletLog;
 import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletLogService;
@@ -51,34 +50,37 @@ public class UserConsumptiveWalletFacadeService{
 				transMode, transType, sourceType, sysType,
 				rmoney, cash, desc, memo);
 		int executeRet = userConsumptiveWalletService.executeProcedure(processorDTO);
-		long balance = 0;
-		long balance_old = 0;
+		double balance = 0;
+		double balance_old = 0;
 		if(executeRet == 0){
 			logger.info( String.format("消费者钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s] cpmid[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo, processorDTO.getCpmid()));
 			if(outParam != null){
 				outParam.put("cpmid", processorDTO.getCpmid());
 				if(processorDTO.getPbalance() != null)
-					balance = processorDTO.getPbalance();
+					balance = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
 				if(processorDTO.getPbalance_old() != null)
-					balance_old = processorDTO.getPbalance_old();
-				outParam.put("balance", ArithHelper.longCurrencyToDouble(balance, 
-						BusinessRuntimeConfiguration.WalletDataBaseDegree));
-				outParam.put("balance_old", ArithHelper.longCurrencyToDouble(balance_old, 
-						BusinessRuntimeConfiguration.WalletDataBaseDegree));
+					balance_old = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance_old(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				outParam.put("balance", balance);
+				outParam.put("balance_old", balance_old);
+				needNoticeUserRecharge(uid, balance_old, balance);
 			}
 		}else if(executeRet == 1){
 			logger.info( String.format("消费者钱包出入账-失败  余额不足 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
 					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,desc,memo));
 			if(outParam != null){
+				outParam.put("cpmid", processorDTO.getCpmid());
 				if(processorDTO.getPbalance() != null)
-					balance = processorDTO.getPbalance();
+					balance = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
 				if(processorDTO.getPbalance_old() != null)
-					balance_old = processorDTO.getPbalance_old();
-				outParam.put("balance", ArithHelper.longCurrencyToDouble(balance, 
-						BusinessRuntimeConfiguration.WalletDataBaseDegree));
-				outParam.put("balance_old", ArithHelper.longCurrencyToDouble(balance_old, 
-						BusinessRuntimeConfiguration.WalletDataBaseDegree));
+					balance_old = ArithHelper.longCurrencyToDouble(processorDTO.getPbalance_old(), 
+							BusinessRuntimeConfiguration.WalletDataBaseDegree);
+				outParam.put("balance", balance);
+				outParam.put("balance_old", balance_old);
+				needNoticeUserRecharge(uid, balance_old, balance);
 			}
 		}else{
 			logger.info( String.format("消费者钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] desc[%s] memo[%s]",
