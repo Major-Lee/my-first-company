@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.charging.model.StatisticFincialMonth;
+import com.bhu.vas.api.rpc.charging.vto.StatisticFincialMonthVTO;
 import com.bhu.vas.business.ds.statistics.dao.StatisticFincialMonthDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 
@@ -36,4 +37,14 @@ public class StatisticFincialMonthService extends AbstractCoreService<Integer, S
 		map.put("end_month", today);
 		return super.entityDao.findModelByMonthId(map);
 	}
+	
+	
+	public List<StatisticFincialMonthVTO> findVTOByMonthId(String monthid, int pageNo, int pageSize){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("monthid", monthid);
+		map.put("limit", Integer.valueOf(pageSize));
+		map.put("start", Integer.valueOf((pageNo - 1)*pageSize));
+		return super.entityDao.findVTOByMonthId(map);
+	}
+
 }
