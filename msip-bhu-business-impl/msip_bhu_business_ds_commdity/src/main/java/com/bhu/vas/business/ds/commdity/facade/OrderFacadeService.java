@@ -206,7 +206,8 @@ public class OrderFacadeService {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		//criteria.andColumnEqualTo("type", 0);
-		criteria.andColumnBetween("created_at", startTime, endTime);
+//		criteria.andColumnBetween("created_at", startTime, endTime);
+		criteria.andColumnBetween("paymented_at", startTime, endTime);
 		return orderService.findModelByModelCriteria(mc);
 	}
 	/**

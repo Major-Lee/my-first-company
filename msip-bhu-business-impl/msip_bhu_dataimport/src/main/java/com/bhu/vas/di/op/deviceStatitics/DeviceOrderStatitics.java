@@ -331,7 +331,7 @@ public class DeviceOrderStatitics {
 		if(orders!=null&&orders.size()>0){
 			for(int i=0;i<orders.size();i++){
 				
-				if(orders.get(i).getType()==0){
+				if(orders.get(i).getType()==0 || orders.get(i).getType()==1){
 					if(orders.get(i).getStatus()==10){
 						ofaF+=Float.valueOf(orders.get(i).getAmount());
 						ofc++;
@@ -622,7 +622,7 @@ public class DeviceOrderStatitics {
         return dateNowStr;
     }
 	
-	public static void getDeviceOrder(){
+	/*public static void getDeviceOrder(){
 		//获取订单统计数量
 		//开始时间
 		String startTime = StringUtils.EMPTY;
@@ -691,7 +691,7 @@ public class DeviceOrderStatitics {
 			//System.out.println(resultMap.toString());
 			DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
 		}
-	}
+	}*/
 	
 	public static String sendPost(String url, String param) {
 		 PrintWriter out = null;
