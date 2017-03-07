@@ -201,6 +201,14 @@
     	</if>  
 	</delete>
 
+
+	<select id="countByModelCriteria" resultType="int">
+		select count(*) from <include refid="modelTableName" /> 
+		<if test="_parameter != null"> 
+	      <include refid="model_CRITERIA_SQL_GenCondition" />
+	    </if>  		
+	</select>
+
 	<!-- <select id="StatisticFincialMonth" resultType="statisticFincialMonth" parameterType="String">
 		SELECT <include refid="modelFincialMonthIncomeColumns" /> FROM msip_bhu_core.t_statistic_fincial_month
 		<where>
@@ -225,7 +233,7 @@
 		 FROM msip_bhu_core.t_statistic_fincial_month a, 
 			msip_bhu_core.t_vas_users b
 		<where>
-			a.uid = b.uid
+			a.uid = b.id
 			AND monthid = #{monthid}
 			order by uid
 			limit #{limit} OFFSET #{start}

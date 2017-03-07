@@ -42,8 +42,8 @@ public class StatisticFincialMonthService extends AbstractCoreService<Integer, S
 	public List<StatisticFincialMonthVTO> findVTOByMonthId(String monthid, int pageNo, int pageSize){
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("monthid", monthid);
-		map.put("limit", String.valueOf(pageSize));
-		map.put("start", String.valueOf((pageNo - 1)*pageSize));
+		map.put("limit", Integer.valueOf(pageSize));
+		map.put("start", Integer.valueOf((pageNo - 1)*pageSize));
 		return super.entityDao.findVTOByMonthId(map);
 	}
 

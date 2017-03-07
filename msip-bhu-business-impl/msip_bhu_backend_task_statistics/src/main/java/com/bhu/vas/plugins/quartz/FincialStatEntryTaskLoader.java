@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,19 +51,8 @@ public class FincialStatEntryTaskLoader {
 	private final static String EXCEL_TITLE = "时间,用户类型,用户昵称,用户电话,期初总收益,本期增加收益,本期交易笔数,期末总收益,往期提现金额,本期申请提现金额,钱包剩余";
 
 
-	public void searchResultExportFile(String message, String export_filepath,
-			String[] columns, List<String> lines) {
-		logger.info(String.format("ConsoleServiceHandler searchResultExportFile message[%s]", message));
-//		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
-//		if(dto == null) return;
-		
-//		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
-//				.concat(File.separator).concat(dto.getExportFileName());
-
-		logger.info(String.format("ConsoleServiceHandler searchResultExportFile successful message[%s]", message));
-	}
-	
 	private void geneateExcel(String monthid){
+		logger.info(String.format("generate excel for [%s]" ,  monthid));
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		createCriteria.andColumnEqualTo("monthid", monthid);
@@ -104,8 +94,11 @@ public class FincialStatEntryTaskLoader {
 				List<StatisticFincialMonthVTO> list = statisticFincialMonthService.findVTOByMonthId(monthid, i + 1, pageSize);
 				for(StatisticFincialMonthVTO vto:list){
 					UserType utype = UserType.getByIndex(vto.getUtype());
+					String nick = vto.getNick();
+					if(StringUtils.isNoneEmpty(nick))
+						nick = nick.replaceAll(",", "-");
 					String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", monthid,
-							utype.getFname(), vto.getNick(), vto.getMobileno(), vto.getBegin_income(), vto.getMonth_income(), vto.getMonth_count(),
+							utype.getFname(), nick, vto.getMobileno(), vto.getBegin_income(), vto.getMonth_income(), vto.getMonth_count(),
 							vto.getEnd_income(), vto.getWithdraw_past(), vto.getWithdraw_apply(), vto.getCash()
 							);
 					fw.append(line);
@@ -142,8 +135,8 @@ public class FincialStatEntryTaskLoader {
 		mc.setPageSize(100);
 		mc.setOrderByClause(" updated_at desc ");
 
-		List<StatisticFincialMonth> models = statisticFincialMonthService.findModelByCommonCriteria(mc);
-		if(models.size() > 0){
+		int cnt = statisticFincialMonthService.countByModelCriteria(mc);//.countByCommonCriteria(mc);
+		if(cnt > 0){
 			logger.info("stat data already exists, exit");
 			return;
 		}
@@ -155,8 +148,7 @@ public class FincialStatEntryTaskLoader {
 		
 		logger.info(String.format("procedure execute result:%s", ret));
 		
-		if(ret == 1){
-			logger.info(String.format("generating excel", ret));
+		if(ret == 0){
 			geneateExcel(monthid);
 		}
 		
