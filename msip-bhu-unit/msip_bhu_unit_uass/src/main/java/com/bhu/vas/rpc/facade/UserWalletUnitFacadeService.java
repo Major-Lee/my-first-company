@@ -2097,7 +2097,7 @@ public class UserWalletUnitFacadeService {
 			UserBillVTO userbill = new UserBillVTO();
 			userbill.setStartTime(startTime);
 			userbill.setEndTtime(endTime);
-			
+			DecimalFormat df  = new DecimalFormat("#########0.00");
 			double totalBeginIncome = 0; //期初
 			double totalEndIncome = 0;; //期末
 			double totalMonthCount = 0;; //交易数
@@ -2129,7 +2129,7 @@ public class UserWalletUnitFacadeService {
 							Double.valueOf(monthData.getWithdraw_past())-
 							Double.valueOf(monthData.getWithdraw_apply())-
 							Double.valueOf(monthData.getCash());
-					monthBill.setBalance(balance+"");
+					monthBill.setBalance(df.format(balance+""));
 			    	billMonth.add(monthBill);
 			    	
 			    	totalBeginIncome += Double.valueOf(monthData.getBegin_income());
@@ -2143,7 +2143,7 @@ public class UserWalletUnitFacadeService {
 					
 				}
 			}
-			userbill.setTotalBalance(totalBalance+"");
+			userbill.setTotalBalance(df.format(totalBalance+""));
 			userbill.setTotalEndIncome(totalEndIncome+"");
 			userbill.setTotalBeginIncome(totalBeginIncome+"");
 			userbill.setTotalMonthCount(totalMonthCount+"");
