@@ -1062,7 +1062,7 @@ public class OrderUnitFacadeService {
 				
 				Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
 				if(uid == null){
-					UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, null, null, null, DeviceEnum.Portal.getName(), remateIp, null, UserType.Normal, null);
+					UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, null, null, null, DeviceEnum.Portal.getSname(), remateIp, null, UserType.Normal, null);
 					deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, DeviceEnum.Portal.getSname(),remateIp);
 					deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), null, acc, userExchange.getUser().getAvatar());
 					dto.setUser(userExchange.getUser());
