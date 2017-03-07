@@ -89,6 +89,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/ad/queryAdvertiseInfo");
 		//广告cpm通知
 		ignoreTokensValidateUriSet.add("/ad/cpm_notify");
+		ignoreTokensValidateUriSet.add("/ad/cpc");
 		//portal获取广告列表
 		ignoreTokensValidateUriSet.add("/ad/fetch_adlist_portal");
 		//app获取广告列表
