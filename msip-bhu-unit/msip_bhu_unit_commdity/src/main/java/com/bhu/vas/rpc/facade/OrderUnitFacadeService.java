@@ -1415,6 +1415,10 @@ public class OrderUnitFacadeService {
 		if (count > 0){
 			List<UserConsumptiveWalletLog> logs = userConsumptiveWalletFacadeService.findByParams(uid, 
 					start_created_ts, end_created_ts, pageNo, pageSize);
+			for(UserConsumptiveWalletLog log : logs){
+				log.setCash(ArithHelper.getCuttedCurrency(ArithHelper.longCurrencyToDouble(Math.abs(Long.parseLong(log.getCash())), 
+						BusinessRuntimeConfiguration.WalletDataBaseDegree)+""));
+			}
 			vto.setLogs(new CommonPage<UserConsumptiveWalletLog>(pageNo, pageSize, count, logs));
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
