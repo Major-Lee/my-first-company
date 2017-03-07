@@ -2193,6 +2193,7 @@ public class UserWalletUnitFacadeService {
 	public BillTotalVTO billTotal() {
 		long billTotalStart = System.currentTimeMillis();
 		try{
+			DecimalFormat df  = new DecimalFormat("#########0.00");
 			BillTotalVTO billTotal = new BillTotalVTO();
 			double amountT = 0;
 			double amountC = 0;
@@ -2221,7 +2222,7 @@ public class UserWalletUnitFacadeService {
 			}
 			billTotal.setAmountT(amountT+"");
 			billTotal.setAmountC(amountC+"");
-			billTotal.setAmountU(amountU+"");
+			billTotal.setAmountU(df.format(amountU+""));
 			billTotal.setAmountPaid(amountPaid+"");
 			billTotal.setAmountUnPaid(amountUnPaid);
 			logger.info("billTotal rpc response："+JsonHelper.getJSONString(billTotal));
