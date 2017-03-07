@@ -22,7 +22,6 @@ import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
