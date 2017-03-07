@@ -178,8 +178,8 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = false, defaultValue = "15") Integer commdityid,
 			@RequestParam(required = false, defaultValue = "0") Integer channel
 			) {
-		
-		RpcResponseDTO<UserIdentityAuthVTO> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase());
+		String remateIp = ValidateService.getRemoteAddr(request);
+		RpcResponseDTO<UserIdentityAuthVTO> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase(),remateIp);
 		if(!rpcResult.hasError()){
 			if(rpcResult.getPayload().isAuthorize()){
 				String user_agent = request.getHeader("User-Agent");
@@ -216,10 +216,10 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		String remoteIp = ValidateService.getRemoteAddr(request);
+		String remateIp = ValidateService.getRemoteAddr(request);
 		String user_agent = request.getHeader("User-Agent");
 		RpcResponseDTO<UserValidateCaptchaDTO> rpcResult = orderRpcService.validate_code_check_authorize(mac, 
-				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent,remoteIp);
+				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent,remateIp);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

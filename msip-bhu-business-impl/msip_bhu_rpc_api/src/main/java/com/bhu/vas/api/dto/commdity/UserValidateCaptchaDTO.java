@@ -1,6 +1,6 @@
 package com.bhu.vas.api.dto.commdity;
 
-import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 
 @SuppressWarnings("serial")
 public class UserValidateCaptchaDTO implements java.io.Serializable{
@@ -9,7 +9,7 @@ public class UserValidateCaptchaDTO implements java.io.Serializable{
 	//是否可以上网
 	private boolean isAuthorize;
 	
-	private UserDTO user;
+	private UserInnerExchangeDTO user;
 	
 	public boolean isValidate_captcha() {
 		return validate_captcha;
@@ -24,10 +24,10 @@ public class UserValidateCaptchaDTO implements java.io.Serializable{
 		this.isAuthorize = isAuthorize;
 	}
 	
-	public UserDTO getUser() {
+	public UserInnerExchangeDTO getUser() {
 		return user;
 	}
-	public void setUser(UserDTO user) {
+	public void setUser(UserInnerExchangeDTO user) {
 		this.user = user;
 	}
 	public static UserValidateCaptchaDTO buildUserValidateCaptchaDTO(boolean validate_captcha, boolean isAuthorize){

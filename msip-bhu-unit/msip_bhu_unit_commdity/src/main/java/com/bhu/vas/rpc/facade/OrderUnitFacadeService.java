@@ -1061,14 +1061,17 @@ public class OrderUnitFacadeService {
 				
 				
 				Integer uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
+				UserInnerExchangeDTO userExchange = null;
 				if(uid == null){
-					UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, null, null, null, DeviceEnum.Portal.getSname(), remateIp, null, UserType.Normal, null);
+					userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, null, null, null, DeviceEnum.Portal.getSname(), remateIp, null, UserType.Normal, null);
 					deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, DeviceEnum.Portal.getSname(),remateIp);
 					deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), null, acc, userExchange.getUser().getAvatar());
-					dto.setUser(userExchange.getUser());
-					uid = dto.getUser().getId();
+					dto.setUser(userExchange);
+					uid = dto.getUser().getUser().getId();
 				}else{
-					dto.setUser(RpcResponseDTOBuilder.builderUserDTOFromUser(userService.getById(uid), false));
+					User user = userService.getById(uid);
+					userExchange = userSignInOrOnFacadeService.commonUserLogin(user, DeviceEnum.Portal.getSname(), remateIp, null, null);
+					dto.setUser(userExchange);
 				}
 				userIdentityAuthFacadeService.updateLoginDevice(uid, countrycode, acc, umac);
 				
