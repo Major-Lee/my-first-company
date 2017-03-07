@@ -1066,6 +1066,7 @@ public class OrderUnitFacadeService {
 					deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, DeviceEnum.Portal.getSname(),remateIp);
 					deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), null, acc, userExchange.getUser().getAvatar());
 					dto.setUser(userExchange.getUser());
+					uid = dto.getUser().getId();
 				}else{
 					dto.setUser(RpcResponseDTOBuilder.builderUserDTOFromUser(userService.getById(uid), false));
 				}
