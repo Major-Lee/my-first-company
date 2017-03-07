@@ -71,7 +71,7 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
-			Integer channel, String user_agent);
+			Integer channel, String user_agent,String remateIp);
 
 	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid,Integer umactype,
 			String payment_type, Integer channel, String user_agent);

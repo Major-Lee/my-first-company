@@ -22,6 +22,7 @@ import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
@@ -216,9 +217,10 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
+		String remoteIp = ValidateService.getRemoteAddr(request);
 		String user_agent = request.getHeader("User-Agent");
 		RpcResponseDTO<UserValidateCaptchaDTO> rpcResult = orderRpcService.validate_code_check_authorize(mac, 
-				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent);
+				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent,remoteIp);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

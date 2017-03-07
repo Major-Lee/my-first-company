@@ -177,14 +177,14 @@ public class OrderRpcService implements IOrderRpcService{
 	@Override
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
-			Integer channel, String user_agent) {
-		logger.info(String.format("validate_code_check_authorize mac[%s] umac[%s] countrycode[%s] acc[%s] captcha[%s] context[%s] umactype[%s] commdityid[%s] channel[%s] user_agent[%s]",
+			Integer channel, String user_agent,String remateIp) {
+		logger.info(String.format("validate_code_check_authorize mac[%s] umac[%s] countrycode[%s] acc[%s] captcha[%s] context[%s] umactype[%s] commdityid[%s] channel[%s] user_agent[%s] remateIp[%s]",
 				mac, umac,
 				countrycode, acc, captcha, context, umactype, commdityid,
-				channel, user_agent));
+				channel, user_agent, remateIp));
 		return orderUnitFacadeService.validate_code_check_authorize(mac, umac,
 				countrycode, acc, captcha, context, umactype, commdityid,
-				channel, user_agent);
+				channel, user_agent,remateIp);
 	}
 
 	@Override
