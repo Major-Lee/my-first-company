@@ -303,8 +303,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final String Internal_payment_warning_Template = "%s故障，获取支付url超时%s毫秒。【必虎】";
 	public static final String Advertise_Verify_Notify_Template = "全城热播订单:%s,已支付，需要审核。【必虎】";
 	//消费者钱余额不足消息提醒模板
-	public static final String Internal_ConsumerWallet_NeedCharging_Template = "温馨提示：您好，截至到%s，您的账户已不足%s元，请及时充值，以免影响您的正常使用。";
-	public static final String Internal_ConsumerWallet_StopService_Template = "温馨提示：您好，截至到%s，您的账户已不足%s元，您开通的置顶等服务将被取消，请知悉！";
+	public static final String Internal_ConsumerWallet_NeedCharging_Template = "您的账户已不足%s元，请及时充值";
+	public static final String Internal_ConsumerWallet_StopService_Template = "您的账户已不足%s元，请及时充值";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "[uRouter]验证码:%s,欢迎使用uRouter智能路由器！";//【华信联创】
 	//public static final String WillExpiredPush_Template = "【快看】你有%s条消息将于1小时候后过期销毁，赶快过来看看吧!";
