@@ -1,5 +1,8 @@
 package com.bhu.vas.rpc.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -8,11 +11,13 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.thirdparty.dto.SsidInfoDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.ISsidRpcService;
 import com.bhu.vas.api.rpc.wifi.model.SsidInfo;
 import com.bhu.vas.api.vto.SsidInfoVTO;
 import com.bhu.vas.business.search.service.wifi.SsidDataSearchService;
 import com.bhu.vas.rpc.facade.SsidUnitFacadeService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -59,4 +64,25 @@ public class SsidRpcService implements ISsidRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	public RpcResponseDTO<List<SsidInfoVTO>> batchQuerySsidInfo(List<SsidInfoDTO> queryObj){
+		logger.info(String.format("batchQuerySsidInfo [%s]", JsonHelper.getJSONString(queryObj)));
+		try{
+			List<SsidInfo> retlist = ssidUnitFacadeService.batchQuerySsidInfo(queryObj);
+			List<SsidInfoVTO> vtolist = new ArrayList<SsidInfoVTO>();
+			if(retlist != null){
+				for(SsidInfo ret:retlist){
+					vtolist.add(SsidInfoVTO.fromSsidInfo(ret));
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtolist);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 }
