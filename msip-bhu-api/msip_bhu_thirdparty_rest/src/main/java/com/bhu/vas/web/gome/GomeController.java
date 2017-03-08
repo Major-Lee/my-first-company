@@ -86,4 +86,90 @@ public class GomeController extends BaseController{
 		}
 	}
 
+
+	/**
+	 * 下发配置
+	 * 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device/control",method={RequestMethod.POST})
+	public void deviceControl(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestBody String requestBody) {
+		try{
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			GomeConfigDTO dto = JsonHelper.jsonToObject(requestBody, "command", GomeConfigDTO.class);
+			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeDeviceControl(mac, dto);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(Exception e){
+			e.printStackTrace();
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
+		}
+	}
+
+	/**
+	 * 设备在线状态查询接口
+	 * 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device/online/get",method={RequestMethod.POST})
+	public void deviceOnlineGet(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestBody String requestBody) {
+		try{
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			RpcResponseDTO<GomeDeviceDTO> rpcResult = thirdPartyRpcService.gomeDeviceOnlineGet(mac);// .gomeDeviceStatusGet(mac);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(Exception e){
+			e.printStackTrace();
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
+		}
+	}
+	
+	
+	/**
+	 * 设备完整状态查询接口
+	 * 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device/status/get",method={RequestMethod.POST})
+	public void deviceStatusGet(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestBody String requestBody) {
+		try{
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			RpcResponseDTO<GomeConfigDTO> rpcResult = thirdPartyRpcService.gomeDeviceStatusGet(mac);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(Exception e){
+			e.printStackTrace();
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
+		}
+	}
 }
