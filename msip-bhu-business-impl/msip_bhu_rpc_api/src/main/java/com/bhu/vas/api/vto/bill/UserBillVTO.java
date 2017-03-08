@@ -2,6 +2,8 @@ package com.bhu.vas.api.vto.bill;
 
 import java.util.List;
 
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+
 /**
  * 
  * @author Edmond
@@ -21,9 +23,13 @@ public class UserBillVTO implements java.io.Serializable {
 	private String totalCash; //钱包余额
 	private String totalBalance; //误差
 
+	private String excelPrefix;//excel文件下载url前缀
 	
 	private List<UserBillMonthVTO> monthBill;
 
+	public UserBillVTO(){
+		this.excelPrefix = BusinessRuntimeConfiguration.Search_Result_Export_Uri;
+	}
 
 	public String getStartTime() {
 		return startTime;
@@ -103,6 +109,14 @@ public class UserBillVTO implements java.io.Serializable {
 
 	public void setTotalBalance(String totalBalance) {
 		this.totalBalance = totalBalance;
+	}
+
+	public String getExcelPrefix() {
+		return excelPrefix;
+	}
+
+	public void setExcelPrefix(String excelPrefix) {
+		this.excelPrefix = excelPrefix;
 	}
 
 	public List<UserBillMonthVTO> getMonthBill() {
