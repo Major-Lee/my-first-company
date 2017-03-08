@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
@@ -224,11 +225,20 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				return;
 			}
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(mac,uid, nick, avatar, sex, birthday,org,memo);
-			if(!rpcResult.hasError())
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+
+			try{
+				RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.updateProfile(mac,uid, nick, avatar, sex, birthday,org,memo);
+					if(!rpcResult.hasError()){
+						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+					}else{
+						SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+					}
+				}catch(BusinessI18nCodeException i18nex){
+					SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
+				}catch(Exception ex){
+					ex.printStackTrace();
+					SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+			}
 	}
 	
 	@ResponseBody()
