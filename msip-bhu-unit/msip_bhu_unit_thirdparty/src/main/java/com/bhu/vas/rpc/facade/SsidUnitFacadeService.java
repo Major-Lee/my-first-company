@@ -1,7 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -66,15 +68,17 @@ public class SsidUnitFacadeService {
 		for(SsidInfoDTO dto:queryObj)
 			ids.add(dto.getBssid());
 		Iterable<SsidDocument> rets = ssidDataSearchService.searchByIds(ids);
-		List<SsidInfo> results = new ArrayList<SsidInfo>();
-		int i = 0;
+		Map<String, SsidDocument> retsMap = new HashMap<String, SsidDocument>();
 		for(SsidDocument doc:rets){
-			SsidInfoDTO dto = queryObj.get(i);
+			retsMap.put(doc.getId(), doc);
+		}
+		List<SsidInfo> results = new ArrayList<SsidInfo>();
+		for(SsidInfoDTO dto:queryObj){
+			SsidDocument doc = retsMap.get(dto.getBssid());
 			if(doc != null && dto.getSsid().equals(doc.getS_ssid()) && dto.getCapabilities().equals(doc.getS_mode()))
 				results.add(SsidDocumentHelper.toSsid(doc));
 			else
 				results.add(null);
-			i ++;
 		}
 		return results;
 	}
