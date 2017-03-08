@@ -17,6 +17,21 @@
     <result property="cash" column="cash"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
+  
+   <resultMap id="modelResultVTO" type="statisticFincialMonthVTO">
+	    <result property="monthid" column="monthid"/>
+	    <result property="utype" column="utype"/>
+	    <result property="nick" column="nick"/>
+	    <result property="mobileno" column="mobileno"/>
+	    <result property="begin_income" column="begin_income"/>
+	    <result property="end_income" column="end_income"/>
+	    <result property="month_count" column="month_count"/>
+	    <result property="month_income" column="month_income"/>
+	    <result property="withdraw_past" column="withdraw_past"/>
+	    <result property="withdraw_apply" column="withdraw_apply"/>
+	    <result property="cash" column="cash"/>
+   </resultMap>  
+  
   	<sql id="modelTableName">
 	    <![CDATA[
 	    	t_statistic_fincial_month
@@ -186,6 +201,14 @@
     	</if>  
 	</delete>
 
+
+	<select id="countByModelCriteria" resultType="int">
+		select count(*) from <include refid="modelTableName" /> 
+		<if test="_parameter != null"> 
+	      <include refid="model_CRITERIA_SQL_GenCondition" />
+	    </if>  		
+	</select>
+
 	<!-- <select id="StatisticFincialMonth" resultType="statisticFincialMonth" parameterType="String">
 		SELECT <include refid="modelFincialMonthIncomeColumns" /> FROM msip_bhu_core.t_statistic_fincial_month
 		<where>
@@ -200,6 +223,20 @@
 		<where>
 	    	monthid BETWEEN #{start_month}  AND #{end_month} AND uid = '-1'
 			GROUP BY monthid ORDER BY monthid DESC
+	    </where> 
+		
+	</select>
+	
+	<select id="StatisticFincialMonthVTO" resultType="statisticFincialMonthVTO" parameterType="hashmap">
+		SELECT a.monthid, b.utype, b.nick, b.mobileno, a.begin_income, a.end_income, a.month_count,
+			a.month_income, a.withdraw_past, a.withdraw_apply, a.cash
+		 FROM msip_bhu_core.t_statistic_fincial_month a, 
+			msip_bhu_core.t_vas_users b
+		<where>
+			a.uid = b.id
+			AND monthid = #{monthid}
+			order by uid
+			limit #{limit} OFFSET #{start}
 	    </where> 
 		
 	</select>

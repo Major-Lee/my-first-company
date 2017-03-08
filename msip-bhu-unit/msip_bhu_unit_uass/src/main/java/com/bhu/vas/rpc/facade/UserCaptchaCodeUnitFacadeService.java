@@ -16,10 +16,13 @@ import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
+import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
+import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -43,6 +46,9 @@ public class UserCaptchaCodeUnitFacadeService {
 	@Resource
 	private UserService userService;
 
+	@Resource
+	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
+	
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
@@ -200,7 +206,7 @@ public class UserCaptchaCodeUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac){
+	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac,String remateIp){
 		try {
 			UserIdentityAuthVTO authVto = null;
 			UserIdentityAuth auth = userIdentityAuthService.validateIdentity(hdmac);
@@ -209,7 +215,8 @@ public class UserCaptchaCodeUnitFacadeService {
 				BeanUtils.copyProperties(auth, authVto);
 				if(authVto.getUid() != null){
 					User user = userService.getById(authVto.getUid());
-					authVto.setUser(user);
+					UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, DeviceEnum.Portal.getSname(), remateIp, null, null);
+					authVto.setUser(userExchange);
 				}
 			}
 			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(authVto);

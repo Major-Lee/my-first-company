@@ -39,8 +39,8 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac) {
-		logger.info(String.format("IdentityAuth hdmac[%s]", hdmac));
-		return userCaptchaCodeUnitFacadeService.validateIdentity(hdmac);
+	public RpcResponseDTO<UserIdentityAuthVTO> validateIdentity(String hdmac,String remateIp) {
+		logger.info(String.format("IdentityAuth hdmac[%s] remateIp [%s]", hdmac,remateIp));
+		return userCaptchaCodeUnitFacadeService.validateIdentity(hdmac,remateIp);
 	}
 }

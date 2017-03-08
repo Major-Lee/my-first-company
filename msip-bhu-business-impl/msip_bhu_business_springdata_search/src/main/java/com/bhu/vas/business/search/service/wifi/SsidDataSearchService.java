@@ -40,6 +40,10 @@ public class SsidDataSearchService extends AbstractDataSearchConditionService<Ss
 		return this.getRepository().findOne(id);
 	}
 	
+	public Iterable<SsidDocument> searchByIds(List<String> ids){
+		return this.getRepository().findAll(ids);
+	}
+	
 	
 //	public Page<SsidDocument> searchPageByBssidAndSsidAndMode(String bssid, String ssid, String mode){
 //		SearchConditionMessage scm = SsidSearchMessageBuilder.builderSearchMessageByBssidAndSsidAndMode(bssid, ssid, mode);
