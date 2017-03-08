@@ -62,7 +62,6 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/account/check_mobileno");
 		ignoreTokensValidateUriSet.add("/account/check_nick");
 		ignoreTokensValidateUriSet.add("/account/check_device_binded");
-		ignoreTokensValidateUriSet.add("/account/upd_profile_mac");
 
 		//请求验证码
 		ignoreTokensValidateUriSet.add("/user/captcha/fetch_captcha");

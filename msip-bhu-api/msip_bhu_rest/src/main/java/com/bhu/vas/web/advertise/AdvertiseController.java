@@ -453,7 +453,8 @@ public class AdvertiseController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
-    
+
+
     @ResponseBody()
     @RequestMapping(value = "/tips", method = {RequestMethod.POST})
     public void userAdvertiseDetail(

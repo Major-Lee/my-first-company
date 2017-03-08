@@ -192,7 +192,7 @@ public class UserController extends BaseController{
 			else
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
-	
+
 	/**
 	 * 用户信息修改
 	 * @param request
@@ -211,7 +211,7 @@ public class UserController extends BaseController{
 	public void upd_profile_mac(HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) int uid,
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String avatar,
 			@RequestParam(required = false,value="bday") String birthday,
