@@ -1,6 +1,7 @@
 package com.bhu.vas.business.search.service.wifi;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -38,6 +39,10 @@ public class SsidDataSearchService extends AbstractDataSearchConditionService<Ss
 
 	public SsidDocument searchById(String id){
 		return this.getRepository().findOne(id);
+	}
+	
+	public Iterable<SsidDocument> searchByIds(List<String> ids){
+		return this.getRepository().findAll(ids);
 	}
 	
 	
