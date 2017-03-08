@@ -651,7 +651,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param district
 	 * @param lat
 	 * @param lon
-	 * @param distance
+	 * @param district
 	 * @return
 	 */
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(String province, String city, String district,double lat,double lon,String distances){
@@ -851,11 +851,12 @@ public class AdvertiseUnitFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
-	
+
 	/**
 	 * 获取评论
-	 * @param uid
-	 * @param adid
+	 * @param adids
+	 * @param pn
+	 * @param ps
 	 * @return
 	 */
 	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids,int pn,int ps){
