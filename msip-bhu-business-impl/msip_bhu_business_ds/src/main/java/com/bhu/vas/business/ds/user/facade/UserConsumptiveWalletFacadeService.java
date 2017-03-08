@@ -23,7 +23,6 @@ import com.bhu.vas.business.ds.user.service.UserConsumptiveWalletService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -155,12 +154,10 @@ public class UserConsumptiveWalletFacadeService{
 		String msg = null;
 		if(fetchRechargelevel(oldBalance, balance) == 1){
 			msg = String.format(BusinessRuntimeConfiguration.Internal_ConsumerWallet_NeedCharging_Template,
-					DateTimeHelper.formatDate(DateTimeHelper.FormatPattern3), 
 					BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1);
 			
 		}else if(fetchRechargelevel(oldBalance, balance) == 2){
 			msg = String.format(BusinessRuntimeConfiguration.Internal_ConsumerWallet_StopService_Template,
-					DateTimeHelper.formatDate(DateTimeHelper.FormatPattern3), 
 					BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2);
 		}
 		if(StringHelper.isNotEmpty(msg)){
@@ -171,11 +168,11 @@ public class UserConsumptiveWalletFacadeService{
 	}
 	
 	private int fetchRechargelevel(double oldBalance, double balance){
-		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1 && 
+		if(oldBalance >= BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1 && 
 				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1){
 			return 1;
 		}
-		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2 && 
+		if(oldBalance >= BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2 && 
 				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2){
 			return 2;
 		}
