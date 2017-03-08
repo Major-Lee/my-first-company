@@ -612,7 +612,8 @@ public class AdvertiseUnitFacadeService {
 		List<UserConsumptiveWalletLog> results = userConsumptiveWalletLogService.findModelByModelCriteria(mc);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
-	
+
+
 	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize){
 		String pattern = null;
 		String startDate = null;
@@ -624,7 +625,7 @@ public class AdvertiseUnitFacadeService {
 
 		switch (type) {
 		case 0:
-			pattern = "%Y-%m-%d %h";
+			pattern = "%Y-%m-%d %H";
 			break;
 		case 1:
 			pattern = "%Y-%m-%d";
@@ -633,7 +634,7 @@ public class AdvertiseUnitFacadeService {
 			pattern = "%Y-%m";
 			break;
 		default:
-			pattern = "%Y-%m-%d %h";
+			pattern = "%Y-%m-%d %H";
 			break;
 		}
 		
