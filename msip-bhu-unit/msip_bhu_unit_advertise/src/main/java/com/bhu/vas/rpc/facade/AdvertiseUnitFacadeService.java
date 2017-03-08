@@ -612,7 +612,8 @@ public class AdvertiseUnitFacadeService {
 		List<UserConsumptiveWalletLog> results = userConsumptiveWalletLogService.findModelByModelCriteria(mc);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
-	
+
+
 	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize){
 		String pattern = null;
 		String startDate = null;
@@ -624,7 +625,7 @@ public class AdvertiseUnitFacadeService {
 
 		switch (type) {
 		case 0:
-			pattern = "%Y-%m-%d %h";
+			pattern = "%Y-%m-%d %H";
 			break;
 		case 1:
 			pattern = "%Y-%m-%d";
@@ -633,7 +634,7 @@ public class AdvertiseUnitFacadeService {
 			pattern = "%Y-%m";
 			break;
 		default:
-			pattern = "%Y-%m-%d %h";
+			pattern = "%Y-%m-%d %H";
 			break;
 		}
 		
@@ -650,7 +651,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param district
 	 * @param lat
 	 * @param lon
-	 * @param distance
+	 * @param district
 	 * @return
 	 */
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(String province, String city, String district,double lat,double lon,String distances){
@@ -850,11 +851,12 @@ public class AdvertiseUnitFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
-	
+
 	/**
 	 * 获取评论
-	 * @param uid
-	 * @param adid
+	 * @param adids
+	 * @param pn
+	 * @param ps
 	 * @return
 	 */
 	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids,int pn,int ps){
