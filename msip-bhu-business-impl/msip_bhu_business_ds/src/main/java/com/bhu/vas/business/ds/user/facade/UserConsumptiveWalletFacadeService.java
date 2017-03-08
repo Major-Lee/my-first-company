@@ -171,11 +171,11 @@ public class UserConsumptiveWalletFacadeService{
 	}
 	
 	private int fetchRechargelevel(double oldBalance, double balance){
-		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1 && 
+		if(oldBalance >= BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1 && 
 				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel1){
 			return 1;
 		}
-		if(oldBalance > BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2 && 
+		if(oldBalance >= BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2 && 
 				balance < BusinessRuntimeConfiguration.ConsumerWalletNoticeUserRechargel2){
 			return 2;
 		}
