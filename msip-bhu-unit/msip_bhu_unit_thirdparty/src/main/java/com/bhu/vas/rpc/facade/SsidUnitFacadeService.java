@@ -77,8 +77,8 @@ public class SsidUnitFacadeService {
 			SsidDocument doc = retsMap.get(dto.getBssid());
 			if(doc != null && dto.getSsid().equals(doc.getS_ssid()) && dto.getCapabilities().equals(doc.getS_mode()))
 				results.add(SsidDocumentHelper.toSsid(doc));
-			else
-				results.add(null);
+//			else
+//				results.add(null);
 		}
 		return results;
 	}
