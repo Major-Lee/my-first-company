@@ -625,7 +625,9 @@ public class UserUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<Map<String, Object>> updateProfile(String umac,int uid,String nick ,String avatar,String sex,String birthday,String org,String memo){
-		  if(!userIdentityAuthFacadeService.matchHdmacAndUid(umac, uid))
+		if(umac.isEmpty())
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_MISSING);
+		if(!userIdentityAuthFacadeService.matchHdmacAndUid(umac, uid))
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 		return this.updateProfile(uid, nick, avatar, sex, birthday, org, memo);
 	}

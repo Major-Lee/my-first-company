@@ -83,7 +83,7 @@ public class AdvertiseUnitFacadeService {
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	@Resource
 	private AdvertiseDataSearchService advertiseDataSearchService;
-	
+
 	@Resource
 	private AdvertiseIndexIncrementService advertiseIndexIncrementService;
 	
@@ -613,7 +613,6 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
 	}
 
-
 	public RpcResponseDTO<List<Map<String, Object>>> fetchAdvertiseChartReport(int uid,String advertiseId,int type,Long start,Long end,int pageNo ,int pageSize){
 		String pattern = null;
 		String startDate = null;
@@ -625,7 +624,7 @@ public class AdvertiseUnitFacadeService {
 
 		switch (type) {
 		case 0:
-			pattern = "%Y-%m-%d %H";
+			pattern = "%Y-%m-%d %h";
 			break;
 		case 1:
 			pattern = "%Y-%m-%d";
@@ -634,7 +633,7 @@ public class AdvertiseUnitFacadeService {
 			pattern = "%Y-%m";
 			break;
 		default:
-			pattern = "%Y-%m-%d %H";
+			pattern = "%Y-%m-%d %h";
 			break;
 		}
 		
@@ -651,7 +650,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param district
 	 * @param lat
 	 * @param lon
-	 * @param district
+	 * @param distance
 	 * @return
 	 */
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(String province, String city, String district,double lat,double lon,String distances){
@@ -854,9 +853,8 @@ public class AdvertiseUnitFacadeService {
 
 	/**
 	 * 获取评论
-	 * @param adids
-	 * @param pn
-	 * @param ps
+	 * @param uid
+	 * @param adid
 	 * @return
 	 */
 	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String[] adids,int pn,int ps){
@@ -974,7 +972,7 @@ public class AdvertiseUnitFacadeService {
 		//TODO 暂留
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
-	
+
 	/**
 	 * portal获取小传单列表
 	 * @param mac
@@ -1018,7 +1016,6 @@ public class AdvertiseUnitFacadeService {
 		TailPage<AdvertiseVTO> vtos = fetchAdvertise(null, lat, lon, adcode, pageSize, pageNo);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 	}
-	
 	private TailPage<AdvertiseVTO> fetchAdvertise(String contextId, double lat, double lon,String adcode,int pageSize,int pageNo){
 		Page<AdvertiseDocument> search_result= advertiseDataSearchService.searchByGeoPointDistanceAndAdcode(null, lat, lon, "5km", adcode, pageSize, pageNo);
 		List<AdvertiseVTO> vtos = null;
@@ -1067,7 +1064,7 @@ public class AdvertiseUnitFacadeService {
 	    long startLong = startDate.getTime();  
 	    long endLong = endDate.getTime(); 
 	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
-	    
+
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
 
