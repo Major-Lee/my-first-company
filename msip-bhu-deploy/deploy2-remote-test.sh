@@ -97,12 +97,19 @@ cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-b
 echo '拷贝文件 msip_bhu_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_rest/target/msip_bhu_rest.war ./$CuDateDir
 
+
+echo '拷贝文件 msip_bhu_thirdparty_rest.war到'$CuDateDir
+cp ../../msip-bhu-api/msip_bhu_thirdparty_rest/target/msip_bhu_thirdparty_rest.war ./$CuDateDir
+
 #commdity 
 echo '拷贝文件 msip_bhu_unit_commdity-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_commdity/target/msip_bhu_unit_commdity-bin.zip ./$CuDateDir
 
 echo '拷贝文件 msip_bhu_backend_commdity-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_commdity/target/msip_bhu_backend_commdity-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_backend_wangan-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_wangan/target/msip_bhu_backend_wangan-bin.zip ./$CuDateDir
 
 echo '拷贝文件 msip_bhu_backend_task_applies_notify-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task_applies_notify/target/msip_bhu_backend_task_applies_notify-bin.zip ./$CuDateDir
@@ -127,6 +134,9 @@ cp ../../msip-bhu-business-impl/msip_bhu_backend_task_advertise/target/msip_bhu_
 
 echo '拷贝文件 msip_bhu_unit_advertise-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_advertise/target/msip_bhu_unit_advertise-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_unit_thirdparty-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_thirdparty/target/msip_bhu_unit_thirdparty-bin.zip ./$CuDateDir
 
 #message_system
 echo '拷贝文件 msip_bhu_backend_task_message_system-bin.zip到'$CuDateDir
@@ -169,12 +179,17 @@ unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport
 
 unzip -qo msip_bhu_rest.war -d msip_bhu_rest
 
+unzip -qo msip_bhu_thirdparty_rest.war -d msip_bhu_thirdparty_rest
+
 #commdity 
 unzip -q msip_bhu_unit_commdity-bin.zip
 unzip -qo msip_bhu_unit_commdity/bin/msip_bhu_unit_commdity.jar -d msip_bhu_unit_commdity/classes/
 
 unzip -q msip_bhu_backend_commdity-bin.zip
 unzip -qo msip_bhu_backend_commdity/bin/msip_bhu_backend_commdity.jar -d msip_bhu_backend_commdity/classes/
+
+unzip -q msip_bhu_backend_wangan-bin.zip
+unzip -qo msip_bhu_backend_wangan/bin/msip_bhu_backend_wangan.jar -d msip_bhu_backend_wangan/classes/
 
 unzip -q msip_bhu_backend_task_applies_notify-bin.zip
 unzip -qo msip_bhu_backend_task_applies_notify/bin/msip_bhu_backend_task_applies_notify.jar -d msip_bhu_backend_task_applies_notify/classes/
@@ -199,6 +214,9 @@ unzip -qo msip_bhu_backend_task_advertise/bin/msip_bhu_backend_task_advertise.ja
 unzip -q msip_bhu_unit_advertise-bin.zip
 unzip -qo msip_bhu_unit_advertise/bin/msip_bhu_unit_advertise.jar -d msip_bhu_unit_advertise/classes/
 
+unzip -q msip_bhu_unit_thirdparty-bin.zip
+unzip -qo msip_bhu_unit_thirdparty/bin/msip_bhu_unit_thirdparty.jar -d msip_bhu_unit_thirdparty/classes/
+
 #message_system
 unzip -q msip_bhu_backend_task_message_system-bin.zip
 unzip -qo msip_bhu_backend_task_message_system/bin/msip_bhu_backend_task_message_system.jar -d msip_bhu_backend_task_message_system/classes/
@@ -219,6 +237,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/msip_*.jar    root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_terminal_processor successfully @'$Deploy2ComponentServerRedis
+
+echo 'deploy msip_bhu_backend_wangan to ...@'$Deploy2ComponentServerRedis
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_wangan/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_wangan/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_wangan/lib/msip_*.jar     root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_wangan/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_wangan/classes/com/     root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_wangan/bin/com/
+echo 'deploy msip_bhu_backend_wangan successfully @'$Deploy2ComponentServerRedis
 
 echo '准备发布业务backend_task_message_system组件到'$Deploy2ComponentServerRedis
 echo 'deploy msip_bhu_backend_task_message_system to ...@'$Deploy2ComponentServerRedis
@@ -287,11 +311,18 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/lib/ms
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/classes/com/     root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_advertise/bin/com/
 echo 'deploy msip_bhu_backend_task_advertise successfully @'$Deploy2ComponentServerKafka
 
+
 echo 'deploy msip_bhu_unit_advertise to ...@'$Deploy2ComponentServerKafka
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/spring*.RELEASE.jar root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/msip_*.jar  root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/classes/com/    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/classes/com/
 echo 'deploy msip_bhu_unit_advertise successfully @'$Deploy2ComponentServerKafka
+
+echo 'deploy msip_bhu_unit_thirdparty to ...@'$Deploy2ComponentServerKafka
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_thirdparty/lib/spring*.RELEASE.jar root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_thirdparty/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_thirdparty/lib/msip_*.jar  root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_thirdparty/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_thirdparty/classes/com/    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_thirdparty/classes/com/
+echo 'deploy msip_bhu_unit_thirdparty successfully @'$Deploy2ComponentServerKafka
 
 echo '发布业务组件成功'$Deploy2ComponentServerKafka
 
@@ -342,6 +373,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_rest/WEB-INF/lib/spring*.RELE
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_rest/WEB-INF/lib/msip_*.jar    root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_rest/WEB-INF/lib/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_rest/WEB-INF/classes/com/    root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_rest/WEB-INF/classes/com/
 echo 'deploy msip_bhu_rest successfully @'$Deploy2WebServerRest
+
+echo 'deploy msip_bhu_thirdparty_rest to ...@'$Deploy2WebServerRest
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_thirdparty_rest/WEB-INF/lib/spring*.RELEASE.jar   root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_thirdparty_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_thirdparty_rest/WEB-INF/lib/msip_*.jar    root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_thirdparty_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_thirdparty_rest/WEB-INF/classes/com/    root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_thirdparty_rest/WEB-INF/classes/com/
+echo 'deploy msip_bhu_thirdparty_rest successfully @'$Deploy2WebServerRest
 
 echo 'deploy msip_bhu_commdity_rest to ...@'$Deploy2WebServerRest
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_commdity_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_commdity_rest/WEB-INF/lib/
