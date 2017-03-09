@@ -331,7 +331,7 @@ public class DeviceOrderStatitics {
 		if(orders!=null&&orders.size()>0){
 			for(int i=0;i<orders.size();i++){
 				
-				if(orders.get(i).getType()==0 || orders.get(i).getType()==1){
+				if(orders.get(i).getType()==0 || orders.get(i).getType()==1 || orders.get(i).getType()==50){
 					if(orders.get(i).getStatus()==10){
 						ofaF+=Float.valueOf(orders.get(i).getAmount());
 						ofc++;
