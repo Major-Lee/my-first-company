@@ -1450,8 +1450,13 @@ public class OrderUnitFacadeService {
 			List<UserConsumptiveWalletLog> logs = userConsumptiveWalletFacadeService.findByParams(uid, 
 					start_created_ts, end_created_ts, pageNo, pageSize);
 			for(UserConsumptiveWalletLog log : logs){
-				log.setCash(ArithHelper.getCuttedCurrency(ArithHelper.longCurrencyToDouble(Math.abs(Long.parseLong(log.getCash())), 
-						BusinessRuntimeConfiguration.WalletDataBaseDegree)+""));
+				String cash = ArithHelper.getCuttedCurrency(ArithHelper.longCurrencyToDouble(Long.parseLong(log.getCash()), 
+						BusinessRuntimeConfiguration.WalletDataBaseDegree)+"");
+				if (log.getTransmode().equals(BusinessEnumType.UConsumptiveWalletTransMode.RealMoneyPayment.getKey())){
+					log.setCash(StringHelper.PLUS_STRING_GAP.concat(cash));
+				}else{
+					log.setCash(cash);
+				}
 			}
 			vto.setLogs(new CommonPage<UserConsumptiveWalletLog>(pageNo, pageSize, count, logs));
 		}
